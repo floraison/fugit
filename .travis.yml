@@ -1,0 +1,19 @@
+language: ruby
+rvm:
+  #- 1.8.7 # no, since it doesn't get fun(a, *b, c) or fun0\n.fun1
+  - 1.9.3
+  #- 2.1.1
+  - 2.2.2
+  - 2.3.1
+  - jruby-19mode
+  - jruby-20mode
+script: bundle exec rspec
+branches:
+  only:
+    - master
+  #except:
+  #  - master
+
+sudo: false
+cache: bundler
+
