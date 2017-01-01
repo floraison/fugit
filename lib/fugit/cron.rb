@@ -113,6 +113,7 @@ module Fugit
       end
 
       arr.uniq!
+      arr.sort!
     end
 
     def determine_minutes
