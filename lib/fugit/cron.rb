@@ -56,6 +56,17 @@ module Fugit
 #@original = nil; @h = nil; p self
     end
 
+    def to_cron_s
+
+      [
+        (@minutes || [ '*' ]).join(','),
+        (@hours || [ '*' ]).join(','),
+        (@monthdays || [ '*' ]).join(','),
+        (@months || [ '*' ]).join(','),
+        (@weekdays || [ '*' ]).join(',')
+      ].join(' ')
+    end
+
     def self.parse(s)
 
       original = s
@@ -77,6 +88,7 @@ module Fugit
 
       sta, edn, sla = r
 
+      return [ nil ] if sta.nil? && edn.nil? && sla.nil?
       return [ sta ] if sta && edn.nil?
 
       sla = 1 if sla == nil
@@ -87,24 +99,28 @@ module Fugit
     end
 
     def determine_minutes
-      @minutes =
-        @h[:min].inject([]) { |a, r| a.concat(unpack_range(0, 59, r)) }
+      @minutes = @h[:min].inject([]) { |a, r| a.concat(unpack_range(0, 59, r)) }
+      @minutes = nil if @minutes.include?(nil) # reductio ad astrum
     end
 
     def determine_hours
-      @hours =
-        @h[:hou].inject([]) { |a, r| a.concat(unpack_range(0, 23, r)) }
+      @hours = @h[:hou].inject([]) { |a, r| a.concat(unpack_range(0, 23, r)) }
+      @hours = nil if @hours.include?(nil) # reductio ad astrum
     end
 
     def determine_monthdays
+      @monthdays = @h[:dom].inject([]) { |a, r| a.concat(unpack_range(1, 31, r)) }
+      @monthdays = nil if @monthdays.include?(nil) # reductio ad astrum
     end
 
     def determine_months
-      @months =
-        @h[:mon].inject([]) { |a, r| a.concat(unpack_range(1, 12, r)) }
+      @months = @h[:mon].inject([]) { |a, r| a.concat(unpack_range(1, 12, r)) }
+      @months = nil if @months.include?(nil) # reductio ad astrum
     end
 
     def determine_weekdays
+      @weekdays = @h[:dow].inject([]) { |a, r| a.concat(unpack_range(0, 7, r)) }
+      @weekdays = nil if @weekdays.include?(nil) # reductio ad astrum
     end
 
     module Parser include Raabro

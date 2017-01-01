@@ -18,8 +18,7 @@ describe Fugit::Cron do
 
       c = Fugit::Cron.parse('@yearly')
 
-      pp c
-      #expect(c.to_cron_string).to eq('0 0 1 1 *')
+      expect(c.to_cron_s).to eq('0 0 1 1 *')
     end
 
     it 'parses @annually'
@@ -31,13 +30,18 @@ describe Fugit::Cron do
 
     [
 
-      [ '5 0 * * *', :xxx ], # 5 minutes after midnight, every day
-      [ '15 14 1 * *', :xxx ], # at 1415 on the 1st of every month
-      [ '0 22 * * 1-5', :xxx ], # at 2200 on weekdays
-      [ '23 0-23/2 * * *', :xxx ], # 23 minutes after midnight, 0200, 0400, ...
-      #[ '5 4 * * sun', :xxx ], # 0405 every sunday
+      [ '5 0 * * *', '5 0 * * *' ],
+        # 5 minutes after midnight, every day
+      [ '15 14 1 * *', '15 14 1 * *' ],
+        # at 1415 on the 1st of every month
+      [ '0 22 * * 1-5', '0 22 * * 1,2,3,4,5' ],
+        # at 2200 on weekdays
+      [ '23 0-23/2 * * *', '23 0,2,4,6,8,10,12,14,16,18,20,22 * * *' ],
+        # 23 minutes after midnight, 0200, 0400, ...
+      #[ '5 4 * * sun', :xxx ],
+        # 0405 every sunday
 
-      [ '14,24 8-12,14-19/2 * * *', :xxx ],
+      [ '14,24 8-12,14-19/2 * * *', '14,24 8,9,10,11,12,14,16,18 * * *' ],
 
     ].each do |cron, expected|
 
@@ -45,7 +49,7 @@ describe Fugit::Cron do
 
         c = Fugit::Cron.parse(cron)
 
-        expect(c).not_to eq(nil)
+        expect(c.to_cron_s).to eq(expected)
       end
     end
 
