@@ -1,0 +1,11 @@
+
+pkg/
+
+.ruby-version
+.rspec
+
+.errors
+.rspec.out
+
+Gemfile.lock
+
