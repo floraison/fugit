@@ -45,8 +45,7 @@ module Fugit
       original = s
       s = SPECIALS[s] || s
 
-p s
-Raabro.pp(Parser.parse(s, debug: 3))
+#p s; Raabro.pp(Parser.parse(s, debug: 3))
       x = Parser.parse(s)
 
       x
@@ -56,25 +55,63 @@ Raabro.pp(Parser.parse(s, debug: 3))
 
       def s(i); rex(:s, i, /[ \t]+/); end
       def star(i); str(:star, i, '*'); end
+      def hyphen(i); str(nil, i, '-'); end
+      def comma(i); str(nil, i, ','); end
 
-      def min(i); rex(nil, i, /[0-5]?\d/); end
-      def hou(i); rex(nil, i, /([01]?[0-9]|2[0-3])/); end
-      def dom(i); rex(nil, i, /([012]?[0-9]|3[01])/); end
-      def mon(i); rex(nil, i, /(0?[0-9]|1[0-2])/); end
-      def dow(i); rex(nil, i, /[0-7]/); end
+      def slash(i); rex(:slash, i, /\/\d\d?/); end
 
-      def so_min(i); alt(:min, i, :star, :min); end
-      def so_hou(i); alt(:hou, i, :star, :hou); end
-      def so_dom(i); alt(:dom, i, :star, :dom); end
-      def so_mon(i); alt(:mon, i, :star, :mon); end
-      def so_dow(i); alt(:dow, i, :star, :dow); end
+      def core_min(i); rex(:min, i, /[0-5]?\d/); end
+      def core_hou(i); rex(:hou, i, /(2[0-3]|[01]?[0-9])/); end
+      def core_dom(i); rex(:dom, i, /(3[01]|[012]?[0-9])/); end
+      def core_mon(i); rex(:mon, i, /(1[0-2]|0?[0-9])/); end
+      def core_dow(i); rex(:dow, i, /[0-7]/); end
 
-      def min_(i); seq(nil, i, :so_min, :s); end
-      def hou_(i); seq(nil, i, :so_hou, :s); end
-      def dom_(i); seq(nil, i, :so_dom, :s); end
-      def mon_(i); seq(nil, i, :so_mon, :s); end
+      def min(i); core_min(i); end
+      def hou(i); core_hou(i); end
+      def dom(i); core_dom(i); end
+      def mon(i); core_mon(i); end
+      def dow(i); core_dow(i); end
 
-      def cron(i); seq(:cron, i, :min_, :hou_, :dom_, :mon_, :so_dow); end
+      def _min(i); seq(nil, i, :hyphen, :min); end
+      def _hou(i); seq(nil, i, :hyphen, :hou); end
+      def _dom(i); seq(nil, i, :hyphen, :dom); end
+      def _mon(i); seq(nil, i, :hyphen, :mon); end
+      def _dow(i); seq(nil, i, :hyphen, :dow); end
+
+      # r: range
+      def r_min(i); seq(nil, i, :min, :_min, '?'); end
+      def r_hou(i); seq(nil, i, :hou, :_hou, '?'); end
+      def r_dom(i); seq(nil, i, :dom, :_dom, '?'); end
+      def r_mon(i); seq(nil, i, :mon, :_mon, '?'); end
+      def r_dow(i); seq(nil, i, :dow, :_dow, '?'); end
+
+      # sor: star or range
+      def sor_min(i); alt(nil, i, :star, :r_min); end
+      def sor_hou(i); alt(nil, i, :star, :r_hou); end
+      def sor_dom(i); alt(nil, i, :star, :r_dom); end
+      def sor_mon(i); alt(nil, i, :star, :r_mon); end
+      def sor_dow(i); alt(nil, i, :star, :r_dow); end
+
+      # sorws: star or range with[out] slash
+      def sorws_min(i); seq(nil, i, :sor_min, :slash, '?'); end
+      def sorws_hou(i); seq(nil, i, :sor_hou, :slash, '?'); end
+      def sorws_dom(i); seq(nil, i, :sor_dom, :slash, '?'); end
+      def sorws_mon(i); seq(nil, i, :sor_mon, :slash, '?'); end
+      def sorws_dow(i); seq(nil, i, :sor_dow, :slash, '?'); end
+
+      def list_min(i); jseq(:min, i, :sorws_min, :comma); end
+      def list_hou(i); jseq(:hou, i, :sorws_hou, :comma); end
+      def list_dom(i); jseq(:dom, i, :sorws_dom, :comma); end
+      def list_mon(i); jseq(:mon, i, :sorws_mon, :comma); end
+      def list_dow(i); jseq(:dow, i, :sorws_dow, :comma); end
+
+      def lmin_(i); seq(nil, i, :list_min, :s); end
+      def lhou_(i); seq(nil, i, :list_hou, :s); end
+      def ldom_(i); seq(nil, i, :list_dom, :s); end
+      def lmon_(i); seq(nil, i, :list_mon, :s); end
+      alias ldow list_dow
+
+      def cron(i); seq(:cron, i, :lmin_, :lhou_, :ldom_, :lmon_, :ldow); end
 
       def rewrite_entry(t)
 
