@@ -1,4 +1,7 @@
 
+.vimrc
+.viminfo
+
 pkg/
 
 .ruby-version
