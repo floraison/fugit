@@ -42,6 +42,20 @@ module Fugit
 
     attr_reader :minutes, :hours, :monthdays, :months, :weekdays
 
+    def initialize(original, h)
+
+      @original = original
+      @h = h
+p @h
+
+      determine_minutes
+      determine_hours
+      determine_monthdays
+      determine_months
+      determine_weekdays
+@original = nil; @h = nil; p self
+    end
+
     def self.parse(s)
 
       original = s
@@ -54,8 +68,43 @@ module Fugit
         "couldn't parse #{original.inspect}"
       ) unless x
 
-p x
-      x
+      self.new(original, x)
+    end
+
+    protected
+
+    def unpack_range(min, max, r)
+
+      sta, edn, sla = r
+
+      return [ sta ] if sta && edn.nil?
+
+      sla = 1 if sla == nil
+      sta = min if sta == nil
+      edn = max if edn == nil
+
+      (sta..edn).step(sla).to_a
+    end
+
+    def determine_minutes
+      @minutes =
+        @h[:min].inject([]) { |a, r| a.concat(unpack_range(0, 59, r)) }
+    end
+
+    def determine_hours
+      @hours =
+        @h[:hou].inject([]) { |a, r| a.concat(unpack_range(0, 23, r)) }
+    end
+
+    def determine_monthdays
+    end
+
+    def determine_months
+      @months =
+        @h[:mon].inject([]) { |a, r| a.concat(unpack_range(1, 12, r)) }
+    end
+
+    def determine_weekdays
     end
 
     module Parser include Raabro
@@ -124,19 +173,17 @@ p x
 
         k = t.name
 
-        t.children.inject([]) { |a, ct|
-
-#Raabro.pp(ct)
-          h = {}
+        t.children.select { |ct| ct.children.any? }.inject([]) { |a, ct|
 
           xts = ct.gather(k)
 #xts.each { |xt| Raabro.pp(xt) }
-          h[:range] = xts.collect { |xt| xt.string } if xts.any?
+          range = xts.any? ? xts.collect { |xt| xt.string.to_i } : []
+          while range.size < 2; range << nil; end
 
           st = ct.lookup(:slash)
-          h[:slash] = st.string[1..-1].to_i if st
+          range << (st ? st.string[1..-1].to_i : nil)
 
-          a << h if h.any?
+          a << range
 
           a
         }
