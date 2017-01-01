@@ -100,29 +100,44 @@ module Fugit
       (sta..edn).step(sla).to_a
     end
 
+    def compact(key)
+
+      arr = instance_variable_get(key)
+
+      return instance_variable_set(key, nil) if arr.include?(nil)
+        # reductio ad astrum
+
+      if key == :@weekdays
+        arr = instance_variable_set(key, arr.collect { |i| i == 7 ? 0 : i })
+          # turn Sunday7 into 0
+      end
+
+      arr.uniq!
+    end
+
     def determine_minutes
       @minutes = @h[:min].inject([]) { |a, r| a.concat(expand(0, 59, r)) }
-      @minutes = nil if @minutes.include?(nil) # reductio ad astrum
+      compact(:@minutes)
     end
 
     def determine_hours
       @hours = @h[:hou].inject([]) { |a, r| a.concat(expand(0, 23, r)) }
-      @hours = nil if @hours.include?(nil) # reductio ad astrum
+      compact(:@hours)
     end
 
     def determine_monthdays
       @monthdays = @h[:dom].inject([]) { |a, r| a.concat(expand(1, 31, r)) }
-      @monthdays = nil if @monthdays.include?(nil) # reductio ad astrum
+      compact(:@monthdays)
     end
 
     def determine_months
       @months = @h[:mon].inject([]) { |a, r| a.concat(expand(1, 12, r)) }
-      @months = nil if @months.include?(nil) # reductio ad astrum
+      compact(:@months)
     end
 
     def determine_weekdays
       @weekdays = @h[:dow].inject([]) { |a, r| a.concat(expand(0, 7, r)) }
-      @weekdays = nil if @weekdays.include?(nil) # reductio ad astrum
+      compact(:@weekdays)
     end
 
     module Parser include Raabro
