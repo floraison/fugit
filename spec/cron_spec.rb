@@ -14,52 +14,59 @@ describe Fugit::Cron do
 
     it 'parses @reboot'
 
-    it 'parses @yearly' do # "0 0 1 1 *"
+    context 'success' do
 
-      c = Fugit::Cron.parse('@yearly')
+      [
 
-      expect(c.to_cron_s).to eq('0 0 1 1 *')
-    end
+        [ '@yearly', '0 0 1 1 *' ],
+        [ '@annually', '0 0 1 1 *' ],
+        [ '@monthly', '0 0 1 * *' ],
+        [ '@weekly', '0 0 * * 0' ],
+        [ '@daily', '0 0 * * *' ],
+        [ '@midnight', '0 0 * * *' ],
+        [ '@hourly', '0 * * * *' ],
 
-    it 'parses @annually'
-    it 'parses @monthly' # "0 0 1 * *"
-    it 'parses @weekly' # "0 0 * * 0"
-    it 'parses @daily' # "0 0 * * *"
-    it 'parses @midnight'
-    it 'parses @hourly' # "0 * * * *"
+        [ '5 0 * * *', '5 0 * * *' ],
+          # 5 minutes after midnight, every day
+        [ '15 14 1 * *', '15 14 1 * *' ],
+          # at 1415 on the 1st of every month
+        [ '0 22 * * 1-5', '0 22 * * 1,2,3,4,5' ],
+          # at 2200 on weekdays
+        [ '23 0-23/2 * * *', '23 0,2,4,6,8,10,12,14,16,18,20,22 * * *' ],
+          # 23 minutes after midnight, 0200, 0400, ...
+        #[ '5 4 * * sun', :xxx ],
+          # 0405 every sunday
 
-    [
+        [ '14,24 8-12,14-19/2 * * *', '14,24 8,9,10,11,12,14,16,18 * * *' ],
 
-      [ '5 0 * * *', '5 0 * * *' ],
-        # 5 minutes after midnight, every day
-      [ '15 14 1 * *', '15 14 1 * *' ],
-        # at 1415 on the 1st of every month
-      [ '0 22 * * 1-5', '0 22 * * 1,2,3,4,5' ],
-        # at 2200 on weekdays
-      [ '23 0-23/2 * * *', '23 0,2,4,6,8,10,12,14,16,18,20,22 * * *' ],
-        # 23 minutes after midnight, 0200, 0400, ...
-      #[ '5 4 * * sun', :xxx ],
-        # 0405 every sunday
+        [ '*/1 1-3/1 * * *', '* 1,2,3 * * *' ],
 
-      [ '14,24 8-12,14-19/2 * * *', '14,24 8,9,10,11,12,14,16,18 * * *' ],
+      ].each do |cron, expected|
 
-    ].each do |cron, expected|
+        it "parses #{cron}" do
 
-      it "parses #{cron}" do
+          c = Fugit::Cron.parse(cron)
 
-        c = Fugit::Cron.parse(cron)
-
-        expect(c.to_cron_s).to eq(expected)
+          expect(c.to_cron_s).to eq(expected)
+        end
       end
     end
 
-    it 'rejects * 25 * * *' do
+    context 'failure' do
 
-      expect {
-        Fugit::Cron.parse('* 25 * * *')
-      }.to raise_error(
-        ArgumentError, 'couldn\'t parse "* 25 * * *"'
-      )
+      [
+        '* 25 * * *'
+      ].each do |cron|
+
+        it "rejects #{cron}" do
+
+          expect {
+            Fugit::Cron.parse(cron)
+          }.to raise_error(
+            ArgumentError, "couldn't parse #{cron.inspect}"
+          )
+        end
+      end
     end
   end
 end

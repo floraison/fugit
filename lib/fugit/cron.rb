@@ -84,9 +84,11 @@ module Fugit
 
     protected
 
-    def unpack_range(min, max, r)
+    def expand(min, max, r)
 
       sta, edn, sla = r
+
+      sla = nil if sla == 1 # don't get fooled by /1
 
       return [ nil ] if sta.nil? && edn.nil? && sla.nil?
       return [ sta ] if sta && edn.nil?
@@ -99,27 +101,27 @@ module Fugit
     end
 
     def determine_minutes
-      @minutes = @h[:min].inject([]) { |a, r| a.concat(unpack_range(0, 59, r)) }
+      @minutes = @h[:min].inject([]) { |a, r| a.concat(expand(0, 59, r)) }
       @minutes = nil if @minutes.include?(nil) # reductio ad astrum
     end
 
     def determine_hours
-      @hours = @h[:hou].inject([]) { |a, r| a.concat(unpack_range(0, 23, r)) }
+      @hours = @h[:hou].inject([]) { |a, r| a.concat(expand(0, 23, r)) }
       @hours = nil if @hours.include?(nil) # reductio ad astrum
     end
 
     def determine_monthdays
-      @monthdays = @h[:dom].inject([]) { |a, r| a.concat(unpack_range(1, 31, r)) }
+      @monthdays = @h[:dom].inject([]) { |a, r| a.concat(expand(1, 31, r)) }
       @monthdays = nil if @monthdays.include?(nil) # reductio ad astrum
     end
 
     def determine_months
-      @months = @h[:mon].inject([]) { |a, r| a.concat(unpack_range(1, 12, r)) }
+      @months = @h[:mon].inject([]) { |a, r| a.concat(expand(1, 12, r)) }
       @months = nil if @months.include?(nil) # reductio ad astrum
     end
 
     def determine_weekdays
-      @weekdays = @h[:dow].inject([]) { |a, r| a.concat(unpack_range(0, 7, r)) }
+      @weekdays = @h[:dow].inject([]) { |a, r| a.concat(expand(0, 7, r)) }
       @weekdays = nil if @weekdays.include?(nil) # reductio ad astrum
     end
 
