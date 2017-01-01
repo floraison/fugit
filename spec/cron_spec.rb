@@ -54,8 +54,9 @@ describe Fugit::Cron do
       context 'weekdays' do
 
         [
-#a_eq '* * * * sun,mon', [ [0], nil, nil, nil, nil, [0, 1], nil ]
-#a_eq '* * * * mon-wed', [ [0], nil, nil, nil, nil, [1, 2, 3], nil ]
+          [ '* * * * sun,mon', '* * * * 0,1' ],
+          [ '* * * * Sun,mOn', '* * * * 0,1' ],
+          [ '* * * * mon-wed', '* * * * 1,2,3' ],
 #a_eq '* * * * sun,2-4', [ [0], nil, nil, nil, nil, [0, 2, 3, 4], nil ]
 #a_eq '* * * * sun,mon-tue', [ [0], nil, nil, nil, nil, [0, 1, 2], nil ]
 #a_eq '0 0 * * mon#1,tue', [[0], [0], [0], nil, nil, [2], ["1#1"]]

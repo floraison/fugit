@@ -127,6 +127,8 @@ module Fugit
 
     module Parser include Raabro
 
+      WEEKDAYS = %w[ sun mon tue wed thu fri sat ]
+
       def s(i); rex(:s, i, /[ \t]+/); end
       def star(i); str(:star, i, '*'); end
       def hyphen(i); str(nil, i, '-'); end
@@ -138,7 +140,7 @@ module Fugit
       def core_hou(i); rex(:hou, i, /(2[0-3]|[01]?[0-9])/); end
       def core_dom(i); rex(:dom, i, /(3[01]|[012]?[0-9])/); end
       def core_mon(i); rex(:mon, i, /(1[0-2]|0?[0-9])/); end
-      def core_dow(i); rex(:dow, i, /[0-7]/); end
+      def core_dow(i); rex(:dow, i, /([0-7]|#{WEEKDAYS.join('|')})/i); end
 
       def min(i); core_min(i); end
       def hou(i); core_hou(i); end
@@ -187,6 +189,13 @@ module Fugit
 
       def cron(i); seq(:cron, i, :lmin_, :lhou_, :ldom_, :lmon_, :ldow); end
 
+      def to_i(k, t)
+
+        s = t.string.downcase
+
+        (k == :dow && WEEKDAYS.index(s)) || s.to_i
+      end
+
       def rewrite_entry(t)
 
         k = t.name
@@ -195,7 +204,7 @@ module Fugit
 
           xts = ct.gather(k)
 #xts.each { |xt| Raabro.pp(xt) }
-          range = xts.any? ? xts.collect { |xt| xt.string.to_i } : []
+          range = xts.any? ? xts.collect { |xt| to_i(k, xt) } : []
           while range.size < 2; range << nil; end
 
           st = ct.lookup(:slash)
