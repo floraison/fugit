@@ -40,6 +40,8 @@ module Fugit
 
     attr_reader :original
 
+    attr_reader :minutes, :hours, :monthdays, :months, :weekdays
+
     def self.parse(s)
 
       original = s
@@ -52,6 +54,7 @@ module Fugit
         "couldn't parse #{original.inspect}"
       ) unless x
 
+p x
       x
     end
 
@@ -119,7 +122,24 @@ module Fugit
 
       def rewrite_entry(t)
 
-        t.string
+        k = t.name
+
+        t.children.inject([]) { |a, ct|
+
+#Raabro.pp(ct)
+          h = {}
+
+          xts = ct.gather(k)
+#xts.each { |xt| Raabro.pp(xt) }
+          h[:range] = xts.collect { |xt| xt.string } if xts.any?
+
+          st = ct.lookup(:slash)
+          h[:slash] = st.string[1..-1].to_i if st
+
+          a << h if h.any?
+
+          a
+        }
       end
 
       SYMS = %w[ min hou dom mon dow ].collect(&:to_sym)
