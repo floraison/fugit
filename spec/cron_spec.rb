@@ -57,10 +57,10 @@ describe Fugit::Cron do
           [ '* * * * sun,mon', '* * * * 0,1' ],
           [ '* * * * Sun,mOn', '* * * * 0,1' ],
           [ '* * * * mon-wed', '* * * * 1,2,3' ],
-#a_eq '* * * * sun,2-4', [ [0], nil, nil, nil, nil, [0, 2, 3, 4], nil ]
-#a_eq '* * * * sun,mon-tue', [ [0], nil, nil, nil, nil, [0, 1, 2], nil ]
-#a_eq '0 0 * * mon#1,tue', [[0], [0], [0], nil, nil, [2], ["1#1"]]
+          [ '* * * * sun,2-4', '* * * * 0,2,3,4' ],
+          [ '* * * * sun,mon-tue', '* * * * 0,1,2' ],
           [ '* * * * sun,Sun,0,7', '* * * * 0' ],
+#a_eq '0 0 * * mon#1,tue', [[0], [0], [0], nil, nil, [2], ["1#1"]]
         ].each(&success)
       end
 
