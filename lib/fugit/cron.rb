@@ -25,10 +25,43 @@
 
 module Fugit
 
-  VERSION = '0.1.0'
+  class Cron
+
+    SPECIALS = {
+      '@reboot' => :reboot,
+      '@yearly' => '0 0 1 1 *',
+      '@annually' => '0 0 1 1 *',
+      '@monthly' => '0 0 1 * *',
+      '@weekly' => '0 0 * * 0',
+      '@daily' => '0 0 * * *',
+      '@midnight' => '0 0 * * *',
+      '@hourly' => '0 * * * *',
+    }
+
+    attr_reader :original
+
+    def self.parse(s)
+
+      original = s
+      s = SPECIALS[s] || s
+
+p s
+Raabro.pp(Parser.parse(s, debug: 3))
+      x = Parser.parse(s)
+
+      x
+    end
+
+    module Parser include Raabro
+
+      def s(i); rex(:s, i, /[ \t]+/); end
+      def cron(i); seq(:cron, i, :min, :s, :hou, :s, :dom, :s, :mon, :s, :dow); end
+
+      def rewrite_cron(t)
+
+        t
+      end
+    end
+  end
 end
-
-require 'raabro'
-
-require 'fugit/cron'
 
