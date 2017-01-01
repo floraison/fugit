@@ -63,6 +63,14 @@ describe Fugit::Cron do
           [ '* * * * sun,Sun,0,7', '* * * * 0' ],
         ].each(&success)
       end
+
+      context 'months' do
+
+        [
+          [ '* * * jan-mar *', '* * * 1,2,3 *' ],
+          [ '* * * Jan-Aug/2 *', '* * * 1,3,5,7 *' ],
+        ].each(&success)
+      end
     end
 
     context 'failure' do
