@@ -16,6 +16,14 @@ describe Fugit::Cron do
 
     context 'success' do
 
+      success =
+        proc { |cron, expected|
+          it "parses #{cron}" do
+            c = Fugit::Cron.parse(cron)
+            expect(c.to_cron_s).to eq(expected)
+          end
+        }
+
       [
 
         [ '@yearly', '0 0 1 1 *' ],
@@ -41,32 +49,36 @@ describe Fugit::Cron do
 
         [ '*/1 1-3/1 * * *', '* 1,2,3 * * *' ],
 
-      ].each do |cron, expected|
+      ].each(&success)
 
-        it "parses #{cron}" do
+      context 'weekdays' do
 
-          c = Fugit::Cron.parse(cron)
-
-          expect(c.to_cron_s).to eq(expected)
-        end
+        [
+#a_eq '* * * * sun,mon', [ [0], nil, nil, nil, nil, [0, 1], nil ]
+#a_eq '* * * * mon-wed', [ [0], nil, nil, nil, nil, [1, 2, 3], nil ]
+#a_eq '* * * * sun,2-4', [ [0], nil, nil, nil, nil, [0, 2, 3, 4], nil ]
+#a_eq '* * * * sun,mon-tue', [ [0], nil, nil, nil, nil, [0, 1, 2], nil ]
+#a_eq '0 0 * * mon#1,tue', [[0], [0], [0], nil, nil, [2], ["1#1"]]
+        ].each(&success)
       end
     end
 
     context 'failure' do
 
+      failure =
+        proc { |cron|
+          it "rejects #{cron}" do
+            expect {
+              Fugit::Cron.parse(cron)
+            }.to raise_error(
+              ArgumentError, "couldn't parse #{cron.inspect}"
+            )
+          end
+        }
+
       [
         '* 25 * * *'
-      ].each do |cron|
-
-        it "rejects #{cron}" do
-
-          expect {
-            Fugit::Cron.parse(cron)
-          }.to raise_error(
-            ArgumentError, "couldn't parse #{cron.inspect}"
-          )
-        end
-      end
+      ].each(&failure)
     end
   end
 end
