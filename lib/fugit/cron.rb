@@ -46,14 +46,14 @@ module Fugit
 
       @original = original
       @h = h
-p @h
+#p @h
 
       determine_minutes
       determine_hours
       determine_monthdays
       determine_months
       determine_weekdays
-@original = nil; @h = nil; p self
+#@original = nil; @h = nil; p self
     end
 
     def self.parse(s)
