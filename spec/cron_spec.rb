@@ -44,6 +44,15 @@ describe Fugit::Cron do
         expect(c).not_to eq(nil)
       end
     end
+
+    it 'rejects * 25 * * *' do
+
+      expect {
+        Fugit::Cron.parse('* 25 * * *')
+      }.to raise_error(
+        ArgumentError, 'couldn\'t parse "* 25 * * *"'
+      )
+    end
   end
 end
 

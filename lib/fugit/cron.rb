@@ -48,6 +48,10 @@ module Fugit
 #p s; Raabro.pp(Parser.parse(s, debug: 3))
       x = Parser.parse(s)
 
+      fail ArgumentError.new(
+        "couldn't parse #{original.inspect}"
+      ) unless x
+
       x
     end
 
