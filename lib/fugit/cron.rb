@@ -108,6 +108,18 @@ module Fugit
       def inc_min
         inc(60 - @t.sec)
       end
+      def count_weeks(inc)
+        c = 0
+        t = @t
+        until t.month != @t.month
+          c += 1
+          t += inc * (7 * 24 * 3600)
+        end
+        c
+      end
+      def wday_in_month
+        [ count_weeks(-1), - count_weeks(1) ]
+      end
     end
 
     def month_match?(nt); ( ! @months) || @months.include?(nt.month); end
@@ -115,12 +127,23 @@ module Fugit
     def min_match?(nt); ( ! @minutes) || @minutes.include?(nt.min); end
 
     def weekday_match?(nt)
+
 #p @weekdays
 #p [ nt.day, nt.wday ]
       return true if @weekdays.nil?
-      return true if @weekdays.find { |wd, hsh| wd == nt.wday }
-      false
-# TODO hsh (positive and negative)
+
+      wd, hsh = @weekdays.find { |wd, hsh| wd == nt.wday }
+
+      return false unless wd
+      return true if hsh.nil?
+
+      phsh, nhsh = nt.wday_in_month
+
+      if hsh > 0
+        hsh == phsh # positive wday, from the beginning of the month
+      else
+        hsh == nhsh # negative wday, from the end of the month, -1 == last
+      end
     end
 
     def monthday_match?(nt)
@@ -146,6 +169,8 @@ fail NotImplementedError
     end
 
     def match?(t)
+
+      t = NextTime.new(t)
 
       month_match?(t) && day_match?(t) && hour_match?(t) && min_match?(t)
     end
