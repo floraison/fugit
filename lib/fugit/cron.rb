@@ -172,7 +172,7 @@ module Fugit
       def core_mon(i); rex(:mon, i, /(1[0-2]|0?[0-9]|#{MONTHS[1..-1].join('|')})/i); end
       def core_dow(i); rex(:dow, i, /([0-7]|#{WEEKDAYS.join('|')})/i); end
 
-      def dow_hash(i); rex(:hash, i, /#([1-5]|last|l)/i); end
+      def dow_hash(i); rex(:hash, i, /#(-?[1-5]|last|l)/i); end
 
       def min(i); core_min(i); end
       def hou(i); core_hou(i); end

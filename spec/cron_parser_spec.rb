@@ -91,7 +91,10 @@ describe Fugit::Cron do
       context 'weekdays #' do
 
         [
-          [ '0 0 * * mon#1,tue', '0 0 * * 1#1,2' ]
+          [ '0 0 * * mon#1,tue', '0 0 * * 1#1,2' ],
+          [ '0 0 * * mon#-1,tue', '0 0 * * 1#-1,2' ],
+          [ '0 0 * * mon#L,tue', '0 0 * * 1#-1,2' ],
+          [ '0 0 * * mon#last,tue', '0 0 * * 1#-1,2' ],
         ].each(&success)
       end
     end
