@@ -12,7 +12,29 @@ describe Fugit::Cron do
 
   describe '#next_time' do
 
-    it 'returns the next occurence'
+    now = Time.parse('2016-01-02 12:00:00')
+
+    success =
+      proc { |cron, next_time|
+
+        it "succeeds #{cron.inspect} -> #{next_time.inspect}" do
+
+          c = Fugit::Cron.parse(cron)
+          ent = Time.parse(next_time)
+
+          nt = c.next_time(now)
+
+          expect(
+            Fugit.time_to_plain_s(nt)
+          ).to eq(
+            Fugit.time_to_plain_s(ent)
+          )
+        end
+      }
+
+    [
+      [ '5 0 * * *', '2016-01-03 00:05:00' ],
+    ].each(&success)
   end
 end
 

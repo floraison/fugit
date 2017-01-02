@@ -45,15 +45,13 @@ module Fugit
     def initialize(original, h)
 
       @original = original
-      @h = h
-#p @h
 
-      determine_minutes
-      determine_hours
-      determine_monthdays
-      determine_months
-      determine_weekdays
-#@original = nil; @h = nil; p self
+      determine_minutes(h[:min])
+      determine_hours(h[:hou])
+      determine_monthdays(h[:dom])
+      determine_months(h[:mon])
+      determine_weekdays(h[:dow])
+#@original = nil; p self
     end
 
     def to_cron_s
@@ -80,6 +78,50 @@ module Fugit
       ) unless x
 
       self.new(original, x)
+    end
+
+    class NextTime # TODO at some point, use ZoTime
+      def initialize(t)
+        @t = t
+      end
+      def time; @t; end
+      %w[ year month day wday hour min sec ]
+        .collect(&:to_sym).each { |k| define_method(k) { @t.send(k) } }
+      def inc(i)
+        u = @t.utc?
+        @t = ::Time.at(@t.to_i + i)
+        @t = @t.utc if u
+      end
+      def inc_month
+        inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec)
+      end
+      def inc_hour
+        inc((60 - @t.min) * 60 - @t.sec)
+      end
+      def inc_min
+        inc(60 - @t.sec)
+      end
+    end
+
+    def month_match(nt); ( ! @months) || @months.include?(nt.month); end
+    def hour_match(nt); ( ! @hours) || @hours.include?(nt.hour); end
+    def min_match(nt); ( ! @minutes) || @minutes.include?(nt.min); end
+
+    def day_match(nt)
+
+true # FIXME
+    end
+
+    def next_time(from)
+
+      nt = NextTime.new(from)
+
+      nt.inc_month until month_match(nt)
+      nt.inc_day until day_match(nt)
+      nt.inc_hour until hour_match(nt)
+      nt.inc_min until min_match(nt)
+
+      nt.time
     end
 
     protected
@@ -112,29 +154,29 @@ module Fugit
       arr.sort!
     end
 
-    def determine_minutes
-      @minutes = @h[:min].inject([]) { |a, r| a.concat(expand(0, 59, r)) }
+    def determine_minutes(mins)
+      @minutes = mins.inject([]) { |a, r| a.concat(expand(0, 59, r)) }
       compact(:@minutes)
     end
 
-    def determine_hours
-      @hours = @h[:hou].inject([]) { |a, r| a.concat(expand(0, 23, r)) }
+    def determine_hours(hous)
+      @hours = hous.inject([]) { |a, r| a.concat(expand(0, 23, r)) }
       compact(:@hours)
     end
 
-    def determine_monthdays
-      @monthdays = @h[:dom].inject([]) { |a, r| a.concat(expand(1, 31, r)) }
+    def determine_monthdays(doms)
+      @monthdays = doms.inject([]) { |a, r| a.concat(expand(1, 31, r)) }
       compact(:@monthdays)
     end
 
-    def determine_months
-      @months = @h[:mon].inject([]) { |a, r| a.concat(expand(1, 12, r)) }
+    def determine_months(mons)
+      @months = mons.inject([]) { |a, r| a.concat(expand(1, 12, r)) }
       compact(:@months)
     end
 
-    def determine_weekdays
+    def determine_weekdays(dows)
 
-      @weekdays = @h[:dow].inject([]) { |a, r|
+      @weekdays = dows.inject([]) { |a, r|
         aa = expand(0, 7, r)
         if hsh = r[3]
           a.concat([ [ aa.first, hsh ] ])
