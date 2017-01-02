@@ -63,7 +63,7 @@ module Fugit
         (@hours || [ '*' ]).join(','),
         (@monthdays || [ '*' ]).join(','),
         (@months || [ '*' ]).join(','),
-        (@weekdays || [ '*' ]).join(',')
+        (@weekdays || [ [ '*' ] ]).collect { |d| d.compact.join('#') }.join(',')
       ].join(' ')
     end
 
@@ -108,11 +108,6 @@ module Fugit
       return instance_variable_set(key, nil) if arr.include?(nil)
         # reductio ad astrum
 
-      if key == :@weekdays
-        arr = instance_variable_set(key, arr.collect { |i| i == 7 ? 0 : i })
-          # turn Sunday7 into 0
-      end
-
       arr.uniq!
       arr.sort!
     end
@@ -138,8 +133,25 @@ module Fugit
     end
 
     def determine_weekdays
-      @weekdays = @h[:dow].inject([]) { |a, r| a.concat(expand(0, 7, r)) }
-      compact(:@weekdays)
+
+      @weekdays = @h[:dow].inject([]) { |a, r|
+        aa = expand(0, 7, r)
+        if hsh = r[3]
+          a.concat([ [ aa.first, hsh ] ])
+        else
+          a.concat(aa.collect { |i| [ i, nil ] })
+        end
+      }
+
+      @weekdays =
+        if @weekdays.include?([ nil, nil ])
+          nil
+        else
+          @weekdays
+            .collect { |d, h| [ d == 7 ? 0 : d, h ] }
+            .uniq { |d| d.join('#') }
+            .sort_by { |d| d.join('#') }
+        end
     end
 
     module Parser include Raabro
@@ -159,6 +171,8 @@ module Fugit
       def core_dom(i); rex(:dom, i, /(-?(3[01]|[012]?[0-9])|last|l)/i); end
       def core_mon(i); rex(:mon, i, /(1[0-2]|0?[0-9]|#{MONTHS[1..-1].join('|')})/i); end
       def core_dow(i); rex(:dow, i, /([0-7]|#{WEEKDAYS.join('|')})/i); end
+
+      def dow_hash(i); rex(:hash, i, /#([1-5]|last|l)/i); end
 
       def min(i); core_min(i); end
       def hou(i); core_hou(i); end
@@ -193,11 +207,15 @@ module Fugit
       def sorws_mon(i); seq(nil, i, :sor_mon, :slash, '?'); end
       def sorws_dow(i); seq(nil, i, :sor_dow, :slash, '?'); end
 
+      def h_dow(i); seq(nil, i, :core_dow, :dow_hash); end
+
+      def _sorws_dow(i); alt(nil, i, :h_dow, :sorws_dow); end
+
       def list_min(i); jseq(:min, i, :sorws_min, :comma); end
       def list_hou(i); jseq(:hou, i, :sorws_hou, :comma); end
       def list_dom(i); jseq(:dom, i, :sorws_dom, :comma); end
       def list_mon(i); jseq(:mon, i, :sorws_mon, :comma); end
-      def list_dow(i); jseq(:dow, i, :sorws_dow, :comma); end
+      def list_dow(i); jseq(:dow, i, :_sorws_dow, :comma); end
 
       def lmin_(i); seq(nil, i, :list_min, :s); end
       def lhou_(i); seq(nil, i, :list_hou, :s); end
@@ -230,6 +248,11 @@ module Fugit
 
           st = ct.lookup(:slash)
           range << (st ? st.string[1..-1].to_i : nil)
+
+          if k == :dow && ht = ct.lookup(:hash)
+            hs = ht.string.downcase
+            range << ((hs[1, 1] == 'l') ? -1 : hs[1..-1].to_i)
+          end
 
           a << range
 

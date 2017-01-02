@@ -87,6 +87,13 @@ describe Fugit::Cron do
 #a_eq '0 0 * * mon#1,tue', [[0], [0], [0], nil, nil, [2], ["1#1"]]
         ].each(&success)
       end
+
+      context 'weekdays #' do
+
+        [
+          [ '0 0 * * mon#1,tue', '0 0 * * 1#1,2' ]
+        ].each(&success)
+      end
     end
 
     context 'failure' do
