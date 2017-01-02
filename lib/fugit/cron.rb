@@ -82,7 +82,7 @@ module Fugit
 
     class NextTime # TODO at some point, use ZoTime
       def initialize(t)
-        @t = t
+        @t = t.is_a?(NextTime) ? t.time : t
       end
       def time; @t; end
       %w[ year month day wday hour min sec ]
@@ -97,6 +97,7 @@ module Fugit
         m = @t.month + 1
         if m == 13; m = 1; y = y + 1; end
         @t = Time.send((@t.utc? ? :utc : :local), y, m)
+        self
       end
       def inc_day
         inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec)
@@ -123,9 +124,14 @@ module Fugit
     end
 
     def monthday_match?(nt)
+
       return true if @monthdays.nil?
-      @monthdays.include?(nt.day)
-# TODO negative days
+
+      last = (NextTime.new(nt).inc_month.time - 24 * 3600).day + 1
+
+      @monthdays
+        .collect { |d| d < 1 ? last + d : d }
+        .include?(nt.day)
     end
 
     def day_match?(nt)
