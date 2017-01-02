@@ -96,6 +96,7 @@ module Fugit
       sla = 1 if sla == nil
       sta = min if sta == nil
       edn = max if edn == nil
+      sta, edn = edn, sta if sta > edn
 
       (sta..edn).step(sla).to_a
     end
