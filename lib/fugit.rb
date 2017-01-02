@@ -28,6 +28,8 @@ module Fugit
   VERSION = '0.1.0'
 end
 
+require 'time'
+
 require 'raabro'
 
 require 'fugit/misc'

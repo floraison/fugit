@@ -219,6 +219,21 @@ module Fugit
       nt.time
     end
 
+    def frequency
+
+      deltas = []
+
+      t0 = nil
+      loop do
+        t1 = next_time(t0 || Time.parse('2017-01-01'))
+        deltas << t1 - t0 + 60 if t0
+        break if t1.year > 2017
+        t0 = t1 + 60
+      end
+
+      [ deltas.min, deltas.max, deltas.size ]
+    end
+
     protected
 
     def expand(min, max, r)
