@@ -125,22 +125,24 @@ describe Fugit::Cron do
   describe '#previous_time' do
 
     success =
-      proc { |cron, next_time, now|
+      proc { |cron, previous_time, now|
 
         now = now ? Time.parse(now) : NOW
 
-        it "succeeds #{cron.inspect} #{now} -> #{next_time.inspect}" do
+        it "succeeds #{cron.inspect} #{now} -> #{previous_time.inspect}" do
 
           c = Fugit::Cron.parse(cron)
-          ent = Time.parse(next_time)
+          ept = Time.parse(previous_time)
 
-          nt = c.previous_time(now)
+          pt = c.previous_time(now)
 
           expect(
-            Fugit.time_to_plain_s(nt)
+            Fugit.time_to_plain_s(pt)
           ).to eq(
-            Fugit.time_to_plain_s(ent)
+            Fugit.time_to_plain_s(ept)
           )
+
+          expect(c.match?(ept)).to eq(true) # quick check
         end
       }
 
