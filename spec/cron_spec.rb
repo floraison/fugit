@@ -10,27 +10,34 @@ require 'spec_helper'
 
 describe Fugit::Cron do
 
+  NOW = Time.parse('2017-01-02 12:00:00')
+
   NEXT_TIMES = [
 
-    [ '5 0 * * *', '2016-01-03 00:05:00' ],
-    [ '15 14 1 * *', '2016-02-01 14:15:00' ],
+    # min hou dom mon dow, expected next time[, now]
 
-    [ '0 0 1 1 *', '2017-01-01 00:00:00' ],
+    [ '5 0 * * *', '2017-01-03 00:05:00' ],
+    [ '15 14 1 * *', '2017-02-01 14:15:00' ],
+
+    [ '0 0 1 1 *', '2018-01-01 00:00:00' ],
+    [ '* * 29 * *', '2017-01-29 00:00:00' ],
+    [ '* * 29 * *', '2016-02-29 00:00:00', '2016-02-01' ],
+
+    [ '* * * * sun', '2017-01-8' ],
   ]
 
   describe '#next_time' do
 
-    now = Time.parse('2016-01-02 12:00:00')
-
     success =
-      proc { |cron, next_time|
+      proc { |cron, next_time, now|
 
         it "succeeds #{cron.inspect} -> #{next_time.inspect}" do
 
           c = Fugit::Cron.parse(cron)
           ent = Time.parse(next_time)
+          now = Time.parse(now) if now
 
-          nt = c.next_time(now)
+          nt = c.next_time(now || NOW)
 
           expect(
             Fugit.time_to_plain_s(nt)
@@ -46,7 +53,7 @@ describe Fugit::Cron do
   describe '#match?' do
 
     success =
-      proc { |cron, next_time|
+      proc { |cron, next_time, _|
 
         it "succeeds #{cron.inspect} ? #{next_time.inspect}" do
 

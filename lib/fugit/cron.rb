@@ -113,15 +113,29 @@ module Fugit
     def hour_match?(nt); ( ! @hours) || @hours.include?(nt.hour); end
     def min_match?(nt); ( ! @minutes) || @minutes.include?(nt.min); end
 
+    def weekday_match?(nt)
+#p @weekdays
+#p [ nt.day, nt.wday ]
+      return true if @weekdays.nil?
+      return true if @weekdays.find { |wd, hsh| wd == nt.wday }
+      false
+# TODO hsh (positive and negative)
+    end
+
+    def monthday_match?(nt)
+      return true if @monthdays.nil?
+      @monthdays.include?(nt.day)
+# TODO negative days
+    end
+
     def day_match?(nt)
 
-#p @weekdays
-#p @monthdays
       if @weekdays && @monthdays
 fail NotImplementedError
+        weekday_match?(nt) || monthday_match?(nt)
       end
-      return false if @weekdays && ! @weekdays.include?(nt.wday)
-      return false if @monthdays && ! @monthdays.include?(nt.day)
+      return false unless weekday_match?(nt)
+      return false unless monthday_match?(nt)
       true
     end
 
