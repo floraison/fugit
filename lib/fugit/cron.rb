@@ -93,6 +93,12 @@ module Fugit
         @t = @t.utc if u
       end
       def inc_month
+        y = @t.year
+        m = @t.month + 1
+        if m == 12; m = 1; y = y + 1; end
+        @t = Time.send(@t.utc? ? :utc : :at, y, m)
+      end
+      def inc_day
         inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec)
       end
       def inc_hour
@@ -109,7 +115,20 @@ module Fugit
 
     def day_match(nt)
 
-true # FIXME
+#p @weekdays
+#p @monthdays
+      if @weekdays && @monthdays
+fail NotImplementedError
+      end
+      return false if @weekdays && ! @weekdays.include?(nt.wday)
+      return false if @monthdays && ! @monthdays.include?(nt.day)
+      true
+    end
+
+    def match?
+
+fail NotImplementedError
+# TODO combine the match? methods above
     end
 
     def next_time(from)
