@@ -81,33 +81,43 @@ module Fugit
     end
 
     class NextTime # TODO at some point, use ZoTime
+
       def initialize(t)
         @t = t.is_a?(NextTime) ? t.time : t
       end
+
       def time; @t; end
+
       %w[ year month day wday hour min sec ]
         .collect(&:to_sym).each { |k| define_method(k) { @t.send(k) } }
+
       def inc(i)
         u = @t.utc?
         @t = ::Time.at(@t.to_i + i)
         @t = @t.utc if u
+        self
       end
+      def dec(i); inc(-i); end
+
       def inc_month
         y = @t.year
         m = @t.month + 1
-        if m == 13; m = 1; y = y + 1; end
+        if m == 13; m = 1; y += 1; end
         @t = Time.send((@t.utc? ? :utc : :local), y, m)
         self
       end
-      def inc_day
-        inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec)
+      def inc_day; inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec); end
+      def inc_hour; inc((60 - @t.min) * 60 - @t.sec); end
+      def inc_min; inc(60 - @t.sec); end
+
+      def dec_month
+        dec(@t.day * 24 * 3600 + @t.hour * 3600 + @t.min * 60 + @t.sec + 1)
       end
-      def inc_hour
-        inc((60 - @t.min) * 60 - @t.sec)
-      end
-      def inc_min
-        inc(60 - @t.sec)
-      end
+      def dec_day; dec(@t.hour * 3600 + @t.min * 60 + @t.sec + 1); end
+      def dec_hour; dec(@t.min * 60 + @t.sec + 1); end
+      def dec_min; dec(@t.sec + 1); end
+      def dec_sec; dec(@t.sec); end
+
       def count_weeks(inc)
         c = 0
         t = @t
@@ -117,6 +127,7 @@ module Fugit
         end
         c
       end
+
       def wday_in_month
         [ count_weeks(-1), - count_weeks(1) ]
       end
@@ -185,6 +196,23 @@ module Fugit
         day_match?(nt) || (nt.inc_day; next)
         hour_match?(nt) || (nt.inc_hour; next)
         min_match?(nt) || (nt.inc_min; next)
+        break
+      end
+
+      nt.time
+    end
+
+    def previous_time(from)
+
+      nt = NextTime.new(from)
+
+      loop do
+#p Fugit.time_to_s(nt.time)
+        month_match?(nt) || (nt.dec_month; next)
+        day_match?(nt) || (nt.dec_day; next)
+        hour_match?(nt) || (nt.dec_hour; next)
+        min_match?(nt) || (nt.dec_min; next)
+        nt.dec_sec
         break
       end
 
