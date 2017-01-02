@@ -156,7 +156,7 @@ module Fugit
 
       def core_min(i); rex(:min, i, /[0-5]?\d/); end
       def core_hou(i); rex(:hou, i, /(2[0-3]|[01]?[0-9])/); end
-      def core_dom(i); rex(:dom, i, /-?(3[01]|[012]?[0-9])/); end
+      def core_dom(i); rex(:dom, i, /(-?(3[01]|[012]?[0-9])|last|l)/i); end
       def core_mon(i); rex(:mon, i, /(1[0-2]|0?[0-9]|#{MONTHS[1..-1].join('|')})/i); end
       def core_dow(i); rex(:dow, i, /([0-7]|#{WEEKDAYS.join('|')})/i); end
 
@@ -213,6 +213,7 @@ module Fugit
 
         (k == :mon && MONTHS.index(s)) ||
         (k == :dow && WEEKDAYS.index(s)) ||
+        (k == :dom && s[0, 1] == 'l' && -1) || # L, l, last
         s.to_i
       end
 
