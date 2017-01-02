@@ -39,6 +39,8 @@ describe Fugit::Cron do
     [ '* * * * mon#2,tue', '2016-12-06', '2016-12-01' ],
     [ '* * * * mon#2,tue', '2016-12-12', '2016-12-07' ],
 
+    [ '00 24 * * *', '2017-01-02', '2017-01-01 12:00' ],
+
     # Note: The day of a command's execution can be specified by two fields
     # -- day of month, and day of week.
     # If both fields are restricted (ie, are not *), the command will be run
@@ -120,6 +122,8 @@ describe Fugit::Cron do
     [ '* * * * mon#2,wed', '2017-01-09 23:59:00', '2017-01-10' ],
     [ '30 04 1,15 * 5', '2017-01-15 04:30:00', '2017-01-16' ],
     [ '30 04 1,15 * 5', '2017-01-13 04:30:00', '2017-01-15' ],
+
+    [ '00 24 * * *', '2017-01-02', '2017-01-02 12:00' ],
   ]
 
   describe '#previous_time' do
