@@ -10,6 +10,14 @@ require 'spec_helper'
 
 describe Fugit::Cron do
 
+  NEXT_TIMES = [
+
+    [ '5 0 * * *', '2016-01-03 00:05:00' ],
+    [ '15 14 1 * *', '2016-02-01 14:15:00' ],
+
+    [ '0 0 1 1 *', '2017-01-01 00:00:00' ],
+  ]
+
   describe '#next_time' do
 
     now = Time.parse('2016-01-02 12:00:00')
@@ -32,10 +40,24 @@ describe Fugit::Cron do
         end
       }
 
-    [
-      [ '5 0 * * *', '2016-01-03 00:05:00' ],
-      [ '15 14 1 * *', '2016-02-01 14:15:00' ],
-    ].each(&success)
+    NEXT_TIMES.each(&success)
+  end
+
+  describe '#match?' do
+
+    success =
+      proc { |cron, next_time|
+
+        it "succeeds #{cron.inspect} ? #{next_time.inspect}" do
+
+          c = Fugit::Cron.parse(cron)
+          ent = Time.parse(next_time)
+
+          expect(c.match?(ent)).to be(true)
+        end
+      }
+
+    NEXT_TIMES.each(&success)
   end
 end
 

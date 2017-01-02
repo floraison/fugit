@@ -95,8 +95,8 @@ module Fugit
       def inc_month
         y = @t.year
         m = @t.month + 1
-        if m == 12; m = 1; y = y + 1; end
-        @t = Time.send(@t.utc? ? :utc : :at, y, m)
+        if m == 13; m = 1; y = y + 1; end
+        @t = Time.send((@t.utc? ? :utc : :local), y, m)
       end
       def inc_day
         inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec)
@@ -109,11 +109,11 @@ module Fugit
       end
     end
 
-    def month_match(nt); ( ! @months) || @months.include?(nt.month); end
-    def hour_match(nt); ( ! @hours) || @hours.include?(nt.hour); end
-    def min_match(nt); ( ! @minutes) || @minutes.include?(nt.min); end
+    def month_match?(nt); ( ! @months) || @months.include?(nt.month); end
+    def hour_match?(nt); ( ! @hours) || @hours.include?(nt.hour); end
+    def min_match?(nt); ( ! @minutes) || @minutes.include?(nt.min); end
 
-    def day_match(nt)
+    def day_match?(nt)
 
 #p @weekdays
 #p @monthdays
@@ -125,20 +125,23 @@ fail NotImplementedError
       true
     end
 
-    def match?
+    def match?(t)
 
-fail NotImplementedError
-# TODO combine the match? methods above
+      month_match?(t) && day_match?(t) && hour_match?(t) && min_match?(t)
     end
 
     def next_time(from)
 
       nt = NextTime.new(from)
 
-      nt.inc_month until month_match(nt)
-      nt.inc_day until day_match(nt)
-      nt.inc_hour until hour_match(nt)
-      nt.inc_min until min_match(nt)
+      loop do
+#p Fugit.time_to_s(nt.time)
+        month_match?(nt) || (nt.inc_month; next)
+        day_match?(nt) || (nt.inc_day; next)
+        hour_match?(nt) || (nt.inc_hour; next)
+        min_match?(nt) || (nt.inc_min; next)
+        break
+      end
 
       nt.time
     end
