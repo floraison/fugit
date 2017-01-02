@@ -52,6 +52,23 @@ describe Fugit::Cron do
 
       ].each(&success)
 
+      context 'negative monthdays' do
+
+        [
+          [ '* * -1 * *', '* * -1 * *' ],
+          [ '* * -7--1 * *', '* * -7,-6,-5,-4,-3,-2,-1 * *' ],
+          [ '* * -7--1/2 * *', '* * -7,-5,-3,-1 * *' ],
+        ].each(&success)
+      end
+
+      context 'months' do
+
+        [
+          [ '* * * jan-mar *', '* * * 1,2,3 *' ],
+          [ '* * * Jan-Aug/2 *', '* * * 1,3,5,7 *' ],
+        ].each(&success)
+      end
+
       context 'weekdays' do
 
         [
@@ -62,14 +79,6 @@ describe Fugit::Cron do
           [ '* * * * sun,mon-tue', '* * * * 0,1,2' ],
           [ '* * * * sun,Sun,0,7', '* * * * 0' ],
 #a_eq '0 0 * * mon#1,tue', [[0], [0], [0], nil, nil, [2], ["1#1"]]
-        ].each(&success)
-      end
-
-      context 'months' do
-
-        [
-          [ '* * * jan-mar *', '* * * 1,2,3 *' ],
-          [ '* * * Jan-Aug/2 *', '* * * 1,3,5,7 *' ],
         ].each(&success)
       end
     end

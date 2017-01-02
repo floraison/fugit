@@ -10,5 +10,7 @@ pkg/
 .errors
 .rspec.out
 
+.todo.md
+
 Gemfile.lock
 
