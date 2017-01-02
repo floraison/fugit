@@ -159,12 +159,12 @@ module Fugit
 
     def day_match?(nt)
 
-      if @weekdays && @monthdays
-fail NotImplementedError
-        weekday_match?(nt) || monthday_match?(nt)
-      end
+      return weekday_match?(nt) || monthday_match?(nt) \
+        if @weekdays && @monthdays
+
       return false unless weekday_match?(nt)
       return false unless monthday_match?(nt)
+
       true
     end
 
