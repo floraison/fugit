@@ -136,6 +136,38 @@ module Fugit
       self.class.allocate.init(nil, h)
     end
 
+    alias -@ opposite
+
+    def add_numeric(n)
+
+      h = @h.dup
+      h[:sec] = (h[:sec] || 0) + n.to_i
+
+      self.class.allocate.init(nil, h)
+    end
+
+    def add_duration(d)
+
+      h = d.h.inject(@h.dup) { |h, (k, v)| h[k] = (h[k] || 0) + v; h }
+
+      self.class.allocate.init(nil, h)
+    end
+
+    def add(a)
+
+      case a
+        when Numeric then add_numeric(a)
+        when Fugit::Duration then add_duration(a)
+        when String then add_duration(self.class.parse(a))
+        else fail ArgumentError.new(
+          "cannot add #{a.class} instance to a Fugit::Duration")
+      end
+    end
+    alias + add
+
+    def substract(a)
+    end
+
     protected
 
     def init(original, h)

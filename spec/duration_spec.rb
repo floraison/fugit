@@ -101,5 +101,71 @@ describe Fugit::Duration do
       expect(od.to_iso_s).to eq('P-1YT3H-2M')
     end
   end
+
+  describe '#-@' do
+
+    it 'returns the additive inverse' do
+
+      d = Fugit::Duration.new('1y2m-3h')
+      od = - d
+
+      expect(od.to_plain_s).to eq('-1Y3h-2m')
+      expect(od.to_iso_s).to eq('P-1YT3H-2M')
+    end
+  end
+
+  describe '#add' do
+
+    it 'adds Numeric instances' do
+
+      d = Fugit.parse('1Y2h')
+
+      expect(d.add(1).to_plain_s).to eq('1Y2h1s')
+      expect((d + 1).to_plain_s).to eq('1Y2h1s')
+    end
+
+    it 'adds Duration instances' do
+
+      d0 = Fugit.parse('1Y2h')
+      d1 = Fugit.parse('1Y2h1s')
+
+      expect(d0.add(d1).to_plain_s).to eq('2Y4h1s')
+      expect((d0 + d1).to_plain_s).to eq('2Y4h1s')
+    end
+
+    it 'adds String instances (parses them as Duration)' do
+
+      d = Fugit.parse('1Y2h')
+      s = '1Y-1h1s'
+
+      expect(d.add(s).to_plain_s).to eq('2Y1h1s')
+      expect((d + s).to_plain_s).to eq('2Y1h1s')
+    end
+
+    it 'fails else' do
+
+      d = Fugit.parse('1Y2h')
+      x = false
+
+      expect {
+        d.add(x)
+      }.to raise_error(
+        ArgumentError, 'cannot add FalseClass instance to a Fugit::Duration'
+      )
+      expect {
+        d + x
+      }.to raise_error(
+        ArgumentError, 'cannot add FalseClass instance to a Fugit::Duration'
+      )
+    end
+  end
+
+  describe '#substract' do
+
+    it 'substracts Numeric instances'
+    it 'substracts Duration instances'
+    it 'substracts String instances (parses them as Duration)'
+    it 'fails else'
+  end
 end
 
