@@ -21,6 +21,7 @@ Fugit will probably become the foundation for [rufus-scheduler](https://github.c
 * [chronic](https://github.com/mojombo/chronic) - a pure Ruby natural language date parser
 * [parse-cron](https://github.com/siebertm/parse-cron) - parses cron expressions and calculates the next occurence after a given date
 * [ice_cube](https://github.com/seejohnrun/ice_cube) - Ruby date recurrence library
+* [ISO8601](https://github.com/arnau/ISO8601) - Ruby parser to work with ISO8601 dateTimes and durations
 * ...
 
 
