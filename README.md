@@ -6,6 +6,9 @@
 
 Time tools for [flor](https://github.com/floraison/flor) and the floraison project.
 
+Fugit will probably become the foundation for [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) 4.x
+
+
 ## `Fugit::Cron`
 
 ```ruby
