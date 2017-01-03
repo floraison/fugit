@@ -34,21 +34,30 @@ module Fugit
       parse(s)
     end
 
-    def self.parse(s)
+    def self.parse(s, opts={})
 
       original = s
 
       s = s
       s = s.to_i if s.is_a?(Numeric)
       s = s.to_s.strip
+#p [ original, s ]; Raabro.pp(Parser.parse(s, debug: 3))
 
-#p [ origianl, s ]; Raabro.pp(Parser.parse(s, debug: 3))
-      self.allocate.send(:init, original, Parser.parse(s))
+      h =
+        if opts[:iso]
+          IsoParser.parse(opts[:stricter] ? s : s.upcase)
+        elsif opts[:plain]
+          Parser.parse(s)
+        else
+          Parser.parse(s) || IsoParser.parse(opts[:stricter] ? s : s.upcase)
+        end
+
+      h ? self.allocate.send(:init, original, h) : nil
     end
 
-    def self.do_parse(s)
+    def self.do_parse(s, opts={})
 
-      parse(s) || fail(ArgumentError.new("not a duration #{s.inspect}"))
+      parse(s, opts) || fail(ArgumentError.new("not a duration #{s.inspect}"))
     end
 
     KEYS = {
@@ -226,8 +235,6 @@ module Fugit
 
     def init(original, h)
 
-      return nil unless h
-
       @original = original
 
       @h = h.reject { |k, v| v == 0 }
@@ -267,6 +274,37 @@ module Fugit
     end
 
     module IsoParser include Raabro
+
+      def p(i); rex(nil, i, /P/); end
+      def t(i); rex(nil, i, /T/); end
+
+      def yea(i); rex(:yea, i, /-?\d+Y/); end
+      def mon(i); rex(:mon, i, /-?\d+M/); end
+      def wee(i); rex(:wee, i, /-?\d+W/); end
+      def day(i); rex(:day, i, /-?\d+D/); end
+      def hou(i); rex(:hou, i, /-?\d+H/); end
+      def min(i); rex(:min, i, /-?\d+M/); end
+      def sec(i); rex(:sec, i, /-?\d+S/); end
+
+      def delt(i); alt(nil, i, :yea, :mon, :wee, :day); end
+      def telt(i); alt(nil, i, :hou, :min, :sec); end
+
+      def date(i); rep(nil, i, :delt, 1); end
+      def time(i); rep(nil, i, :telt, 1); end
+      def t_time(i); seq(nil, i, :t, :time); end
+
+      def dur(i); seq(:dur, i, :p, :date, '?', :t_time, '?'); end
+
+      def rewrite_dur(t)
+
+        t
+          .subgather(nil)
+          .inject({}) { |h, t|
+            h[t.name] = (h[t.name] || 0) + t.string.to_i
+              # drops ending ("y", "m", ...) by itself
+            h
+          }
+      end
     end
   end
 end

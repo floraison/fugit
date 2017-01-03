@@ -43,6 +43,14 @@ describe Fugit::Duration do
       [ '1 y, 2 M, and 2 months', '1Y4M', 'P1Y4M', 41904000 ],
       [ '1 y, 2 M and 2 m', '1Y2M2m', 'P1Y2MT2M', 36720120 ],
 
+      [ 'P1Y2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ 'P1Y2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ 'P10DT10H', '10D10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
+      [ 'PT100S', '100s', 'PT100S', 100 ],
+
+      [ 'P-1Y-2M', '-1Y-2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
+      [ 'p1M-1y-1Mt-1M', '-1Y-1m', 'P-1YT-1M', -31536060 ],
+
     ].each do |source, target, iso_target, sec|
 
       it "parses #{source.inspect}" do
@@ -54,6 +62,20 @@ describe Fugit::Duration do
         expect(d.to_iso_s).to eq(iso_target)
         expect(d.to_sec).to eq(sec)
       end
+    end
+
+    it 'rejects lower case when ISO and :stricter' do
+
+      expect(
+        Fugit::Duration.parse('p1y', stricter: true)
+      ).to eq(nil)
+    end
+
+    it 'rejects when :iso and not ISO' do
+
+      expect(
+        Fugit::Duration.parse('1y', iso: true)
+      ).to eq(nil)
     end
   end
 
