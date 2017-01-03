@@ -12,6 +12,11 @@ describe Fugit::Duration do
 
   describe '.parse' do
 
+    it 'returns nil when it cannot parse' do
+
+      expect(Fugit::Duration.parse('NADA')).to eq(nil)
+    end
+
     it 'accepts a Numeric' do
 
       expect(Fugit::Duration.parse(1000).to_plain_s).to eq('1000s')
@@ -41,6 +46,18 @@ describe Fugit::Duration do
         expect(d.to_iso_s).to eq(iso_target)
         expect(d.to_sec).to eq(sec)
       end
+    end
+  end
+
+  describe '.do_parse' do
+
+    it 'raises an ArgumentError when it cannot parse' do
+
+      expect {
+        Fugit::Duration.do_parse('NADA')
+      }.to raise_error(
+        ArgumentError, 'not a duration "NADA"'
+      )
     end
   end
 

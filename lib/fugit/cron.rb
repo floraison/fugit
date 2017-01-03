@@ -67,11 +67,14 @@ module Fugit
 #p s; Raabro.pp(Parser.parse(s, debug: 3))
       h = Parser.parse(s)
 
-      fail ArgumentError.new(
-        "couldn't parse #{original.inspect}"
-      ) unless h
+      return nil unless h
 
       self.allocate.send(:init, s, h)
+    end
+
+    def self.do_parse(s)
+
+      parse(s) || fail(ArgumentError.new("not a cron string #{s.inspect}"))
     end
 
     class NextTime # TODO at some point, use ZoTime

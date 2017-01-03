@@ -30,14 +30,29 @@ module Fugit
     Time.parse(s) rescue nil
   end
 
+  def self.do_parse_at(s)
+
+    Time.parse(s)
+  end
+
   def self.parse_cron(s)
 
     ::Fugit::Cron.parse(s)
   end
 
+  def self.do_parse_cron(s)
+
+    ::Fugit::Cron.do_parse(s)
+  end
+
   def self.parse_duration(s)
 
     ::Fugit::Duration.parse(s)
+  end
+
+  def self.do_parse_duration(s)
+
+    ::Fugit::Duration.do_parse(s)
   end
 
   def self.parse(s)

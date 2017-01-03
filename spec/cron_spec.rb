@@ -274,21 +274,33 @@ describe Fugit::Cron do
 
     context 'failure' do
 
-      failure =
-        proc { |cron|
-          it "rejects #{cron}" do
-            expect {
-              Fugit::Cron.parse(cron)
-            }.to raise_error(
-              ArgumentError, "couldn't parse #{cron.inspect}"
-            )
-          end
-        }
-
       [
         '* 25 * * *',
         '* * -32 * *'
-      ].each(&failure)
+      ].each do |cron|
+
+        it "returns nil for #{cron}" do
+
+          expect(Fugit::Cron.parse(cron)).to eq(nil)
+        end
+      end
+    end
+  end
+
+  describe '.do_parse' do
+
+    [
+      '* 25 * * *',
+      '* * -32 * *'
+    ].each do |cron|
+
+      it "raises for #{cron}" do
+        expect {
+          Fugit::Cron.do_parse(cron)
+        }.to raise_error(
+          ArgumentError, "not a cron string #{cron.inspect}"
+        )
+      end
     end
   end
 end

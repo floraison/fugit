@@ -45,6 +45,11 @@ module Fugit
       self.allocate.send(:init, original, Parser.parse(s))
     end
 
+    def self.do_parse(s)
+
+      parse(s) || fail(ArgumentError.new("not a duration #{s.inspect}"))
+    end
+
     KEYS = {
       yea: { a: 'Y', i: 'Y', s: 365 * 24 * 3600 },
       mon: { a: 'M', i: 'M', s: 30 * 24 * 3600 },
