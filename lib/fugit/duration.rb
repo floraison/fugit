@@ -143,8 +143,12 @@ module Fugit
 
       def rewrite_dur(t)
 
-        t.subgather(nil)
-          .inject({}) { |h, t| h[t.name] = t.string[0..-2].to_i; h }
+        t
+          .subgather(nil)
+          .inject({}) { |h, t|
+            h[t.name] = (h[t.name] || 0) + t.string[0..-2].to_i
+            h
+          }
       end
     end
 

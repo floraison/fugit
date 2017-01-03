@@ -14,6 +14,7 @@ describe Fugit::Duration do
 
   DURATIONS = [
     [ '1y2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+    [ '1M1y1M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
     [ '10d10h', '10D10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
   ]
 
