@@ -4,6 +4,7 @@
 
 ## fugit 0.9.1  not yet released
 
+* Bring in Fugit::Duration
 * Implement Fugit .parse, .parse_at and .parse_cron
 
 

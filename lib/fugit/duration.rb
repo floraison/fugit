@@ -40,20 +40,15 @@ module Fugit
       self.allocate.send(:init, s, Parser.parse(s))
     end
 
-    def to_sec
-
-fail NotImplementedError # TODO
-    end
-
     KEYS = {
-      yea: { a: 'Y', i: 'Y', d: 365 * 24 * 3600 },
-      mon: { a: 'M', i: 'M', d: 30 * 24 * 3600 },
-      wee: { a: 'W', i: 'W', d: 7 * 24 * 3600 },
-      day: { a: 'D', i: 'D', d: 24 * 3600 },
-      hou: { a: 'h', i: 'H', d: 3600 },
-      min: { a: 'm', i: 'M', d: 60 },
-      sec: { a: 's', i: 'S', d: 1 },
-    }.to_a
+      yea: { a: 'Y', i: 'Y', s: 365 * 24 * 3600 },
+      mon: { a: 'M', i: 'M', s: 30 * 24 * 3600 },
+      wee: { a: 'W', i: 'W', s: 7 * 24 * 3600 },
+      day: { a: 'D', i: 'D', s: 24 * 3600 },
+      hou: { a: 'h', i: 'H', s: 3600 },
+      min: { a: 'm', i: 'M', s: 60 },
+      sec: { a: 's', i: 'S', s: 1 },
+    }
 
     def to_plain_s
 
@@ -79,6 +74,14 @@ fail NotImplementedError # TODO
       end
 
       s.string
+    end
+
+    # Warning: this is an "approximation", months are 30 days and years are
+    # 365 days, ...
+    #
+    def to_sec
+
+      KEYS.inject(0) { |s, (k, a)| v = @h[k]; next s unless v; s += v * a[:s] }
     end
 
     protected
