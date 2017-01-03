@@ -33,9 +33,31 @@ describe Fugit::Duration do
     end
   end
 
-  describe '#compact' do
+  describe '#deflate' do
 
-    it 'compacts'
+    [
+
+      [ '3600s', '3600s', '1h' ],
+      [ '1y3600s', '1Y3600s', '1Y1h' ],
+      [ '1d60s', '86460s', '1D1m' ],
+
+    ].each do |source, step, target|
+
+      it "deflates #{source.inspect} via #{step.inspect} into #{target.inspect}" do
+
+        d = Fugit::Duration.new(source)
+
+        id = d.inflate
+
+        expect(id.class).to eq(::Fugit::Duration)
+        expect(id.to_plain_s).to eq(step)
+
+        cd = d.deflate
+
+        expect(cd.class).to eq(::Fugit::Duration)
+        expect(cd.to_plain_s).to eq(target)
+      end
+    end
   end
 end
 

@@ -27,7 +27,7 @@ module Fugit
 
   class Duration
 
-    attr_reader :original
+    attr_reader :original, :h
 
     def self.new(s)
 
@@ -44,11 +44,12 @@ module Fugit
       yea: { a: 'Y', i: 'Y', s: 365 * 24 * 3600 },
       mon: { a: 'M', i: 'M', s: 30 * 24 * 3600 },
       wee: { a: 'W', i: 'W', s: 7 * 24 * 3600 },
-      day: { a: 'D', i: 'D', s: 24 * 3600 },
-      hou: { a: 'h', i: 'H', s: 3600 },
-      min: { a: 'm', i: 'M', s: 60 },
-      sec: { a: 's', i: 'S', s: 1 },
+      day: { a: 'D', i: 'D', s: 24 * 3600, I: true },
+      hou: { a: 'h', i: 'H', s: 3600, I: true },
+      min: { a: 'm', i: 'M', s: 60, I: true },
+      sec: { a: 's', i: 'S', s: 1, I: true },
     }
+    INFLA_KEYS = KEYS.select { |k, v| v[:I] }
 
     def to_plain_s
 
@@ -82,6 +83,40 @@ module Fugit
     def to_sec
 
       KEYS.inject(0) { |s, (k, a)| v = @h[k]; next s unless v; s += v * a[:s] }
+    end
+
+    def inflate
+
+      h =
+        @h.inject({ sec: 0 }) { |h, (k, v)|
+          a = KEYS[k]
+          if a[:I]
+            h[:sec] += (v * a[:s])
+          else
+            h[k] = v
+          end
+          h
+        }
+
+      self.class.allocate.init(@original, h)
+    end
+
+    def deflate
+
+      id = inflate
+      h = id.h.dup
+      s = h.delete(:sec)
+
+      INFLA_KEYS.each do |k, v|
+
+        n = s / v[:s]; next if n == 0
+        m = s % v[:s]
+
+        h[k] = (h[k] || 0) + n
+        s = m
+      end
+
+      self.class.allocate.init(@original, h)
     end
 
     protected
