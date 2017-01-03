@@ -237,6 +237,22 @@ module Fugit
         end
     end
 
+    def to_a
+
+      [ @minutes, @hours, @monthdays, @months, @weekdays ]
+    end
+
+    def ==(o)
+
+      o.is_a?(::Fugit::Cron) && o.to_a == to_a
+    end
+    alias eql? ==
+
+    def hash
+
+      to_a.hash
+    end
+
     protected
 
     FREQUENCY_CACHE = {}

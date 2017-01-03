@@ -303,5 +303,36 @@ describe Fugit::Cron do
       end
     end
   end
+
+  describe '#==' do
+
+    it 'returns true when equal' do
+
+      expect(
+        Fugit::Cron.parse('* * * * *') ==
+        Fugit::Cron.parse('* * * * *')
+      ).to eq(true)
+
+      expect(
+        Fugit::Cron.parse('* * * * *') ==
+        Fugit::Cron.parse('* * */1 * *')
+      ).to eq(true)
+    end
+
+    it 'returns false else' do
+
+      expect(
+        Fugit::Cron.parse('* * * * *') ==
+        Fugit::Cron.parse('* * * * 1')
+      ).to eq(false)
+
+      expect(
+        Fugit::Cron.parse('* * * * *') !=
+        Fugit::Cron.parse('* * * * 1')
+      ).to eq(true)
+
+      expect(Fugit::Cron.parse('* * * * *') == 1).to eq(false)
+    end
+  end
 end
 
