@@ -159,17 +159,18 @@ describe Fugit::Cron do
     PREVIOUS_TIMES.each(&success)
   end
 
-  describe 'frequency' do
+  describe '#frequency' do
 
-    def freq(cron)
+    [
+      [ '* * * * *', [ 60, 60, 525600 ] ],
+      [ '0 0 * * *', [ 86400, 86400, 365 ] ],
+      [ '0 0 * * sun', [ 604800, 604800, 53 ] ],
+    ].each do |cron, freq|
 
-      Fugit::Cron.parse(cron).frequency
-    end
+      it "computes #{freq.inspect} for #{cron.inspect}" do
 
-    it 'computes [ min, max, count ]' do
-
-      expect(freq('* * * * *')).to eq([ 60, 60, 525600 ])
-      expect(freq('0 0 * * *')).to eq([ 86400, 86400, 365 ])
+        expect(Fugit::Cron.parse(cron).frequency).to eq(freq)
+      end
     end
   end
 end
