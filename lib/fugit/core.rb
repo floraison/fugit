@@ -25,14 +25,25 @@
 
 module Fugit
 
-  VERSION = '0.9.1'
+  def self.parse_at(s)
+
+    Time.parse(s) rescue nil
+  end
+
+  def self.parse_cron(s)
+
+    ::Fugit::Cron.parse(s)
+  end
+
+  def self.parse(s)
+
+    parse_at(s) || parse_cron(s)
+  end
+
+  def self.do_parse(s)
+
+    parse(s) ||
+    fail(ArgumentError.new("fugit found no time information in #{s}.inspect"))
+  end
 end
-
-require 'time'
-
-require 'raabro'
-
-require 'fugit/core'
-require 'fugit/misc'
-require 'fugit/cron'
 
