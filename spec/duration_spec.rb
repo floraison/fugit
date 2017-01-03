@@ -187,6 +187,7 @@ describe Fugit::Duration do
     [
       [ '1Y1m17s', '2016-12-30 17:00:00', '2017-12-30 17:01:17' ],
       [ '1Y1M17s', '2016-12-30 17:00:00', '2018-01-30 17:00:17' ],
+      [ '1M', '2016-02-02', '2016-03-02' ],
     ].each do |d, t, tt|
 
       it "adding #{t.inspect} to #{d.inspect} yields #{tt.inspect}" do
@@ -196,7 +197,11 @@ describe Fugit::Duration do
 
         t1 = d.add(t)
 
-        expect(Fugit.time_to_plain_s(t1)).to eq(tt)
+        expect(
+          Fugit.time_to_plain_s(t1)
+        ).to eq(
+          Fugit.time_to_plain_s(Time.parse(tt))
+        )
       end
     end
 

@@ -41,6 +41,7 @@ module Fugit
       s = s
       s = s.to_i if s.is_a?(Numeric)
       s = s.to_s.strip
+      s = s + 's' if s.match(/\A-?\d+\z/)
 #p [ original, s ]; Raabro.pp(Parser.parse(s, debug: 3))
 
       h =
@@ -254,7 +255,7 @@ module Fugit
       def hou(i); rex(:hou, i, /-?\d+ *(hours?|h)/i); end
       def min(i); rex(:min, i, /-?\d+ *(mins?|minutes?|m)/); end
 
-      def sec(i); rex(:sec, i, /-?\d+ *(secs?|seconds?|s)?/i); end
+      def sec(i); rex(:sec, i, /-?\d+ *(secs?|seconds?|s)/i); end
         # always last!
 
       def elt(i); alt(nil, i, :yea, :mon, :wee, :day, :hou, :min, :sec); end
