@@ -42,16 +42,9 @@ module Fugit
 
     attr_reader :minutes, :hours, :monthdays, :months, :weekdays
 
-    def initialize(original, h)
+    def self.new(original)
 
-      @original = original
-
-      determine_minutes(h[:min])
-      determine_hours(h[:hou])
-      determine_monthdays(h[:dom])
-      determine_months(h[:mon])
-      determine_weekdays(h[:dow])
-#@original = nil; p self
+      parse(original)
     end
 
     def to_cron_s
@@ -72,13 +65,13 @@ module Fugit
       s = SPECIALS[s] || s
 
 #p s; Raabro.pp(Parser.parse(s, debug: 3))
-      x = Parser.parse(s)
+      h = Parser.parse(s)
 
       fail ArgumentError.new(
         "couldn't parse #{original.inspect}"
-      ) unless x
+      ) unless h
 
-      self.new(original, x)
+      self.allocate.send(:init, s, h)
     end
 
     class NextTime # TODO at some point, use ZoTime
@@ -244,6 +237,19 @@ module Fugit
     protected
 
     FREQUENCY_CACHE = {}
+
+    def init(original, h)
+
+      @original = original
+
+      determine_minutes(h[:min])
+      determine_hours(h[:hou])
+      determine_monthdays(h[:dom])
+      determine_months(h[:mon])
+      determine_weekdays(h[:dow])
+
+      self
+    end
 
     def expand(min, max, r)
 
