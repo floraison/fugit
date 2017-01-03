@@ -180,7 +180,7 @@ module Fugit
       month_match?(t) && day_match?(t) && hour_match?(t) && min_match?(t)
     end
 
-    def next_time(from)
+    def next_time(from=Time.now)
 
       nt = NextTime.new(from)
 
@@ -196,7 +196,7 @@ module Fugit
       nt.time
     end
 
-    def previous_time(from)
+    def previous_time(from=Time.now)
 
       nt = NextTime.new(from)
 

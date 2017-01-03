@@ -12,10 +12,10 @@ Gem::Specification.new do |s|
   s.email = [ 'jmettraux+flor@gmail.com' ]
   s.homepage = 'http://github.com/floraison/fugit'
   s.license = 'MIT'
-  s.summary = 'time oriented utils for flor'
+  s.summary = 'time tools for flor'
 
   s.description = %{
-time oriented utilities for flor and the floraison project
+Time tools for flor and the floraison project. Cron parsing and occurence computing. Timestamps and more.
   }.strip
 
   #s.files = `git ls-files`.split("\n")
@@ -26,7 +26,7 @@ time oriented utilities for flor and the floraison project
   ]
 
   #s.add_runtime_dependency 'tzinfo'
-  s.add_runtime_dependency 'raabro', '>= 1.1.2'
+  s.add_runtime_dependency 'raabro', '>= 1.1.3'
 
   s.add_development_dependency 'rspec', '~> 3.4'
 
