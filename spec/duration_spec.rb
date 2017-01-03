@@ -221,6 +221,19 @@ describe Fugit::Duration do
         ArgumentError, 'cannot add FalseClass instance to a Fugit::Duration'
       )
     end
+
+    it 'preserves the zone of a Time instance' do
+
+      t = Time.now
+      t1 = Fugit.parse('1Y2M3m') + t
+
+      expect(t1.zone).to eq(t.zone)
+
+      t = Time.now.utc
+      t1 = Fugit.parse('1Y2M3m') + t
+
+      expect(t1.zone).to eq('UTC')
+    end
   end
 
   describe '#substract' do
