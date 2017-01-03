@@ -29,10 +29,12 @@ module Fugit
 end
 
 require 'time'
+require 'stringio'
 
 require 'raabro'
 
 require 'fugit/core'
 require 'fugit/misc'
 require 'fugit/cron'
+require 'fugit/duration'
 
