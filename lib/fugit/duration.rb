@@ -46,25 +46,39 @@ fail NotImplementedError # TODO
     end
 
     KEYS = {
-      yea: { a: 'Y', d: 365 * 24 * 3600 },
-      mon: { a: 'M', d: 30 * 24 * 3600 },
-      wee: { a: 'W', d: 7 * 24 * 3600 },
-      day: { a: 'D', d: 24 * 3600 },
-      hou: { a: 'h', d: 3600 },
-      min: { a: 'm', d: 60 },
-      sec: { a: 's', d: 1 },
-    }
+      yea: { a: 'Y', i: 'Y', d: 365 * 24 * 3600 },
+      mon: { a: 'M', i: 'M', d: 30 * 24 * 3600 },
+      wee: { a: 'W', i: 'W', d: 7 * 24 * 3600 },
+      day: { a: 'D', i: 'D', d: 24 * 3600 },
+      hou: { a: 'h', i: 'H', d: 3600 },
+      min: { a: 'm', i: 'M', d: 60 },
+      sec: { a: 's', i: 'S', d: 1 },
+    }.to_a
 
     def to_duration_s
 
       KEYS.inject(StringIO.new) { |s, (k, a)|
-        v = @h[k]; s << "#{v}#{a[:a]}" if v; s
+        v = @h[k]; next s unless v; s << v.to_s; s << a[:a]
       }.string
     end
 
     def to_iso_duration_s
 
-fail NotImplementedError # TODO
+      t = false
+
+      s = StringIO.new
+      s << 'P'
+
+      KEYS.each_with_index do |(k, a), i|
+        v = @h[k]; next unless v
+        if i > 3 && t == false
+          t = true
+          s << 'T'
+        end
+        s << v.to_s; s << a[:i]
+      end
+
+      s.string
     end
 
     protected
