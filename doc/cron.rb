@@ -13,3 +13,8 @@ p c.previous_time  # => 2017-01-01 00:00:00 +0900
 p c.brute_frequency  # => [ 604800, 604800, 53 ]
                      #    [ delta min, delta max, occurrence count ]
 
+p c.match?(Time.parse('2017-08-06'))  # => true
+p c.match?(Time.parse('2017-08-07'))  # => false
+p c.match?('2017-08-06')              # => true
+p c.match?('2017-08-06 12:00')        # => false
+

@@ -61,6 +61,8 @@ module Fugit
 
     def self.parse(s)
 
+      return s if s.is_a?(self)
+
       original = s
       s = SPECIALS[s] || s
 
@@ -178,6 +180,7 @@ module Fugit
 
     def match?(t)
 
+      t = Fugit.do_parse_at(t)
       t = NextTime.new(t)
 
       month_match?(t) && day_match?(t) && hour_match?(t) && min_match?(t)

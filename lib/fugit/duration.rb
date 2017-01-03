@@ -36,6 +36,8 @@ module Fugit
 
     def self.parse(s, opts={})
 
+      return s if s.is_a?(self)
+
       original = s
 
       s = s

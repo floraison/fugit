@@ -32,6 +32,7 @@ module Fugit
 
   def self.do_parse_at(s)
 
+    return s if s.is_a?(Time)
     Time.parse(s)
   end
 
