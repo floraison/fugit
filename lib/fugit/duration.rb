@@ -210,6 +210,17 @@ module Fugit
     end
     alias - substract
 
+    def ==(o)
+
+      o.is_a?(Fugit::Duration) && o.h == @h
+    end
+    alias eql? ==
+
+    def hash
+
+      @h.hash
+    end
+
     protected
 
     def init(original, h)

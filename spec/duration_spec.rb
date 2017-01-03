@@ -239,5 +239,44 @@ describe Fugit::Duration do
       )
     end
   end
+
+  describe '#==' do
+
+    it 'returns true when equal' do
+
+      expect(
+        Fugit::Duration.new('1Y2m') ==
+        Fugit::Duration.new('1Y2m')
+      ).to eq(true)
+
+      expect(
+        Fugit::Duration.new('1Y2m') ==
+        Fugit::Duration.new('2m1Y')
+      ).to eq(true)
+    end
+
+    it 'returns false else' do
+
+      expect(
+        Fugit::Duration.new('1Y2m') ==
+        Fugit::Duration.new('1Y3m')
+      ).to eq(false)
+
+      expect(
+        Fugit::Duration.new('1Y2m') !=
+        Fugit::Duration.new('1Y3m')
+      ).to eq(true)
+
+      expect(
+        Fugit::Duration.new('1Y2m') ==
+        1
+      ).to eq(false)
+
+      expect(
+        Fugit::Duration.new('1Y2m') !=
+        1
+      ).to eq(true)
+    end
+  end
 end
 
