@@ -39,7 +39,8 @@ module Fugit
       original = s
 
       s = s
-      s = s.to_i.to_s if s.is_a?(Numeric)
+      s = s.to_i if s.is_a?(Numeric)
+      s = s.to_s.strip
 
 #p [ origianl, s ]; Raabro.pp(Parser.parse(s, debug: 3))
       self.allocate.send(:init, original, Parser.parse(s))
@@ -237,6 +238,8 @@ module Fugit
 
     module Parser include Raabro
 
+      def sep(i); rex(nil, i, /[ \t]*/); end
+
       def yea(i); rex(:yea, i, /-?\d+y/i); end
       def mon(i); rex(:mon, i, /-?\d+M/); end
       def wee(i); rex(:wee, i, /-?\d+w/i); end
@@ -245,7 +248,7 @@ module Fugit
       def min(i); rex(:min, i, /-?\d+m/); end
       def sec(i); rex(:sec, i, /-?\d+s?/i); end # always last!
       def elt(i); alt(nil, i, :yea, :mon, :wee, :day, :hou, :min, :sec); end
-      def dur(i); rep(:dur, i, :elt, 1); end
+      def dur(i); jseq(:dur, i, :elt, :sep); end
 
       def rewrite_dur(t)
 
@@ -260,9 +263,6 @@ module Fugit
     end
 
     module IsoParser include Raabro
-    end
-
-    module LongParser include Raabro
     end
   end
 end
