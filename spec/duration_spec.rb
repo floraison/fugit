@@ -16,9 +16,19 @@ describe Fugit::Duration do
     [ '1y2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
     [ '1M1y1M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
     [ '10d10h', '10D10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
+    [ '100', '100s', 'PT100S', 100 ],
   ]
 
   describe '.parse' do
+
+    it 'fails with an ArgumentError when it cannot parse' do
+
+      expect {
+        Fugit::Duration.parse('NADA')
+      }.to raise_error(
+        ArgumentError, 'cannot derive Fugit::Duration out of "NADA"'
+      )
+    end
 
     DURATIONS.each do |source, target, iso_target, sec|
 

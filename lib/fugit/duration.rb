@@ -123,6 +123,10 @@ module Fugit
 
     def init(original, h)
 
+      fail ArgumentError.new(
+        "cannot derive Fugit::Duration out of #{original.inspect}"
+      ) unless h
+
       @original = original
       @h = h
 
@@ -137,7 +141,7 @@ module Fugit
       def day(i); rex(:day, i, /-?\d+d/i); end
       def hou(i); rex(:hou, i, /-?\d+h/i); end
       def min(i); rex(:min, i, /-?\d+m/); end
-      def sec(i); rex(:sec, i, /-?\d+s/i); end
+      def sec(i); rex(:sec, i, /-?\d+s?/i); end # always last!
       def elt(i); alt(nil, i, :yea, :mon, :wee, :day, :hou, :min, :sec); end
       def dur(i); rep(:dur, i, :elt, 1); end
 
@@ -146,7 +150,8 @@ module Fugit
         t
           .subgather(nil)
           .inject({}) { |h, t|
-            h[t.name] = (h[t.name] || 0) + t.string[0..-2].to_i
+            h[t.name] = (h[t.name] || 0) + t.string.to_i
+              # drops ending ("y", "m", ...) by itself
             h
           }
       end
