@@ -56,13 +56,14 @@ module Fugit
 
     def to_cron_s
 
-      [
-        (@minutes || [ '*' ]).join(','),
-        (@hours || [ '*' ]).join(','),
-        (@monthdays || [ '*' ]).join(','),
-        (@months || [ '*' ]).join(','),
-        (@weekdays || [ [ '*' ] ]).collect { |d| d.compact.join('#') }.join(',')
-      ].join(' ')
+      @cron_s ||=
+        [
+          (@minutes || [ '*' ]).join(','),
+          (@hours || [ '*' ]).join(','),
+          (@monthdays || [ '*' ]).join(','),
+          (@months || [ '*' ]).join(','),
+          (@weekdays || [ [ '*' ] ]).map { |d| d.compact.join('#') }.join(',')
+        ].join(' ')
     end
 
     def self.parse(s)
@@ -219,22 +220,30 @@ module Fugit
       nt.time
     end
 
+    # Returns [ min delta, max delta, occurence count ]
+    # Computes for a non leap year (2017).
+    #
     def frequency
 
-      deltas = []
+      FREQUENCY_CACHE[to_cron_s] ||=
+        begin
+          deltas = []
 
-      t0 = nil
-      loop do
-        t1 = next_time(t0 || Time.parse('2017-01-01'))
-        deltas << t1 - t0 + 60 if t0
-        break if t1.year > 2017
-        t0 = t1 + 60
-      end
+          t0 = nil
+          loop do
+            t1 = next_time(t0 || Time.parse('2017-01-01'))
+            deltas << t1 - t0 + 60 if t0
+            break if t1.year > 2017
+            t0 = t1 + 60
+          end
 
-      [ deltas.min, deltas.max, deltas.size ]
+          [ deltas.min, deltas.max, deltas.size ]
+        end
     end
 
     protected
+
+    FREQUENCY_CACHE = {}
 
     def expand(min, max, r)
 
