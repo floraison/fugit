@@ -56,6 +56,9 @@ module Fugit
     ::Fugit::Duration.do_parse(s)
   end
 
+  def self.parse_in(s); parse_duration(s); end
+  def self.do_parse_in(s); do_parse_duration(s); end
+
   def self.parse(s)
 
     parse_duration(s) || parse_at(s) || parse_cron(s)

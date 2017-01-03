@@ -4,6 +4,8 @@
 
 ## fugit 0.9.2  not yet released
 
+* Alias Fugit .parse_in to .parse_duration
+
 
 ## fugit 0.9.1  released 2017-01-03
 
