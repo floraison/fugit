@@ -51,15 +51,16 @@ module Fugit
     end
 
     KEYS = {
-      yea: { a: 'Y', i: 'Y', s: 365 * 24 * 3600 },
-      mon: { a: 'M', i: 'M', s: 30 * 24 * 3600 },
-      wee: { a: 'W', i: 'W', s: 7 * 24 * 3600 },
+      yea: { a: 'Y', i: 'Y', s: 365 * 24 * 3600, x: 0 },
+      mon: { a: 'M', i: 'M', s: 30 * 24 * 3600, x: 1 },
+      wee: { a: 'W', i: 'W', s: 7 * 24 * 3600, I: true },
       day: { a: 'D', i: 'D', s: 24 * 3600, I: true },
       hou: { a: 'h', i: 'H', s: 3600, I: true },
       min: { a: 'm', i: 'M', s: 60, I: true },
       sec: { a: 's', i: 'S', s: 1, I: true },
     }
-    INFLA_KEYS = KEYS.select { |k, v| v[:I] }
+    INFLA_KEYS, NON_INFLA_KEYS =
+      KEYS.partition { |k, v| v[:I] }
 
     def to_plain_s
 
@@ -153,12 +154,43 @@ module Fugit
       self.class.allocate.init(nil, h)
     end
 
+    def add_to_time(t)
+
+      INFLA_KEYS.each do |k, a|
+
+        v = @h[k]; next unless v
+
+        t = t + v * a[:s]
+      end
+
+      NON_INFLA_KEYS.each do |k, a|
+
+        v = @h[k]; next unless v
+        at = [ t.year, t.month, t.day, t.hour, t.min, t.sec ]
+
+        at[a[:x]] += v
+
+        if at[1] > 12
+          n, m = at[1] / 12, at[1] % 12
+          at[0], at[1] = at[0] + n, m
+        elsif at[1] < 1
+          n, m = -at[1] / 12, -at[1] % 12
+          at[0], at[1] = at[0] - n, m
+        end
+
+        t = Time.send(t.utc? ? :utc : :local, *at)
+      end
+
+      t
+    end
+
     def add(a)
 
       case a
         when Numeric then add_numeric(a)
         when Fugit::Duration then add_duration(a)
         when String then add_duration(self.class.parse(a))
+        when Time then add_to_time(a)
         else fail ArgumentError.new(
           "cannot add #{a.class} instance to a Fugit::Duration")
       end
@@ -171,6 +203,7 @@ module Fugit
         when Numeric then add_numeric(-a)
         when Fugit::Duration then add_duration(-a)
         when String then add_duration(-self.class.parse(a))
+        when Time then opposite.add_to_time(a)
         else fail ArgumentError.new(
           "cannot substract #{a.class} instance to a Fugit::Duration")
       end

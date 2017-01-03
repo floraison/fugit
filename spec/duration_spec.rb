@@ -142,6 +142,34 @@ describe Fugit::Duration do
       expect((d + s).to_plain_s).to eq('2Y1h1s')
     end
 
+    it 'yields a Time instance when adding a Time instance' do
+
+      d = Fugit.parse('1Y1m17s')
+      t = Time.parse('2017-01-03 17:02:00')
+
+      t1 = d.add(t)
+      expect(Fugit.time_to_plain_s(t1)).to eq('2018-01-03 17:03:17')
+
+      t1 = d + t
+      expect(Fugit.time_to_plain_s(t1)).to eq('2018-01-03 17:03:17')
+    end
+
+    [
+      [ '1Y1m17s', '2016-12-30 17:00:00', '2017-12-30 17:01:17' ],
+      [ '1Y1M17s', '2016-12-30 17:00:00', '2018-01-30 17:00:17' ],
+    ].each do |d, t, tt|
+
+      it "adding #{t.inspect} to #{d.inspect} yields #{tt.inspect}" do
+
+        d = Fugit.parse(d)
+        t = Fugit.parse(t)
+
+        t1 = d.add(t)
+
+        expect(Fugit.time_to_plain_s(t1)).to eq(tt)
+      end
+    end
+
     it 'fails else' do
 
       d = Fugit.parse('1Y2h')
