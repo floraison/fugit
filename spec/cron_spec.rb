@@ -172,6 +172,15 @@ describe Fugit::Cron do
         expect(Fugit::Cron.parse(cron).frequency).to eq(freq)
       end
     end
+
+    it 'accepts a year argument' do
+
+      expect(
+        Fugit::Cron.parse('0 0 * * sun').frequency(2016)
+      ).to eq(
+        [ 604800, 604800, 52 ]
+      )
+    end
   end
 end
 
