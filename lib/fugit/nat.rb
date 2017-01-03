@@ -25,17 +25,33 @@
 
 module Fugit
 
-  VERSION = '0.9.3'
+  # A natural language set of parsers for fugit.
+  # Focuses on cron expressions. The rest is better left to Chronic and friends.
+  #
+  module Nat
+
+    def self.parse(s)
+
+      nil
+    end
+
+    module Parser include Raabro
+
+      # piece parsers bottom to top
+
+      def at_(i); rex(nil, i, /at[ \t]+/i); end
+      def ev_(i); rex(nil, i, /every[ \t]+/i); end
+
+      def at(i); seq(nil, i, :at_, :hou); end
+      def ev(i); seq(nil, i, :ev_, :day); end
+
+      def ev_at(i); seq(nil, i, :ev, :at, '?'); end
+      def at_ev(i); seq(nil, i, :at, :ev); end
+
+      def nat(i); alt(:nat, i, :ev_at, :at_ev); end
+
+      # rewrite parsed tree
+    end
+  end
 end
-
-require 'time'
-require 'stringio'
-
-require 'raabro'
-
-require 'fugit/core'
-require 'fugit/misc'
-require 'fugit/cron'
-require 'fugit/duration'
-require 'fugit/nat'
 
