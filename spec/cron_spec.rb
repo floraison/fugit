@@ -162,14 +162,21 @@ describe Fugit::Cron do
   describe '#brute_frequency' do
 
     [
-      [ '* * * * *', [ 60, 60, 525600 ] ],
-      [ '0 0 * * *', [ 86400, 86400, 365 ] ],
-      [ '0 0 * * sun', [ 604800, 604800, 53 ] ],
+      [ '* * * * *', [ '1m', '1m', 525600 ] ],
+      [ '0 0 * * *', [ '1D', '1D', 365 ] ],
+      [ '0 0 * * sun', [ '1W', '1W', 53 ] ],
+      [ '0 0 1 1 *', [ '52W1D', '52W1D', 1 ] ],
     ].each do |cron, freq|
 
       it "computes #{freq.inspect} for #{cron.inspect}" do
 
-        expect(Fugit::Cron.parse(cron).brute_frequency).to eq(freq)
+        f = Fugit::Cron.parse(cron).brute_frequency
+
+        (0..1).each { |i|
+          f[i] = Fugit::Duration.new(f[i]).deflate.to_plain_s
+        }
+
+        expect(f).to eq(freq)
       end
     end
 
