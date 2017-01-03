@@ -238,16 +238,20 @@ module Fugit
 
     module Parser include Raabro
 
-      def sep(i); rex(nil, i, /[ \t]*/); end
+      def sep(i); rex(nil, i, /([ \t,]+|and)*/i); end
 
-      def yea(i); rex(:yea, i, /-?\d+y/i); end
-      def mon(i); rex(:mon, i, /-?\d+M/); end
-      def wee(i); rex(:wee, i, /-?\d+w/i); end
-      def day(i); rex(:day, i, /-?\d+d/i); end
-      def hou(i); rex(:hou, i, /-?\d+h/i); end
-      def min(i); rex(:min, i, /-?\d+m/); end
-      def sec(i); rex(:sec, i, /-?\d+s?/i); end # always last!
+      def yea(i); rex(:yea, i, /-?\d+ *y(ears?)?/i); end
+      def mon(i); rex(:mon, i, /-?\d+ *(M|months?)/); end
+      def wee(i); rex(:wee, i, /-?\d+ *(weeks?|w)/i); end
+      def day(i); rex(:day, i, /-?\d+ *(days?|d)/i); end
+      def hou(i); rex(:hou, i, /-?\d+ *(hours?|h)/i); end
+      def min(i); rex(:min, i, /-?\d+ *(mins?|minutes?|m)/); end
+
+      def sec(i); rex(:sec, i, /-?\d+ *(secs?|seconds?|s)?/i); end
+        # always last!
+
       def elt(i); alt(nil, i, :yea, :mon, :wee, :day, :hou, :min, :sec); end
+
       def dur(i); jseq(:dur, i, :elt, :sep); end
 
       def rewrite_dur(t)

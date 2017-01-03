@@ -39,6 +39,10 @@ describe Fugit::Duration do
       [ '1M 1y  1M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
       [ ' 1M1y1M ', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
 
+      [ '1 year and 2 months', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ '1 y, 2 M, and 2 months', '1Y4M', 'P1Y4M', 41904000 ],
+      [ '1 y, 2 M and 2 m', '1Y2M2m', 'P1Y2MT2M', 36720120 ],
+
     ].each do |source, target, iso_target, sec|
 
       it "parses #{source.inspect}" do
