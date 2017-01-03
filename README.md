@@ -4,9 +4,24 @@
 [![Build Status](https://secure.travis-ci.org/floraison/fugit.svg)](http://travis-ci.org/floraison/fugit)
 [![Gem Version](https://badge.fury.io/rb/fugit.svg)](http://badge.fury.io/rb/fugit)
 
-Time tools for [flor](https://github.com/floraison/flor) and the floraison project.
+Time tools for [flor](https://github.com/floraison/flor) and the floraison group.
 
 Fugit will probably become the foundation for [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) 4.x
+
+
+## Related projects
+
+### Sister projects
+
+* [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) - a cron/at/in/every/interval in-process scheduler, in fact, it's the father project to this fugit project
+* [flor](https://github.com/floraison/flor) - a Ruby workflow engine, fugit provides the foundation for its time scheduling capabilities
+
+### Similar, somehow overlapping projects
+
+* [chronic](https://github.com/mojombo/chronic) - a pure Ruby natural language date parser
+* [parse-cron](https://github.com/siebertm/parse-cron) - parses cron expressions and calculates the next occurence after a given date
+* [ice_cube](https://github.com/seejohnrun/ice_cube) - Ruby date recurrence library
+* ...
 
 
 ## `Fugit::Cron`
@@ -54,6 +69,10 @@ Example of cron strings understood by fugit:
 ```
 
 ## `Fugit::Duration`
+
+A class `Fugit::Duration` to parse duration strings (vanilla [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) ones and [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) ones.
+
+Provides duration arithmetic tools.
 
 ```ruby
 require 'fugit'
