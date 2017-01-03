@@ -36,8 +36,13 @@ module Fugit
 
     def self.parse(s)
 
-#p s; Raabro.pp(Parser.parse(s, debug: 3))
-      self.allocate.send(:init, s, Parser.parse(s))
+      original = s
+
+      s = s
+      s = s.to_i.to_s if s.is_a?(Numeric)
+
+#p [ origianl, s ]; Raabro.pp(Parser.parse(s, debug: 3))
+      self.allocate.send(:init, original, Parser.parse(s))
     end
 
     KEYS = {

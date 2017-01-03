@@ -10,19 +10,6 @@ require 'spec_helper'
 
 describe Fugit::Duration do
 
-  DAY_S = 24 * 3600
-
-  DURATIONS = [
-
-    [ '1y2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-    [ '1M1y1M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-    [ '10d10h', '10D10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
-    [ '100', '100s', 'PT100S', 100 ],
-
-    [ '-1y-2M', '-1Y-2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
-    [ '1M-1y-1M', '-1Y', 'P-1Y', - 365 * DAY_S ],
-  ]
-
   describe '.parse' do
 
     it 'fails with an ArgumentError when it cannot parse' do
@@ -34,7 +21,25 @@ describe Fugit::Duration do
       )
     end
 
-    DURATIONS.each do |source, target, iso_target, sec|
+    it 'accepts a Numeric' do
+
+      expect(Fugit::Duration.parse(1000).to_plain_s).to eq('1000s')
+      expect(Fugit::Duration.parse(1001.05).to_plain_s).to eq('1001s')
+    end
+
+    DAY_S = 24 * 3600
+
+    [
+
+      [ '1y2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ '1M1y1M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ '10d10h', '10D10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
+      [ '100', '100s', 'PT100S', 100 ],
+
+      [ '-1y-2M', '-1Y-2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
+      [ '1M-1y-1M', '-1Y', 'P-1Y', - 365 * DAY_S ],
+
+    ].each do |source, target, iso_target, sec|
 
       it "parses #{source.inspect}" do
 
