@@ -62,13 +62,13 @@ module Fugit
     end
 
     KEYS = {
-      yea: { a: 'Y', i: 'Y', s: 365 * 24 * 3600, x: 0 },
-      mon: { a: 'M', i: 'M', s: 30 * 24 * 3600, x: 1 },
-      wee: { a: 'W', i: 'W', s: 7 * 24 * 3600, I: true },
-      day: { a: 'D', i: 'D', s: 24 * 3600, I: true },
-      hou: { a: 'h', i: 'H', s: 3600, I: true },
-      min: { a: 'm', i: 'M', s: 60, I: true },
-      sec: { a: 's', i: 'S', s: 1, I: true },
+      yea: { a: 'Y', i: 'Y', s: 365 * 24 * 3600, x: 0, l: 'year' },
+      mon: { a: 'M', i: 'M', s: 30 * 24 * 3600, x: 1, l: 'month' },
+      wee: { a: 'W', i: 'W', s: 7 * 24 * 3600, I: true, l: 'week' },
+      day: { a: 'D', i: 'D', s: 24 * 3600, I: true, l: 'day' },
+      hou: { a: 'h', i: 'H', s: 3600, I: true, l: 'hour' },
+      min: { a: 'm', i: 'M', s: 60, I: true, l: 'minute' },
+      sec: { a: 's', i: 'S', s: 1, I: true, l: 'second' },
     }
     INFLA_KEYS, NON_INFLA_KEYS =
       KEYS.partition { |k, v| v[:I] }
@@ -94,6 +94,23 @@ module Fugit
           s << 'T'
         end
         s << v.to_s; s << a[:i]
+      end
+
+      s.string
+    end
+
+    def to_long_s(opts={})
+
+      s = StringIO.new
+      adn = [ false, 'no' ].include?(opts[:oxford]) ? ' and ' : ', and '
+
+      a = @h.to_a
+      while kv = a.shift
+        k, v = kv
+        aa = KEYS[k]
+        s << v.to_i
+        s << ' '; s << aa[:l]; s << 's' if v > 1
+        s << (a.size == 1 ? adn : ', ') if a.size > 0
       end
 
       s.string

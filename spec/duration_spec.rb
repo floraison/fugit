@@ -313,5 +313,28 @@ describe Fugit::Duration do
       ).to eq(true)
     end
   end
+
+  describe '#to_long_s' do
+
+    [
+      [ '1M1Y1M3h', '2 months, 1 year, and 3 hours' ],
+      [ '1Y1M3h', '1 year, 1 month, and 3 hours' ],
+    ].each do |duration, long|
+
+      it "renders #{duration.inspect} as #{long.inspect}" do
+
+        expect(Fugit::Duration.parse(duration).to_long_s).to eq(long)
+      end
+    end
+
+    it 'understands the oxford: false option' do
+
+      expect(
+        Fugit::Duration.parse('1Y1M3h').to_long_s(oxford: false)
+      ).to eq(
+        '1 year, 1 month and 3 hours'
+      )
+    end
+  end
 end
 
