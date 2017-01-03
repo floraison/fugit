@@ -11,6 +11,10 @@ Fugit will probably become the foundation for [rufus-scheduler](https://github.c
 
 ## `Fugit::Cron`
 
+A class `Fugit::Cron` to parse cron strings and then `#next_time` and `#previous_time` to compute the next or the previous occurrence respectively.
+
+There is also a `#brute_frequency` method which returns an array `[ shortest delta, longest delta, occurrence count ]` where delta is the time between two occurences.
+
 ```ruby
 require 'fugit'
 
@@ -48,6 +52,10 @@ Example of cron strings understood by fugit:
 
 # and more...
 ```
+
+## `Fugit::Duration`
+
+TODO
 
 ## LICENSE
 
