@@ -2,6 +2,9 @@
 # fugit CHANGELOG.md
 
 
+## fugit 0.9.3  not yet released
+
+
 ## fugit 0.9.2  released 2017-01-04
 
 * Accept decimal places for duration seconds
