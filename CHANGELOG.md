@@ -2,7 +2,7 @@
 # fugit CHANGELOG.md
 
 
-## fugit 0.9.1  not yet released
+## fugit 0.9.1  released 2017-01-03
 
 * Implement Fugit::Duration #inflate and #deflate
 * Bring in Fugit::Duration
