@@ -128,7 +128,9 @@ module Fugit
       ) unless h
 
       @original = original
-      @h = h
+
+      @h = h.reject { |k, v| v == 0 }
+        # which copies h btw
 
       self
     end

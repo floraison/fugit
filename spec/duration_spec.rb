@@ -13,10 +13,14 @@ describe Fugit::Duration do
   DAY_S = 24 * 3600
 
   DURATIONS = [
+
     [ '1y2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
     [ '1M1y1M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
     [ '10d10h', '10D10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
     [ '100', '100s', 'PT100S', 100 ],
+
+    [ '-1y-2M', '-1Y-2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
+    [ '1M-1y-1M', '-1Y', 'P-1Y', - 365 * DAY_S ],
   ]
 
   describe '.parse' do
@@ -51,6 +55,8 @@ describe Fugit::Duration do
       [ '3600s', '3600s', '1h' ],
       [ '1y3600s', '1Y3600s', '1Y1h' ],
       [ '1d60s', '86460s', '1D1m' ],
+
+      [ '3d-3h', '248400s', '2D21h' ],
 
     ].each do |source, step, target|
 
