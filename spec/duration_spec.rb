@@ -162,10 +162,54 @@ describe Fugit::Duration do
 
   describe '#substract' do
 
-    it 'substracts Numeric instances'
-    it 'substracts Duration instances'
-    it 'substracts String instances (parses them as Duration)'
-    it 'fails else'
+    it 'substracts Numeric instances' do
+
+      d = Fugit.parse('1Y2h')
+
+      expect(d.add(-1).to_plain_s).to eq('1Y2h-1s')
+      expect((d + -1).to_plain_s).to eq('1Y2h-1s')
+      expect((d - 1).to_plain_s).to eq('1Y2h-1s')
+
+      expect((d - 1).deflate.to_plain_s).to eq('1Y1h59m59s')
+    end
+
+    it 'substracts Duration instances' do
+
+      d0 = Fugit.parse('1Y2h')
+      d1 = Fugit.parse('1Y2h1s')
+
+      expect(d0.substract(d1).to_plain_s).to eq('-1s')
+      expect((d0 + -d1).to_plain_s).to eq('-1s')
+      expect((d0 - d1).to_plain_s).to eq('-1s')
+    end
+
+    it 'substracts String instances (parses them as Duration)' do
+
+      d = Fugit.parse('1Y2h')
+      s = '1Y-1h1s'
+
+      expect(d.substract(s).to_plain_s).to eq('3h-1s')
+      expect((d - s).to_plain_s).to eq('3h-1s')
+    end
+
+    it 'fails else' do
+
+      d = Fugit.parse('1Y2h')
+      x = false
+
+      expect {
+        d.substract(x)
+      }.to raise_error(
+        ArgumentError,
+        'cannot substract FalseClass instance to a Fugit::Duration'
+      )
+      expect {
+        d - x
+      }.to raise_error(
+        ArgumentError,
+        'cannot substract FalseClass instance to a Fugit::Duration'
+      )
+    end
   end
 end
 

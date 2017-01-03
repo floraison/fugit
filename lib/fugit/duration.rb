@@ -166,7 +166,16 @@ module Fugit
     alias + add
 
     def substract(a)
+
+      case a
+        when Numeric then add_numeric(-a)
+        when Fugit::Duration then add_duration(-a)
+        when String then add_duration(-self.class.parse(a))
+        else fail ArgumentError.new(
+          "cannot substract #{a.class} instance to a Fugit::Duration")
+      end
     end
+    alias - substract
 
     protected
 
