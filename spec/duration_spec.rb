@@ -76,5 +76,17 @@ describe Fugit::Duration do
       end
     end
   end
+
+  describe '#opposite' do
+
+    it 'returns the additive inverse' do
+
+      d = Fugit::Duration.new('1y2m-3h')
+      od = d.opposite
+
+      expect(od.to_plain_s).to eq('-1Y3h-2m')
+      expect(od.to_iso_s).to eq('P-1YT3H-2M')
+    end
+  end
 end
 

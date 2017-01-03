@@ -119,6 +119,13 @@ module Fugit
       self.class.allocate.init(@original, h)
     end
 
+    def opposite
+
+      h = @h.inject({}) { |h, (k, v)| h[k] = -v; h }
+
+      self.class.allocate.init(nil, h)
+    end
+
     protected
 
     def init(original, h)
