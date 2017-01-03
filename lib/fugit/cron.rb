@@ -349,6 +349,8 @@ module Fugit
       WEEKDAYS = %w[ sun mon tue wed thu fri sat ]
       MONTHS = %w[ - jan feb mar apr may jun jul aug sep oct nov dec ]
 
+      # piece parsers bottom to top
+
       def s(i); rex(:s, i, /[ \t]+/); end
       def star(i); str(:star, i, '*'); end
       def hyphen(i); str(nil, i, '-'); end
@@ -414,6 +416,8 @@ module Fugit
       alias ldow list_dow
 
       def cron(i); seq(:cron, i, :lmin_, :lhou_, :ldom_, :lmon_, :ldow); end
+
+      # rewriting the parsed tree
 
       def to_i(k, t)
 

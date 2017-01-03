@@ -20,7 +20,7 @@ describe Fugit::Duration do
     it 'accepts a Numeric' do
 
       expect(Fugit::Duration.parse(1000).to_plain_s).to eq('1000s')
-      expect(Fugit::Duration.parse(1001.05).to_plain_s).to eq('1001s')
+      expect(Fugit::Duration.parse(1001.05).to_plain_s).to eq('1001.05s')
     end
 
     DAY_S = 24 * 3600
@@ -50,6 +50,11 @@ describe Fugit::Duration do
 
       [ 'P-1Y-2M', '-1Y-2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
       [ 'p1M-1y-1Mt-1M', '-1Y-1m', 'P-1YT-1M', -31536060 ],
+
+      [ '1.4s', '1.4s', 'PT1.4S', 1.4 ],
+      [ 'PT1.5S', '1.5s', 'PT1.5S', 1.5 ],
+      [ '.4s', '0.4s', 'PT0.4S', 0.4 ],
+      [ 'PT.5S', '0.5s', 'PT0.5S', 0.5 ],
 
     ].each do |source, target, iso_target, sec|
 

@@ -41,9 +41,9 @@ module Fugit
       original = s
 
       s = s
-      s = s.to_i if s.is_a?(Numeric)
+      #s = s.to_i if s.is_a?(Numeric)
       s = s.to_s.strip
-      s = s + 's' if s.match(/\A-?\d+\z/)
+      s = s + 's' if s.match(/\A-?(\d*\.)?\d+\z/)
 #p [ original, s ]; Raabro.pp(Parser.parse(s, debug: 3))
 
       h =
@@ -263,7 +263,21 @@ module Fugit
       self
     end
 
+    def self.common_rewrite_dur(t)
+
+      t
+        .subgather(nil)
+        .inject({}) { |h, t|
+          v = t.string; v = v.index('.') ? v.to_f : v.to_i
+            # drops ending ("y", "m", ...) by itself
+          h[t.name] = (h[t.name] || 0) + v
+          h
+        }
+    end
+
     module Parser include Raabro
+
+      # piece parsers bottom to top
 
       def sep(i); rex(nil, i, /([ \t,]+|and)*/i); end
 
@@ -274,26 +288,21 @@ module Fugit
       def hou(i); rex(:hou, i, /-?\d+ *(hours?|h)/i); end
       def min(i); rex(:min, i, /-?\d+ *(mins?|minutes?|m)/); end
 
-      def sec(i); rex(:sec, i, /-?\d+ *(secs?|seconds?|s)/i); end
+      def sec(i); rex(:sec, i, /-?((\d*\.)?\d+) *(secs?|seconds?|s)/i); end
         # always last!
 
       def elt(i); alt(nil, i, :yea, :mon, :wee, :day, :hou, :min, :sec); end
 
       def dur(i); jseq(:dur, i, :elt, :sep); end
 
-      def rewrite_dur(t)
+      # rewrite parsed tree
 
-        t
-          .subgather(nil)
-          .inject({}) { |h, t|
-            h[t.name] = (h[t.name] || 0) + t.string.to_i
-              # drops ending ("y", "m", ...) by itself
-            h
-          }
-      end
+      def rewrite_dur(t); Fugit::Duration.common_rewrite_dur(t); end
     end
 
     module IsoParser include Raabro
+
+      # piece parsers bottom to top
 
       def p(i); rex(nil, i, /P/); end
       def t(i); rex(nil, i, /T/); end
@@ -304,7 +313,7 @@ module Fugit
       def day(i); rex(:day, i, /-?\d+D/); end
       def hou(i); rex(:hou, i, /-?\d+H/); end
       def min(i); rex(:min, i, /-?\d+M/); end
-      def sec(i); rex(:sec, i, /-?\d+S/); end
+      def sec(i); rex(:sec, i, /-?(\d*\.)?\d+S/); end
 
       def delt(i); alt(nil, i, :yea, :mon, :wee, :day); end
       def telt(i); alt(nil, i, :hou, :min, :sec); end
@@ -315,16 +324,9 @@ module Fugit
 
       def dur(i); seq(:dur, i, :p, :date, '?', :t_time, '?'); end
 
-      def rewrite_dur(t)
+      # rewrite parsed tree
 
-        t
-          .subgather(nil)
-          .inject({}) { |h, t|
-            h[t.name] = (h[t.name] || 0) + t.string.to_i
-              # drops ending ("y", "m", ...) by itself
-            h
-          }
-      end
+      def rewrite_dur(t); Fugit::Duration.common_rewrite_dur(t); end
     end
   end
 end

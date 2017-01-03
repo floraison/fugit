@@ -4,6 +4,7 @@
 
 ## fugit 0.9.2  not yet released
 
+* Accept decimal places for duration seconds
 * Alias Fugit .parse_in to .parse_duration
 
 
