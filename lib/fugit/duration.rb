@@ -55,14 +55,14 @@ fail NotImplementedError # TODO
       sec: { a: 's', i: 'S', d: 1 },
     }.to_a
 
-    def to_duration_s
+    def to_plain_s
 
       KEYS.inject(StringIO.new) { |s, (k, a)|
         v = @h[k]; next s unless v; s << v.to_s; s << a[:a]
       }.string
     end
 
-    def to_iso_duration_s
+    def to_iso_s
 
       t = false
 

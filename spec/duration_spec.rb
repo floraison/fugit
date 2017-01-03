@@ -24,8 +24,8 @@ describe Fugit::Duration do
         d = Fugit::Duration.parse(source)
 
         expect(d.class).to eq(::Fugit::Duration)
-        expect(d.to_duration_s).to eq(target)
-        expect(d.to_iso_duration_s).to eq(iso_target)
+        expect(d.to_plain_s).to eq(target)
+        expect(d.to_iso_s).to eq(iso_target)
       end
     end
   end
