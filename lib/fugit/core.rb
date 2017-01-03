@@ -35,9 +35,14 @@ module Fugit
     ::Fugit::Cron.parse(s)
   end
 
+  def self.parse_duration(s)
+
+    ::Fugit::Duration.parse(s)
+  end
+
   def self.parse(s)
 
-    parse_at(s) || parse_cron(s)
+    parse_at(s) || parse_duration(s) || parse_cron(s)
   end
 
   def self.do_parse(s)

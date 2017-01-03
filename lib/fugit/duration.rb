@@ -135,9 +135,7 @@ module Fugit
 
     def init(original, h)
 
-      fail ArgumentError.new(
-        "cannot derive Fugit::Duration out of #{original.inspect}"
-      ) unless h
+      return nil unless h
 
       @original = original
 
