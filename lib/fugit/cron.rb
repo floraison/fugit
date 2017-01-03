@@ -219,7 +219,7 @@ module Fugit
     # Returns [ min delta, max delta, occurence count ]
     # Computes for a non leap year (2017).
     #
-    def frequency(year=2017)
+    def brute_frequency(year=2017)
 
       FREQUENCY_CACHE["#{to_cron_s}|#{year}"] ||=
         begin

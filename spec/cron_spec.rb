@@ -159,7 +159,7 @@ describe Fugit::Cron do
     PREVIOUS_TIMES.each(&success)
   end
 
-  describe '#frequency' do
+  describe '#brute_frequency' do
 
     [
       [ '* * * * *', [ 60, 60, 525600 ] ],
@@ -169,14 +169,14 @@ describe Fugit::Cron do
 
       it "computes #{freq.inspect} for #{cron.inspect}" do
 
-        expect(Fugit::Cron.parse(cron).frequency).to eq(freq)
+        expect(Fugit::Cron.parse(cron).brute_frequency).to eq(freq)
       end
     end
 
     it 'accepts a year argument' do
 
       expect(
-        Fugit::Cron.parse('0 0 * * sun').frequency(2016)
+        Fugit::Cron.parse('0 0 * * sun').brute_frequency(2016)
       ).to eq(
         [ 604800, 604800, 52 ]
       )
