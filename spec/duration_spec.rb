@@ -354,5 +354,31 @@ describe Fugit::Duration do
       )
     end
   end
+
+  describe '#next_time' do
+
+    it 'returns now + this duration if no argument' do
+
+      d = Fugit::Duration.new('1Y')
+      t = d.next_time
+
+      expect(t.class).to eq(Time)
+
+      expect(
+        t.strftime('%Y-%m-%d')
+      ).to eq(
+        "#{Time.now.year + 1}-#{Time.now.strftime('%m-%d')}"
+      )
+    end
+
+    it 'returns arg + this duration' do
+
+      d = Fugit::Duration.new('1Y')
+      t = d.next_time(Time.parse('2016-12-31'))
+
+      expect(t.class).to eq(Time)
+      expect(Fugit.time_to_s(t)).to eq('2017-12-31T00:00:00')
+    end
+  end
 end
 

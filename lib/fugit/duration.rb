@@ -251,6 +251,11 @@ module Fugit
       @h.hash
     end
 
+    def next_time(from=Time.now)
+
+      add(from)
+    end
+
     protected
 
     def init(original, h)
