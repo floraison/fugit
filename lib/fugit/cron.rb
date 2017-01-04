@@ -256,17 +256,6 @@ module Fugit
       to_a.hash
     end
 
-    def set_hour(hour, min)
-      @hours = [ hour ]
-      @minutes = [ min ]
-    end
-    def set_weekdays(a)
-      @weekdays = a
-    end
-    def set_monthdays(a)
-      @monthdays = a
-    end
-
     protected
 
     FREQUENCY_CACHE = {}

@@ -32,27 +32,42 @@ module Fugit
 
     def self.parse(s)
 
-#p s; Raabro.pp(CronParser.parse(s, debug: 3))
-      h = CronParser.parse(s)
-#p h
+#p s; Raabro.pp(Parser.parse(s, debug: 3))
+      a = Parser.parse(s)
 
-      c = Fugit::Cron.allocate.send(:init, nil, nil)
+#p a
+      return nil unless a
 
-      case e = h[:every]
-        when :biz_day
-          c.set_weekdays((1..5).to_a.map { |i| [ i, nil ] })
-        when :plain_day
-          c.set_monthdays(nil)
-        else
-          c.set_weekdays([ [ Fugit::Cron::Parser::WEEKDS.index(e) ] ])
+      if a.include?([ :flag, 'every' ])
+        parse_cron(a)
+      else
+        nil
       end
-
-      c.set_hour(*(h[:at] || [ 0, 0 ]))
-
-      c
     end
 
-    module CronParser include Raabro
+    def self.parse_cron(a)
+
+      h = { min: nil, hou: nil, dom: nil, mon: nil, dow: nil }
+
+      a.each do |key, val|
+        if key == :biz_day
+          h[:dow] = (1..5).to_a.collect { |wd| [ wd ] }
+        elsif key == :simple_hour || key == :numeral_hour
+          h[:hou] = [ val ]
+        elsif key == :digital_hour
+          h[:hou] = val[0, 1]
+          h[:min] = val[1, 1]
+        elsif key == :name_day
+          h[:dow] = [ [ val ] ]
+        end
+      end
+      h[:hou] = [ h[:hou][0] + 12 ] if h[:hou] && a.include?([ :flag, 'pm' ])
+      h[:min] ||= [ 0 ]
+
+      Fugit::Cron.allocate.send(:init, nil, h)
+    end
+
+    module Parser include Raabro
 
       NUMS = %w[
         zero
@@ -60,92 +75,76 @@ module Fugit
         ten eleven twelve ]
 
       WEEKDAYS =
-        Fugit::Cron::Parser::WEEKDAYS + Fugit::Cron::Parser::WEEKDS
+        Fugit::Cron::Parser::WEEKDS + Fugit::Cron::Parser::WEEKDAYS
+
+      NHOURS =
+        { 'noon' => [ 12, 0 ], 'midnight' => [ 0, 0 ] }
 
       # piece parsers bottom to top
-
-      def s(i); rex(nil, i, /[ \t]+/); end
-
-      def after(i); rex(:after, i, /[ \t]+after[ \t]+/i); end
 
       def digital_hour(i)
         rex(:digital_hour, i, /(2[0-4]|[01][0-9]):?[0-5]\d/)
       end
       def simple_hour(i)
-        rex(:simple_hour, i, /(2[0-4]|[01]?[0-9])( +(am|pm))?/i)
+        rex(:simple_hour, i, /(2[0-4]|[01]?[0-9])/)
       end
       def numeral_hour(i)
-        rex(:numeral_hour, i, /(#{NUMS.join('|')})( +(am|pm))?/i)
+        rex(:numeral_hour, i, /(#{NUMS.join('|')})/i)
       end
       def name_hour(i)
-        rex(:name_hour, i, /(noon|midnight)/i)
+        rex(:name_hour, i, /(#{NHOURS.keys.join('|')})/i)
       end
       def hour(i)
         alt(nil, i, :numeral_hour, :name_hour, :digital_hour, :simple_hour);
       end
 
-      def min_after_hour(i)
-str(nil, i, 'TODO')
-      end
-
-      def at_elt(i)
-        alt(nil, i, :min_after_hour, :hour);
-      end
-
       def plain_day(i); rex(:plain_day, i, /day/i); end
       def biz_day(i); rex(:biz_day, i, /(biz|business|week) *day/i); end
-      def name_day(i); rex(:name_day, i, /#{WEEKDAYS.join('|')}/i); end
+      def name_day(i); rex(:name_day, i, /#{WEEKDAYS.reverse.join('|')}/i); end
 
-      def ev_elt(i)
-        alt(nil, i, :plain_day, :biz_day, :name_day)
+      def flag(i); rex(:flag, i, /(every|day|at|after|am|pm)/i); end
+
+      def datum(i)
+        alt(nil, i,
+          :flag,
+          :plain_day, :biz_day, :name_day,
+          :name_hour, :numeral_hour, :digital_hour, :simple_hour)
       end
 
-      def at_(i); rex(nil, i, /at[ \t]+/i); end
-      def ev_(i); rex(nil, i, /every[ \t]+/i); end
+      def sugar_(i); rex(nil, i, /(and|or)/i); end
+      def sugar(i); rex(nil, i, /[, \t]+/); end
 
-      def at(i); seq(:at, i, :at_, :at_elt); end
-      def ev(i); seq(:ev, i, :ev_, :ev_elt); end
-
-      def ev_at(i); seq(nil, i, :ev, :s, :at); end
-      def at_ev(i); seq(nil, i, :at, :s, :ev); end
-
-      def nat(i); alt(:nat, i, :ev_at, :at_ev, :ev); end
+      def elt(i); alt(nil, i, :sugar, :sugar_, :datum); end
+      def nat(i); rep(:nat, i, :elt, 1); end
 
       # rewrite parsed tree
-
-      NHOURS = { 'noon' => [ 12, 0 ], 'midnight' => [ 0, 0 ] }
 
       def rewrite_nat(t)
 
 #Raabro.pp(t)
-        h = {}
+        t
+          .subgather(nil)
+          .collect { |tt|
 
-        et = t.lookup(:ev).sublookup(nil)
+            k = tt.name
+            v = tt.string.downcase
 
-        h[:every] = et.name == :name_day ? et.string.downcase[0, 3] : et.name
-
-        at = t.lookup(:at)
-        at = at.sublookup(nil) if at
-
-        h[:at] =
-          case at && at.name
-            when :digital_hour
-              s = at.string
-              [ s[0, 2], s.split(':')[1] || s[2, 2] ]
-            when :simple_hour
-              s = at.string.downcase
-              v = s.to_i
-              [ v + (s.index('pm') ? 12 : 0), 0 ]
-            when :numeral_hour
-              [ NUMS.index(at.string.downcase), 0 ]
-            when :name_hour
-              NHOURS[at.string.downcase]
-            else nil
-          end
-
-        # TODO `10 after 5 pm`
-
-        h
+            case k
+              when :numeral_hour
+                [ k, NUMS.index(v) ]
+              when :simple_hour
+                [ k, v.to_i ]
+              when :digital_hour
+                v = v.gsub(/:/, '')
+                [ k, [ v[0, 2], v[2, 2] ] ]
+              when :name_hour
+                [ :digital_hour, NHOURS[v] ]
+              when :name_day
+                [ k, WEEKDAYS.index(v[0, 3]) ]
+              else
+                [ k, v ]
+            end
+          }
       end
     end
   end
