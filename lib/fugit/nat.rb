@@ -44,9 +44,9 @@ module Fugit
         else c.set_monthdays(nil)
       end
 
-      case h[:at]
-        when 'five' then c.set_hour(5, 0)
-        else c.set_hour(12, 0)
+      case a = h[:at]
+        when Numeric then c.set_hour(a, 0)
+        else c.set_hour(0, 0)
       end
 
       c
@@ -54,24 +54,47 @@ module Fugit
 
     module CronParser include Raabro
 
+      NUMS = %w[
+        zero
+        one two three four five six seven eight nine
+        ten eleven twelve ]
+
       # piece parsers bottom to top
 
       def s(i); rex(nil, i, /[ \t]+/); end
 
-      def dgt_hou(i); rex(:dgt_hou, i, /\d+/); end
-      def wrd_hou(i); rex(:wrd_hou, i, /five/); end
+      def after(i); rex(:after, i, /[ \t]+after[ \t]+/i); end
+
+      def digital_hour(i)
+        rex(:digital_hour, i, /(2[0-4]|[01]?[0-9])(:?[0-5]?\d)?( +(am|pm))?/i)
+      end
+      def numeral_hour(i)
+        rex(:numeral_hour, i, /(#{NUMS.join('|')})( +(am|pm))?/i)
+      end
+      def hour(i)
+        alt(nil, i, :numeral_hour, :digital_hour);
+      end
+
+      def min_after_hour(i)
+        str(nil, i, 'TODO')
+      end
+
+      def at_elt(i)
+        alt(nil, i, :min_after_hour, :hour);
+      end
 
       def plain_day(i); rex(:plain_day, i, /day/i); end
       def week_day(i); rex(:week_day, i, /(biz|business|week) *day/i); end
 
-      def day(i); alt(nil, i, :plain_day, :week_day); end
-      def hou(i); alt(:hou, i, :dgt_hou, :wrd_hou); end
+      def ev_elt(i)
+        alt(nil, i, :plain_day, :week_day)
+      end
 
       def at_(i); rex(nil, i, /at[ \t]+/i); end
       def ev_(i); rex(nil, i, /every[ \t]+/i); end
 
-      def at(i); seq(:at, i, :at_, :hou); end
-      def ev(i); seq(:ev, i, :ev_, :day); end
+      def at(i); seq(:at, i, :at_, :at_elt); end
+      def ev(i); seq(:ev, i, :ev_, :ev_elt); end
 
       def ev_at(i); seq(nil, i, :ev, :s, :at); end
       def at_ev(i); seq(nil, i, :at, :s, :ev); end
@@ -83,12 +106,27 @@ module Fugit
       def rewrite_nat(t)
 
 #Raabro.pp(t)
-        evt = t.lookup(:ev)
-        dayt = evt.sublookup(nil)
-        att = t.lookup(:at)
-        hout = att ? att.lookup(:hou) : nil
+        h = {}
 
-        { every: dayt.name, at: hout ? hout.string : nil }
+        et = t.lookup(:ev).sublookup(nil)
+
+        h[:every] = et.name == :name_day ? et.string : et.name
+
+        at = t.lookup(:at)
+        at = at.sublookup(nil) if at
+
+        h[:at] =
+          case at && at.name
+            when :digital_hour
+              v = at.string.to_i
+              v += 12 if at.string.match(/pm/i)
+              v
+            when :numeral_hour
+              NUMS.index(at.string.downcase)
+            else nil
+          end
+
+        h
       end
     end
   end
