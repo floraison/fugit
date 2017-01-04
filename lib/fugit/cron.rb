@@ -365,7 +365,9 @@ module Fugit
 
     module Parser include Raabro
 
-      WEEKDAYS = %w[ sun mon tue wed thu fri sat ]
+      WEEKDAYS = %w[ sunday monday tuesday wednesday thursday friday saturday ]
+      WEEKDS = WEEKDAYS.collect { |d| d[0, 3] }
+
       MONTHS = %w[ - jan feb mar apr may jun jul aug sep oct nov dec ]
 
       # piece parsers bottom to top
@@ -381,7 +383,7 @@ module Fugit
       def core_hou(i); rex(:hou, i, /(2[0-4]|[01]?[0-9])/); end
       def core_dom(i); rex(:dom, i, /(-?(3[01]|[012]?[0-9])|last|l)/i); end
       def core_mon(i); rex(:mon, i, /(1[0-2]|0?[0-9]|#{MONTHS[1..-1].join('|')})/i); end
-      def core_dow(i); rex(:dow, i, /([0-7]|#{WEEKDAYS.join('|')})/i); end
+      def core_dow(i); rex(:dow, i, /([0-7]|#{WEEKDS.join('|')})/i); end
 
       def dow_hash(i); rex(:hash, i, /#(-?[1-5]|last|l)/i); end
 
@@ -443,7 +445,7 @@ module Fugit
         s = t.string.downcase
 
         (k == :mon && MONTHS.index(s)) ||
-        (k == :dow && WEEKDAYS.index(s)) ||
+        (k == :dow && WEEKDS.index(s)) ||
         (k == :dom && s[0, 1] == 'l' && -1) || # L, l, last
         s.to_i
       end

@@ -38,16 +38,16 @@ module Fugit
 
       c = Fugit::Cron.allocate.send(:init, nil, nil)
 
-      case h[:every]
-        when :week_day then c.set_weekdays((1..5).to_a.map { |i| [ i, nil ] })
-        #when :plain_day then c.set_monthdays([ nil ])
-        else c.set_monthdays(nil)
+      case e = h[:every]
+        when :biz_day
+          c.set_weekdays((1..5).to_a.map { |i| [ i, nil ] })
+        when :plain_day
+          c.set_monthdays(nil)
+        else
+          c.set_weekdays([ [ Fugit::Cron::Parser::WEEKDS.index(e) ] ])
       end
 
-      case a = h[:at]
-        when Numeric then c.set_hour(a, 0)
-        else c.set_hour(0, 0)
-      end
+      c.set_hour(*(h[:at] || [ 0, 0 ]))
 
       c
     end
@@ -59,6 +59,9 @@ module Fugit
         one two three four five six seven eight nine
         ten eleven twelve ]
 
+      WEEKDAYS =
+        Fugit::Cron::Parser::WEEKDAYS + Fugit::Cron::Parser::WEEKDS
+
       # piece parsers bottom to top
 
       def s(i); rex(nil, i, /[ \t]+/); end
@@ -66,17 +69,23 @@ module Fugit
       def after(i); rex(:after, i, /[ \t]+after[ \t]+/i); end
 
       def digital_hour(i)
-        rex(:digital_hour, i, /(2[0-4]|[01]?[0-9])(:?[0-5]?\d)?( +(am|pm))?/i)
+        rex(:digital_hour, i, /(2[0-4]|[01][0-9]):?[0-5]\d/)
+      end
+      def simple_hour(i)
+        rex(:simple_hour, i, /(2[0-4]|[01]?[0-9])( +(am|pm))?/i)
       end
       def numeral_hour(i)
         rex(:numeral_hour, i, /(#{NUMS.join('|')})( +(am|pm))?/i)
       end
+      def name_hour(i)
+        rex(:name_hour, i, /(noon|midnight)/i)
+      end
       def hour(i)
-        alt(nil, i, :numeral_hour, :digital_hour);
+        alt(nil, i, :numeral_hour, :name_hour, :digital_hour, :simple_hour);
       end
 
       def min_after_hour(i)
-        str(nil, i, 'TODO')
+str(nil, i, 'TODO')
       end
 
       def at_elt(i)
@@ -84,10 +93,11 @@ module Fugit
       end
 
       def plain_day(i); rex(:plain_day, i, /day/i); end
-      def week_day(i); rex(:week_day, i, /(biz|business|week) *day/i); end
+      def biz_day(i); rex(:biz_day, i, /(biz|business|week) *day/i); end
+      def name_day(i); rex(:name_day, i, /#{WEEKDAYS.join('|')}/i); end
 
       def ev_elt(i)
-        alt(nil, i, :plain_day, :week_day)
+        alt(nil, i, :plain_day, :biz_day, :name_day)
       end
 
       def at_(i); rex(nil, i, /at[ \t]+/i); end
@@ -103,6 +113,8 @@ module Fugit
 
       # rewrite parsed tree
 
+      NHOURS = { 'noon' => [ 12, 0 ], 'midnight' => [ 0, 0 ] }
+
       def rewrite_nat(t)
 
 #Raabro.pp(t)
@@ -110,7 +122,7 @@ module Fugit
 
         et = t.lookup(:ev).sublookup(nil)
 
-        h[:every] = et.name == :name_day ? et.string : et.name
+        h[:every] = et.name == :name_day ? et.string.downcase[0, 3] : et.name
 
         at = t.lookup(:at)
         at = at.sublookup(nil) if at
@@ -118,13 +130,20 @@ module Fugit
         h[:at] =
           case at && at.name
             when :digital_hour
-              v = at.string.to_i
-              v += 12 if at.string.match(/pm/i)
-              v
+              s = at.string
+              [ s[0, 2], s.split(':')[1] || s[2, 2] ]
+            when :simple_hour
+              s = at.string.downcase
+              v = s.to_i
+              [ v + (s.index('pm') ? 12 : 0), 0 ]
             when :numeral_hour
-              NUMS.index(at.string.downcase)
+              [ NUMS.index(at.string.downcase), 0 ]
+            when :name_hour
+              NHOURS[at.string.downcase]
             else nil
           end
+
+        # TODO `10 after 5 pm`
 
         h
       end
