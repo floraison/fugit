@@ -341,5 +341,29 @@ describe Fugit::Cron do
       expect(Fugit::Cron.parse('* * * * *') == 1).to eq(false)
     end
   end
+
+  describe '#to_cron_s' do
+
+    [
+
+      [ '0 */3 * * 1,2', '0 0,3,6,9,12,15,18,21 * * 1,2' ],
+      [ '0 5 * * 1,2,3,4,5', '0 5 * * 1,2,3,4,5' ],
+      [ '0 5 * * 1-4,fri#3', '0 5 * * 1,2,3,4,5#3' ],
+      #[ '0 */3 * * 1,2', '0 */3 * * 1-2' ],
+      #[ '0 5 * * 1,2,3,4,5', '0 5 * * 1-5' ],
+      #[ '0 5 * * 1,2,3,4,fri#3', '0 5 * * 1-4,5#3' ],
+
+    ].each do |source, target|
+
+      it "represents #{source.inspect} into #{target.inspect}" do
+
+        sc = Fugit::Cron.parse(source)
+        tc = Fugit::Cron.parse(target)
+
+        expect(sc).to eq(tc)
+        expect(sc.to_cron_s).to eq(target)
+      end
+    end
+  end
 end
 
