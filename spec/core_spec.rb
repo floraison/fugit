@@ -43,6 +43,21 @@ describe Fugit do
       expect(d.class).to eq(Fugit::Duration)
       expect(d.to_plain_s).to eq('1Y2h')
     end
+
+    [
+      [ '0 0 1 jan *', Fugit::Cron ],
+      [ '12y12M', Fugit::Duration ],
+      [ '2017-12-12', Time ],
+      #[ 'every day at noon', Fugit::Cron ],
+    ].each do |str, kla|
+
+      it "parses #{str.inspect} into a #{kla} instance" do
+
+        r = Fugit.parse(str)
+
+        expect(r.class).to eq(kla)
+      end
+    end
   end
 end
 

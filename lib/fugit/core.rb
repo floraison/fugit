@@ -61,7 +61,7 @@ module Fugit
 
   def self.parse(s)
 
-    parse_duration(s) || parse_at(s) || parse_cron(s)
+    parse_cron(s) || parse_duration(s) || parse_at(s)
   end
 
   def self.do_parse(s)
