@@ -4,6 +4,8 @@
 
 ## fugit 0.9.3  not yet released
 
+* First version of Fugit::Nat
+
 
 ## fugit 0.9.2  released 2017-01-04
 
