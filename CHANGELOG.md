@@ -2,7 +2,7 @@
 # fugit CHANGELOG.md
 
 
-## fugit 0.9.3  not yet released
+## fugit 0.9.3  released 2017-01-05
 
 * First version of Fugit::Nat
 
