@@ -32,25 +32,64 @@ module Fugit
 
     def self.parse(s)
 
-      nil
+#p s; Raabro.pp(CronParser.parse(s, debug: 3))
+      h = CronParser.parse(s)
+#p h
+
+      c = Fugit::Cron.allocate.send(:init, nil, nil)
+
+      case h[:every]
+        when :week_day then c.set_weekdays((1..5).to_a.map { |i| [ i, nil ] })
+        #when :plain_day then c.set_monthdays([ nil ])
+        else c.set_monthdays(nil)
+      end
+
+      case h[:at]
+        when 'five' then c.set_hour(5, 0)
+        else c.set_hour(12, 0)
+      end
+
+      c
     end
 
-    module Parser include Raabro
+    module CronParser include Raabro
 
       # piece parsers bottom to top
+
+      def s(i); rex(nil, i, /[ \t]+/); end
+
+      def dgt_hou(i); rex(:dgt_hou, i, /\d+/); end
+      def wrd_hou(i); rex(:wrd_hou, i, /five/); end
+
+      def plain_day(i); rex(:plain_day, i, /day/i); end
+      def week_day(i); rex(:week_day, i, /(biz|business|week) *day/i); end
+
+      def day(i); alt(nil, i, :plain_day, :week_day); end
+      def hou(i); alt(:hou, i, :dgt_hou, :wrd_hou); end
 
       def at_(i); rex(nil, i, /at[ \t]+/i); end
       def ev_(i); rex(nil, i, /every[ \t]+/i); end
 
-      def at(i); seq(nil, i, :at_, :hou); end
-      def ev(i); seq(nil, i, :ev_, :day); end
+      def at(i); seq(:at, i, :at_, :hou); end
+      def ev(i); seq(:ev, i, :ev_, :day); end
 
-      def ev_at(i); seq(nil, i, :ev, :at, '?'); end
-      def at_ev(i); seq(nil, i, :at, :ev); end
+      def ev_at(i); seq(nil, i, :ev, :s, :at); end
+      def at_ev(i); seq(nil, i, :at, :s, :ev); end
 
-      def nat(i); alt(:nat, i, :ev_at, :at_ev); end
+      def nat(i); alt(:nat, i, :ev_at, :at_ev, :ev); end
 
       # rewrite parsed tree
+
+      def rewrite_nat(t)
+
+#Raabro.pp(t)
+        evt = t.lookup(:ev)
+        dayt = evt.sublookup(nil)
+        att = t.lookup(:at)
+        hout = att ? att.lookup(:hou) : nil
+
+        { every: dayt.name, at: hout ? hout.string : nil }
+      end
     end
   end
 end

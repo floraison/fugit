@@ -256,6 +256,17 @@ module Fugit
       to_a.hash
     end
 
+    def set_hour(hour, min)
+      @hours = [ hour ]
+      @minutes = [ min ]
+    end
+    def set_weekdays(a)
+      @weekdays = a
+    end
+    def set_monthdays(a)
+      @monthdays = a
+    end
+
     protected
 
     FREQUENCY_CACHE = {}
@@ -263,6 +274,8 @@ module Fugit
     def init(original, h)
 
       @original = original
+
+      h ||= {}
 
       determine_minutes(h[:min])
       determine_hours(h[:hou])
@@ -302,27 +315,33 @@ module Fugit
     end
 
     def determine_minutes(mins)
+      return @minutes = nil unless mins
       @minutes = mins.inject([]) { |a, r| a.concat(expand(0, 59, r)) }
       compact(:@minutes)
     end
 
     def determine_hours(hous)
+      return @hours = nil unless hous
       @hours = hous.inject([]) { |a, r| a.concat(expand(0, 23, r)) }
       @hours = @hours.collect { |h| h == 24 ? 0 : h }
       compact(:@hours)
     end
 
     def determine_monthdays(doms)
+      return @monthdays = nil unless doms
       @monthdays = doms.inject([]) { |a, r| a.concat(expand(1, 31, r)) }
       compact(:@monthdays)
     end
 
     def determine_months(mons)
+      return @months = nil unless mons
       @months = mons.inject([]) { |a, r| a.concat(expand(1, 12, r)) }
       compact(:@months)
     end
 
     def determine_weekdays(dows)
+
+      return @weekdays = nil unless dows
 
       @weekdays = dows.inject([]) { |a, r|
         aa = expand(0, 7, r)
