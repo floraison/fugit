@@ -111,10 +111,9 @@ module Fugit
           :name_hour, :numeral_hour, :digital_hour, :simple_hour)
       end
 
-      def sugar_(i); rex(nil, i, /(and|or)/i); end
-      def sugar(i); rex(nil, i, /[, \t]+/); end
+      def sugar(i); rex(nil, i, /(and|or|[, \t]+)/i); end
 
-      def elt(i); alt(nil, i, :sugar, :sugar_, :datum); end
+      def elt(i); alt(nil, i, :sugar, :datum); end
       def nat(i); rep(:nat, i, :elt, 1); end
 
       # rewrite parsed tree
