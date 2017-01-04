@@ -21,8 +21,9 @@ describe Fugit::Nat do
       [ 'every day at 16:30', '30 16 * * *' ],
       [ 'every day at noon', '0 12 * * *' ],
       [ 'every day at midnight', '0 0 * * *' ],
+      [ 'every tuesday and monday at 5pm', '0 17 * * 1,2' ],
+      [ 'every wed or Monday at 5pm and 11', '0 11,17 * * 1,3' ],
 #      [ 'every 1st of the month at midnight', '' ],
-#      [ 'every tuesday and monday at 5pm', '' ],
 #      [ 'at 5 after 4, everyday', '' ],
     ].each do |nat, cron|
 

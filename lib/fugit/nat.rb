@@ -53,15 +53,16 @@ module Fugit
         if key == :biz_day
           h[:dow] = (1..5).to_a.collect { |wd| [ wd ] }
         elsif key == :simple_hour || key == :numeral_hour
-          h[:hou] = [ val ]
+          (h[:hou] ||= []) << val
         elsif key == :digital_hour
           h[:hou] = val[0, 1]
           h[:min] = val[1, 1]
         elsif key == :name_day
-          h[:dow] = [ [ val ] ]
+          (h[:dow] ||= []) << [ val ]
+        elsif key == :flag && val == 'pm' && h[:hou]
+          h[:hou][-1] = h[:hou][-1] + 12
         end
       end
-      h[:hou] = [ h[:hou][0] + 12 ] if h[:hou] && a.include?([ :flag, 'pm' ])
       h[:min] ||= [ 0 ]
 
       Fugit::Cron.allocate.send(:init, nil, h)
