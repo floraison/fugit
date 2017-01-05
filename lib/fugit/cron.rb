@@ -224,12 +224,12 @@ module Fugit
 
       loop do
 #p [ :l, Fugit.time_to_s(nt.time) ]
+        (from.to_i == nt.to_i) && (nt.inc(-1); next)
         month_match?(nt) || (nt.dec_month; next)
         day_match?(nt) || (nt.dec_day; next)
         hour_match?(nt) || (nt.dec_hour; next)
         min_match?(nt) || (nt.dec_min; next)
         sec_match?(nt) || (nt.dec_sec(@seconds); next)
-        #nt.dec_sec
         break
       end
 
