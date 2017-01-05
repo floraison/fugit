@@ -408,6 +408,30 @@ describe Fugit::Cron do
         expect(c.to_a).to eq(a)
       end
     end
+
+    [
+
+      { cron: '15 5 0 * * *', from: '2017-01-01', nt: '2017-01-01 00:05:15' },
+      { cron: '15 5 0 * * *', from: '2017-01-01', pt: '2016-12-31 00:05:15' },
+
+    ].each do |h|
+
+      cron = h[:cron]
+      from = Time.parse(h[:from]) || Time.now
+      nt = h[:nt]
+      pt = h[:pt]
+
+      it "computes the #{nt ? 'next' : 'previous'} time correctly for #{cron.inspect}" do
+
+        c = Fugit::Cron.parse(cron)
+
+        if nt
+          expect(Fugit.time_to_plain_s(c.next_time(from))).to eq(nt)
+        else
+          expect(Fugit.time_to_plain_s(c.previous_time(from))).to eq(pt)
+        end
+      end
+    end
   end
 end
 

@@ -110,13 +110,22 @@ module Fugit
       def inc_hour; inc((60 - @t.min) * 60 - @t.sec); end
       def inc_min; inc(60 - @t.sec); end
 
+      def inc_sec(seconds)
+        target = seconds.find { |s| s > @t.sec } || seconds.first
+        inc(target - @t.sec)
+      end
+
       def dec_month
         dec(@t.day * 24 * 3600 + @t.hour * 3600 + @t.min * 60 + @t.sec + 1)
       end
       def dec_day; dec(@t.hour * 3600 + @t.min * 60 + @t.sec + 1); end
       def dec_hour; dec(@t.min * 60 + @t.sec + 1); end
       def dec_min; dec(@t.sec + 1); end
-      def dec_sec; dec(@t.sec); end
+
+      def dec_sec(seconds)
+        target = seconds.reverse.find { |s| s < @t.sec } || seconds.last
+        inc(target - @t.sec)
+      end
 
       def count_weeks(inc)
         c = 0
@@ -136,6 +145,7 @@ module Fugit
     def month_match?(nt); ( ! @months) || @months.include?(nt.month); end
     def hour_match?(nt); ( ! @hours) || @hours.include?(nt.hour); end
     def min_match?(nt); ( ! @minutes) || @minutes.include?(nt.min); end
+    def sec_match?(nt); ( ! @seconds) || @seconds.include?(nt.sec); end
 
     def weekday_match?(nt)
 
@@ -182,9 +192,31 @@ module Fugit
       t = Fugit.do_parse_at(t)
       t = NextTime.new(t)
 
-      month_match?(t) && day_match?(t) && hour_match?(t) && min_match?(t)
+      month_match?(t) && day_match?(t) &&
+      hour_match?(t) && min_match?(t) && sec_match?(t)
     end
 
+#    def next_second(time)
+#
+#      secs = toa(@seconds)
+#
+#      return secs.first + 60 - time.sec if time.sec > secs.last
+#
+#      secs.shift while secs.first < time.sec
+#
+#      secs.first - time.sec
+#    end
+###
+#    def prev_second(time)
+#
+#      secs = toa(@seconds)
+#
+#      return time.sec + 60 - secs.last if time.sec < secs.first
+#
+#      secs.pop while time.sec < secs.last
+#
+#      time.sec - secs.last
+#    end
     def next_time(from=Time.now)
 
       nt = NextTime.new(from)
@@ -195,6 +227,7 @@ module Fugit
         day_match?(nt) || (nt.inc_day; next)
         hour_match?(nt) || (nt.inc_hour; next)
         min_match?(nt) || (nt.inc_min; next)
+        sec_match?(nt) || (nt.inc_sec(@seconds); next)
         break
       end
 
@@ -211,7 +244,8 @@ module Fugit
         day_match?(nt) || (nt.dec_day; next)
         hour_match?(nt) || (nt.dec_hour; next)
         min_match?(nt) || (nt.dec_min; next)
-        nt.dec_sec
+        sec_match?(nt) || (nt.dec_sec(@seconds); next)
+        #nt.dec_sec
         break
       end
 
