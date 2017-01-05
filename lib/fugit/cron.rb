@@ -111,8 +111,11 @@ module Fugit
       def inc_min; inc(60 - @t.sec); end
 
       def inc_sec(seconds)
-        target = seconds.find { |s| s > @t.sec } || seconds.first
-        inc(target - @t.sec)
+        if s = seconds.find { |s| s > @t.sec }
+          inc(s - @t.sec)
+        else
+          inc(60 - @t.sec + seconds.first)
+        end
       end
 
       def dec_month
@@ -196,33 +199,12 @@ module Fugit
       hour_match?(t) && min_match?(t) && sec_match?(t)
     end
 
-#    def next_second(time)
-#
-#      secs = toa(@seconds)
-#
-#      return secs.first + 60 - time.sec if time.sec > secs.last
-#
-#      secs.shift while secs.first < time.sec
-#
-#      secs.first - time.sec
-#    end
-###
-#    def prev_second(time)
-#
-#      secs = toa(@seconds)
-#
-#      return time.sec + 60 - secs.last if time.sec < secs.first
-#
-#      secs.pop while time.sec < secs.last
-#
-#      time.sec - secs.last
-#    end
     def next_time(from=Time.now)
 
-      nt = NextTime.new(from)
+      nt = NextTime.new(from + 1)
 
       loop do
-#p Fugit.time_to_s(nt.time)
+#p [ :l, Fugit.time_to_s(nt.time) ]
         month_match?(nt) || (nt.inc_month; next)
         day_match?(nt) || (nt.inc_day; next)
         hour_match?(nt) || (nt.inc_hour; next)
@@ -239,7 +221,7 @@ module Fugit
       nt = NextTime.new(from)
 
       loop do
-#p Fugit.time_to_s(nt.time)
+#p [ :l, Fugit.time_to_s(nt.time) ]
         month_match?(nt) || (nt.dec_month; next)
         day_match?(nt) || (nt.dec_day; next)
         hour_match?(nt) || (nt.dec_hour; next)

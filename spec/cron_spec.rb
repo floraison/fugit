@@ -16,6 +16,8 @@ describe Fugit::Cron do
 
     # min hou dom mon dow, expected next time[, now]
 
+    [ '* * * * *', '2017-01-02 12:01:00' ],
+
     [ '5 0 * * *', '2017-01-03 00:05:00' ],
     [ '15 14 1 * *', '2017-02-01 14:15:00' ],
 
@@ -81,6 +83,34 @@ describe Fugit::Cron do
       }
 
     NEXT_TIMES.each(&success)
+
+    context 'implicit tz DST transition' do
+
+#expect(
+#  nt('* * * * * America/Los_Angeles', Time.utc(2015, 3, 8, 9, 59)) \
+#    .strftime('%Y-%m-%d %H:%M:%S %Z %z')
+#).to eq(
+#  '2015-03-08 03:00:00 PDT -0700'
+#)
+      [
+        [ 'America/Los_Angeles', '* * * * *', '2015-03-08 09:59:00 UTC',
+          '2015-03-08 03:00:00 PDT -0700' ],
+
+      ].each do |tz, cron, from, target|
+
+        it "correctly transit in or out of DST for #{tz.inspect}" do
+
+          in_zone(tz) do
+
+            c = Fugit::Cron.parse(cron)
+            f = Time.parse(from)
+            nt = c.next_time(f).localtime
+
+            expect(Fugit.time_to_zone_s(nt)).to eq(target)
+          end
+        end
+      end
+    end
   end
 
   describe '#match?' do

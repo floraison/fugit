@@ -45,12 +45,12 @@ module Fugit
 
   def self.time_to_plain_s(t=Time.now)
 
-    s = StringIO.new
+    t.strftime('%Y-%m-%d %H:%M:%S') + (t.utc? ? ' Z' : '')
+  end
 
-    s << t.strftime('%Y-%m-%d %H:%M:%S')
-    s << ' Z' if t.utc?
+  def self.time_to_zone_s(t=Time.now)
 
-    s.string
+    t.strftime('%Y-%m-%d %H:%M:%S %Z %z')
   end
 end
 
