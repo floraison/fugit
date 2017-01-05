@@ -146,7 +146,7 @@ module Fugit
 
       id = inflate
       h = id.h.dup
-      s = h.delete(:sec)
+      s = h.delete(:sec) || 0
 
       INFLA_KEYS.each do |k, v|
 

@@ -192,10 +192,11 @@ describe Fugit::Cron do
   describe '#brute_frequency' do
 
     [
-      [ '* * * * *', [ '1m', '1m', 525600 ] ],
-      [ '0 0 * * *', [ '1D', '1D', 365 ] ],
-      [ '0 0 * * sun', [ '1W', '1W', 53 ] ],
+      [ '* * * * *', [ '1m', '1m', 525599 ] ],
+      [ '0 0 * * *', [ '1D', '1D', 364 ] ],
+      [ '0 0 * * sun', [ '1W', '1W', 52 ] ],
       [ '0 0 1 1 *', [ '52W1D', '52W1D', 1 ] ],
+      [ '0 0 29 2 *', [ '208W5D', '208W5D', 1 ] ],
     ].each do |cron, freq|
 
       it "computes #{freq.inspect} for #{cron.inspect}" do

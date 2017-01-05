@@ -87,6 +87,7 @@ module Fugit
       end
 
       def time; @t; end
+      def to_i; @t.to_i; end
 
       %w[ year month day wday hour min sec ]
         .collect(&:to_sym).each { |k| define_method(k) { @t.send(k) } }
@@ -201,10 +202,11 @@ module Fugit
 
     def next_time(from=Time.now)
 
-      nt = NextTime.new(from + 1)
+      nt = NextTime.new(from)
 
       loop do
 #p [ :l, Fugit.time_to_s(nt.time) ]
+        (from.to_i == nt.to_i) && (nt.inc(1); next)
         month_match?(nt) || (nt.inc_month; next)
         day_match?(nt) || (nt.inc_day; next)
         hour_match?(nt) || (nt.inc_hour; next)
@@ -241,14 +243,15 @@ module Fugit
 
       FREQUENCY_CACHE["#{to_cron_s}|#{year}"] ||=
         begin
+
           deltas = []
 
           t0 = nil
           loop do
             t1 = next_time(t0 || Time.parse("#{year}-01-01"))
-            deltas << (t1 - t0).to_i + 60 if t0
-            break if t1.year > year
-            t0 = t1 + 60
+            deltas << (t1 - t0).to_i if t0
+            break if deltas.any? && t1.year > year
+            t0 = t1
           end
 
           [ deltas.min, deltas.max, deltas.size ]
