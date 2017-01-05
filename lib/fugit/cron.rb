@@ -138,8 +138,6 @@ module Fugit
 
     def weekday_match?(nt)
 
-#p @weekdays
-#p [ nt.day, nt.wday ]
       return true if @weekdays.nil?
 
       wd, hsh = @weekdays.find { |wd, hsh| wd == nt.wday }
@@ -264,8 +262,6 @@ module Fugit
 
       @original = original
 
-      h ||= {}
-
       determine_minutes(h[:min])
       determine_hours(h[:hou])
       determine_monthdays(h[:dom])
@@ -304,52 +300,47 @@ module Fugit
     end
 
     def determine_minutes(mins)
-      return @minutes = nil unless mins
       @minutes = mins.inject([]) { |a, r| a.concat(expand(0, 59, r)) }
       compact(:@minutes)
     end
 
     def determine_hours(hous)
-      return @hours = nil unless hous
       @hours = hous.inject([]) { |a, r| a.concat(expand(0, 23, r)) }
       @hours = @hours.collect { |h| h == 24 ? 0 : h }
       compact(:@hours)
     end
 
     def determine_monthdays(doms)
-      return @monthdays = nil unless doms
       @monthdays = doms.inject([]) { |a, r| a.concat(expand(1, 31, r)) }
       compact(:@monthdays)
     end
 
     def determine_months(mons)
-      return @months = nil unless mons
       @months = mons.inject([]) { |a, r| a.concat(expand(1, 12, r)) }
       compact(:@months)
     end
 
     def determine_weekdays(dows)
 
-      return @weekdays = nil unless dows
+      @weekdays = []
 
-      @weekdays = dows.inject([]) { |a, r|
-        aa = expand(0, 7, r)
-        if hsh = r[3]
-          a.concat([ [ aa.first, hsh ] ])
-        else
-          a.concat(aa.collect { |i| [ i, nil ] })
+      dows.each do |a, z, s, h| # a to z, slash and hash
+        if h
+          @weekdays << [ a, h ]
+        elsif s
+          ((a || 0)..(z || (a ? a : 6))).step(s < 1 ? 1 : s)
+            .each { |i| @weekdays << [ i ] }
+        elsif z
+          (a..z).each { |i| @weekdays << [ i ] }
+        elsif a
+          @weekdays << [ a ]
+        #else
         end
-      }
+      end
 
-      @weekdays =
-        if @weekdays.include?([ nil, nil ])
-          nil
-        else
-          @weekdays
-            .collect { |d, h| [ d == 7 ? 0 : d, h ] }
-            .uniq { |d| d.join('#') }
-            .sort_by { |d| d.join('#') }
-        end
+      @weekdays.each { |wd| wd[0] = 0 if wd[0] == 7 } # turn sun7 into sun0
+      @weekdays.uniq!
+      @weekdays = nil if @weekdays.empty?
     end
 
     module Parser include Raabro
@@ -361,14 +352,14 @@ module Fugit
 
       # piece parsers bottom to top
 
-      def s(i); rex(:s, i, /[ \t]+/); end
-      def star(i); str(:star, i, '*'); end
+      def s(i); rex(nil, i, /[ \t]+/); end
+      def star(i); str(nil, i, '*'); end
       def hyphen(i); str(nil, i, '-'); end
       def comma(i); str(nil, i, ','); end
 
       def slash(i); rex(:slash, i, /\/\d\d?/); end
 
-      def core_min(i); rex(:min, i, /[0-5]?\d/); end
+      def core_mos(i); rex(:mos, i, /[0-5]?\d/); end # min or sec
       def core_hou(i); rex(:hou, i, /(2[0-4]|[01]?[0-9])/); end
       def core_dom(i); rex(:dom, i, /(-?(3[01]|[012]?[0-9])|last|l)/i); end
       def core_mon(i); rex(:mon, i, /(1[0-2]|0?[0-9]|#{MONTHS[1..-1].join('|')})/i); end
@@ -376,56 +367,68 @@ module Fugit
 
       def dow_hash(i); rex(:hash, i, /#(-?[1-5]|last|l)/i); end
 
-      def min(i); core_min(i); end
+      def mos(i); core_mos(i); end
       def hou(i); core_hou(i); end
       def dom(i); core_dom(i); end
       def mon(i); core_mon(i); end
       def dow(i); core_dow(i); end
 
-      def _min(i); seq(nil, i, :hyphen, :min); end
+      def _mos(i); seq(nil, i, :hyphen, :mos); end
       def _hou(i); seq(nil, i, :hyphen, :hou); end
       def _dom(i); seq(nil, i, :hyphen, :dom); end
       def _mon(i); seq(nil, i, :hyphen, :mon); end
       def _dow(i); seq(nil, i, :hyphen, :dow); end
 
       # r: range
-      def r_min(i); seq(nil, i, :min, :_min, '?'); end
+      def r_mos(i); seq(nil, i, :mos, :_mos, '?'); end
       def r_hou(i); seq(nil, i, :hou, :_hou, '?'); end
       def r_dom(i); seq(nil, i, :dom, :_dom, '?'); end
       def r_mon(i); seq(nil, i, :mon, :_mon, '?'); end
       def r_dow(i); seq(nil, i, :dow, :_dow, '?'); end
 
       # sor: star or range
-      def sor_min(i); alt(nil, i, :star, :r_min); end
+      def sor_mos(i); alt(nil, i, :star, :r_mos); end
       def sor_hou(i); alt(nil, i, :star, :r_hou); end
       def sor_dom(i); alt(nil, i, :star, :r_dom); end
       def sor_mon(i); alt(nil, i, :star, :r_mon); end
       def sor_dow(i); alt(nil, i, :star, :r_dow); end
 
       # sorws: star or range with[out] slash
-      def sorws_min(i); seq(nil, i, :sor_min, :slash, '?'); end
-      def sorws_hou(i); seq(nil, i, :sor_hou, :slash, '?'); end
-      def sorws_dom(i); seq(nil, i, :sor_dom, :slash, '?'); end
-      def sorws_mon(i); seq(nil, i, :sor_mon, :slash, '?'); end
-      def sorws_dow(i); seq(nil, i, :sor_dow, :slash, '?'); end
+      def sorws_mos(i); seq(:elt, i, :sor_mos, :slash, '?'); end
+      def sorws_hou(i); seq(:elt, i, :sor_hou, :slash, '?'); end
+      def sorws_dom(i); seq(:elt, i, :sor_dom, :slash, '?'); end
+      def sorws_mon(i); seq(:elt, i, :sor_mon, :slash, '?'); end
+      def sorws_dow(i); seq(:elt, i, :sor_dow, :slash, '?'); end
 
-      def h_dow(i); seq(nil, i, :core_dow, :dow_hash); end
+      def h_dow(i); seq(:elt, i, :core_dow, :dow_hash); end
 
       def _sorws_dow(i); alt(nil, i, :h_dow, :sorws_dow); end
 
-      def list_min(i); jseq(:min, i, :sorws_min, :comma); end
+      def list_sec(i); jseq(:sec, i, :sorws_mos, :comma); end
+      def list_min(i); jseq(:min, i, :sorws_mos, :comma); end
       def list_hou(i); jseq(:hou, i, :sorws_hou, :comma); end
       def list_dom(i); jseq(:dom, i, :sorws_dom, :comma); end
       def list_mon(i); jseq(:mon, i, :sorws_mon, :comma); end
       def list_dow(i); jseq(:dow, i, :_sorws_dow, :comma); end
 
+      def lsec_(i); seq(nil, i, :list_sec, :s); end
       def lmin_(i); seq(nil, i, :list_min, :s); end
       def lhou_(i); seq(nil, i, :list_hou, :s); end
       def ldom_(i); seq(nil, i, :list_dom, :s); end
       def lmon_(i); seq(nil, i, :list_mon, :s); end
       alias ldow list_dow
 
-      def cron(i); seq(:cron, i, :lmin_, :lhou_, :ldom_, :lmon_, :ldow); end
+      def classic_cron(i)
+        seq(:ccron, i, :lmin_, :lhou_, :ldom_, :lmon_, :ldow)
+      end
+      def second_cron(i)
+        seq(:scron, i, :lsec_, :lmin_, :lhou_, :ldom_, :lmon_, :ldow)
+      end
+
+      def cron(i)
+        alt(:cron, i, :classic_cron)
+        #alt(:cron, i, :second_cron, :classic_cron)
+      end
 
       # rewriting the parsed tree
 
@@ -435,40 +438,42 @@ module Fugit
 
         (k == :mon && MONTHS.index(s)) ||
         (k == :dow && WEEKDS.index(s)) ||
-        (k == :dom && s[0, 1] == 'l' && -1) || # L, l, last
+        ((k == :dom) && s[0, 1] == 'l' && -1) || # L, l, last
         s.to_i
+      end
+
+      def rewrite_elt(k, t)
+
+        (a, z), others = t
+          .subgather(nil)
+          .partition { |tt| ![ :hash, :slash ].include?(tt.name) }
+        s = others.find { |tt| tt.name == :slash }
+        h = others.find { |tt| tt.name == :hash }
+
+        h = h ? h.string[1..-1] : nil
+        h = -1 if h && h.upcase[0, 1] == 'L'
+        h = h.to_i if h
+
+        a = a ? to_i(k, a) : nil
+        z = z ? to_i(k, z) : nil
+        a, z = z, a if a && z && a > z
+
+        [ a, z, s ? s.string[1..-1].to_i : nil, h ]
       end
 
       def rewrite_entry(t)
 
-        k = t.name
-
-        t.children.select { |ct| ct.children.any? }.inject([]) { |a, ct|
-
-          xts = ct.gather(k)
-#xts.each { |xt| Raabro.pp(xt) }
-          range = xts.any? ? xts.collect { |xt| to_i(k, xt) } : []
-          while range.size < 2; range << nil; end
-
-          st = ct.lookup(:slash)
-          range << (st ? st.string[1..-1].to_i : nil)
-
-          if k == :dow && ht = ct.lookup(:hash)
-            hs = ht.string.downcase
-            range << ((hs[1, 1] == 'l') ? -1 : hs[1..-1].to_i)
-          end
-
-          a << range
-
-          a
-        }
+        t
+          .subgather(:elt)
+          .collect { |et| rewrite_elt(t.name, et) }
       end
-
-      SYMS = %w[ min hou dom mon dow ].collect(&:to_sym)
 
       def rewrite_cron(t)
 
-        SYMS.inject({}) { |h, k| h[k] = rewrite_entry(t.lookup(k)); h }
+        t
+          .sublookup(nil) # go to :ccron or :scron
+          .subgather(nil) # list min, hou, mon, ...
+          .inject({}) { |h, tt| h[tt.name] = rewrite_entry(tt); h }
       end
     end
   end

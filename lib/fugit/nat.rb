@@ -47,23 +47,24 @@ module Fugit
 
     def self.parse_cron(a)
 
-      h = { min: nil, hou: nil, dom: nil, mon: nil, dow: nil }
+      h = { min: nil, hou: [], dom: [ nil ], mon: [ nil ], dow: [ nil ] }
 
       a.each do |key, val|
         if key == :biz_day
-          h[:dow] = (1..5).to_a.collect { |wd| [ wd ] }
+          h[:dow] = [ [ 1, 5 ] ]
         elsif key == :simple_hour || key == :numeral_hour
-          (h[:hou] ||= []) << val
+          (h[:hou] ||= []) << [ val ]
         elsif key == :digital_hour
-          h[:hou] = val[0, 1]
-          h[:min] = val[1, 1]
+          h[:hou] = [ val[0, 1] ]
+          h[:min] = [ val[1, 1] ]
         elsif key == :name_day
           (h[:dow] ||= []) << [ val ]
         elsif key == :flag && val == 'pm' && h[:hou]
-          h[:hou][-1] = h[:hou][-1] + 12
+          h[:hou][-1] =  [ h[:hou][-1].first + 12 ]
         end
       end
       h[:min] ||= [ 0 ]
+      h[:dow].sort_by! { |a, z| a || 0 }
 
       Fugit::Cron.allocate.send(:init, nil, h)
     end
