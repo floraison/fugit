@@ -374,3 +374,40 @@ describe Fugit::Cron do
   end
 end
 
+describe Fugit::Cron do
+
+  context 'sec6' do
+
+    [
+
+      [ '* 5 0 * * *', '* 5 0 * * *' ],
+
+    ].each do |s0, s1|
+
+      it "parses #{s0.inspect} and renders it as #{s1.inspect}" do
+
+        c = Fugit::Cron.parse(s0)
+
+        expect(c.to_cron_s).to eq(s1)
+      end
+    end
+
+    [
+
+      [ '0 5 0 * * *', [ [ 0 ], [ 5 ], [ 0 ], nil, nil, nil ] ],
+      [ '5 0 * * *', [ [ 0 ], [ 5 ], [ 0 ], nil, nil, nil ] ],
+
+      [ '* 5 0 * * *', [ nil, [ 5 ], [ 0 ], nil, nil, nil ] ],
+
+    ].each do |s, a|
+
+      it "parses #{s.inspect} and stores it as #{a.inspect}" do
+
+        c = Fugit::Cron.parse(s)
+
+        expect(c.to_a).to eq(a)
+      end
+    end
+  end
+end
+

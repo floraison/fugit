@@ -51,12 +51,13 @@ module Fugit
 
       @cron_s ||=
         [
+          @seconds == [ 0 ] ? nil : (@seconds || [ '*' ]).join(','),
           (@minutes || [ '*' ]).join(','),
           (@hours || [ '*' ]).join(','),
           (@monthdays || [ '*' ]).join(','),
           (@months || [ '*' ]).join(','),
           (@weekdays || [ [ '*' ] ]).map { |d| d.compact.join('#') }.join(',')
-        ].join(' ')
+        ].compact.join(' ')
     end
 
     def self.parse(s)
@@ -240,7 +241,7 @@ module Fugit
 
     def to_a
 
-      [ @minutes, @hours, @monthdays, @months, @weekdays ]
+      [ @seconds, @minutes, @hours, @monthdays, @months, @weekdays ]
     end
 
     def ==(o)
@@ -261,7 +262,9 @@ module Fugit
     def init(original, h)
 
       @original = original
+      @cron_s = nil # just to be sure
 
+      determine_seconds(h[:sec])
       determine_minutes(h[:min])
       determine_hours(h[:hou])
       determine_monthdays(h[:dom])
@@ -299,32 +302,37 @@ module Fugit
       arr.sort!
     end
 
-    def determine_minutes(mins)
-      @minutes = mins.inject([]) { |a, r| a.concat(expand(0, 59, r)) }
+    def determine_seconds(a)
+      @seconds = (a || [ 0 ]).inject([]) { |a, r| a.concat(expand(0, 59, r)) }
+      compact(:@seconds)
+    end
+
+    def determine_minutes(a)
+      @minutes = a.inject([]) { |a, r| a.concat(expand(0, 59, r)) }
       compact(:@minutes)
     end
 
-    def determine_hours(hous)
-      @hours = hous.inject([]) { |a, r| a.concat(expand(0, 23, r)) }
+    def determine_hours(a)
+      @hours = a.inject([]) { |a, r| a.concat(expand(0, 23, r)) }
       @hours = @hours.collect { |h| h == 24 ? 0 : h }
       compact(:@hours)
     end
 
-    def determine_monthdays(doms)
-      @monthdays = doms.inject([]) { |a, r| a.concat(expand(1, 31, r)) }
+    def determine_monthdays(a)
+      @monthdays = a.inject([]) { |a, r| a.concat(expand(1, 31, r)) }
       compact(:@monthdays)
     end
 
-    def determine_months(mons)
-      @months = mons.inject([]) { |a, r| a.concat(expand(1, 12, r)) }
+    def determine_months(a)
+      @months = a.inject([]) { |a, r| a.concat(expand(1, 12, r)) }
       compact(:@months)
     end
 
-    def determine_weekdays(dows)
+    def determine_weekdays(a)
 
       @weekdays = []
 
-      dows.each do |a, z, s, h| # a to z, slash and hash
+      a.each do |a, z, s, h| # a to z, slash and hash
         if h
           @weekdays << [ a, h ]
         elsif s
@@ -426,8 +434,7 @@ module Fugit
       end
 
       def cron(i)
-        alt(:cron, i, :classic_cron)
-        #alt(:cron, i, :second_cron, :classic_cron)
+        alt(:cron, i, :second_cron, :classic_cron)
       end
 
       # rewriting the parsed tree
