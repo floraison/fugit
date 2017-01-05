@@ -86,12 +86,6 @@ describe Fugit::Cron do
 
     context 'implicit tz DST transition' do
 
-#expect(
-#  nt('* * * * * America/Los_Angeles', Time.utc(2015, 3, 8, 9, 59)) \
-#    .strftime('%Y-%m-%d %H:%M:%S %Z %z')
-#).to eq(
-#  '2015-03-08 03:00:00 PDT -0700'
-#)
       [
         [ 'America/Los_Angeles', '* * * * *', '2015-03-08 09:59:00 UTC',
           '2015-03-08 03:00:00 PDT -0700' ],
@@ -108,6 +102,49 @@ describe Fugit::Cron do
 
             expect(Fugit.time_to_zone_s(nt)).to eq(target)
           end
+        end
+      end
+
+      it 'correctly increments every minute into DST' do
+
+        in_zone 'America/Los_Angeles' do
+
+          c = Fugit::Cron.parse('* * * * *')
+          t = Time.parse('2015-03-08 01:57:00')
+
+          points =
+            4.times.collect do
+              t = c.next_time(t)
+              t.strftime("%H:%M_%Z") + '__' + t.dup.utc.strftime("%H:%M_%Z")
+            end
+
+          expect(points.join("\n")).to eq(%w[
+            01:58_PST__09:58_UTC
+            01:59_PST__09:59_UTC
+            03:00_PDT__10:00_UTC
+            03:01_PDT__10:01_UTC
+          ].join("\n"))
+        end
+      end
+
+      it 'correctly increments out of DST' do
+
+        in_zone 'America/Los_Angeles' do
+
+          c = Fugit::Cron.parse('15 * * * *')
+          t = Time.parse('2015-11-01 00:50:00')
+
+          points =
+            3.times.collect do
+              t = c.next_time(t)
+              t.strftime("%H:%M_%Z") + '__' + t.dup.utc.strftime("%H:%M_%Z")
+            end
+
+          expect(points.join("\n")).to eq(%w[
+            01:15_PDT__08:15_UTC
+            01:15_PST__09:15_UTC
+            02:15_PST__10:15_UTC
+          ].join("\n"))
         end
       end
     end
