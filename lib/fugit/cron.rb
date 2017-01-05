@@ -236,8 +236,10 @@ module Fugit
       nt.time
     end
 
-    # Returns [ min delta, max delta, occurence count ]
-    # Computes for a non leap year (2017).
+    # Mostly used as a #next_time sanity check.
+    # Avoid for "business" use, it's slow.
+    #
+    # 2017 is non leap year (though it is preceded by a leap second)
     #
     def brute_frequency(year=2017)
 
@@ -246,15 +248,25 @@ module Fugit
 
           deltas = []
 
+          t = Time.parse("#{year}-01-01") - 1
           t0 = nil
+          t1 = nil
           loop do
-            t1 = next_time(t0 || Time.parse("#{year}-01-01"))
-            deltas << (t1 - t0).to_i if t0
+            t1 = next_time(t)
+            deltas << (t1 - t).to_i if t0
+            t0 ||= t1
             break if deltas.any? && t1.year > year
-            t0 = t1
+            break if t1.year - t0.year > 7
+            t = t1
           end
 
-          [ deltas.min, deltas.max, deltas.size ]
+          occurences = deltas.size
+          span = t1 - t0
+          span_years = span / (365 * 24 * 3600)
+          yearly_occurences = occurences.to_f / span_years
+
+          [ deltas.min, deltas.max, occurences,
+            span.to_i, span_years.to_i, yearly_occurences.to_i ]
         end
     end
 
