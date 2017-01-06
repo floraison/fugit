@@ -2,6 +2,9 @@
 # fugit CHANGELOG.md
 
 
+## fugit 0.9.5  not yet released
+
+
 ## fugit 0.9.4  released 2017-01-06
 
 * Accept cron strings with seconds
