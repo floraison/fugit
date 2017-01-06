@@ -80,10 +80,10 @@ module Fugit
       parse(s) || fail(ArgumentError.new("not a cron string #{s.inspect}"))
     end
 
-    class NextTime # TODO at some point, use ZoTime
+    class TimeCursor # TODO at some point, use ZoTime
 
       def initialize(t)
-        @t = t.is_a?(NextTime) ? t.time : t
+        @t = t.is_a?(TimeCursor) ? t.time : t
       end
 
       def time; @t; end
@@ -173,7 +173,7 @@ module Fugit
 
       return true if @monthdays.nil?
 
-      last = (NextTime.new(nt).inc_month.time - 24 * 3600).day + 1
+      last = (TimeCursor.new(nt).inc_month.time - 24 * 3600).day + 1
 
       @monthdays
         .collect { |d| d < 1 ? last + d : d }
@@ -194,7 +194,7 @@ module Fugit
     def match?(t)
 
       t = Fugit.do_parse_at(t)
-      t = NextTime.new(t)
+      t = TimeCursor.new(t)
 
       month_match?(t) && day_match?(t) &&
       hour_match?(t) && min_match?(t) && sec_match?(t)
@@ -202,38 +202,38 @@ module Fugit
 
     def next_time(from=Time.now)
 
-      nt = NextTime.new(from)
+      t = TimeCursor.new(from)
 
       loop do
-#p [ :l, Fugit.time_to_s(nt.time) ]
-        (from.to_i == nt.to_i) && (nt.inc(1); next)
-        month_match?(nt) || (nt.inc_month; next)
-        day_match?(nt) || (nt.inc_day; next)
-        hour_match?(nt) || (nt.inc_hour; next)
-        min_match?(nt) || (nt.inc_min; next)
-        sec_match?(nt) || (nt.inc_sec(@seconds); next)
+#p [ :l, Fugit.time_to_s(t.time) ]
+        (from.to_i == t.to_i) && (t.inc(1); next)
+        month_match?(t) || (t.inc_month; next)
+        day_match?(t) || (t.inc_day; next)
+        hour_match?(t) || (t.inc_hour; next)
+        min_match?(t) || (t.inc_min; next)
+        sec_match?(t) || (t.inc_sec(@seconds); next)
         break
       end
 
-      nt.time
+      t.time
     end
 
     def previous_time(from=Time.now)
 
-      nt = NextTime.new(from)
+      t = TimeCursor.new(from)
 
       loop do
-#p [ :l, Fugit.time_to_s(nt.time) ]
-        (from.to_i == nt.to_i) && (nt.inc(-1); next)
-        month_match?(nt) || (nt.dec_month; next)
-        day_match?(nt) || (nt.dec_day; next)
-        hour_match?(nt) || (nt.dec_hour; next)
-        min_match?(nt) || (nt.dec_min; next)
-        sec_match?(nt) || (nt.dec_sec(@seconds); next)
+#p [ :l, Fugit.time_to_s(t.time) ]
+        (from.to_i == t.to_i) && (t.inc(-1); next)
+        month_match?(t) || (t.dec_month; next)
+        day_match?(t) || (t.dec_day; next)
+        hour_match?(t) || (t.dec_hour; next)
+        min_match?(t) || (t.dec_min; next)
+        sec_match?(t) || (t.dec_sec(@seconds); next)
         break
       end
 
-      nt.time
+      t.time
     end
 
     # Mostly used as a #next_time sanity check.
