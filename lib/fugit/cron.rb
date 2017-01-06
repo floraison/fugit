@@ -241,6 +241,8 @@ module Fugit
     #
     # 2017 is non leap year (though it is preceded by a leap second)
     #
+    # Nota bene: cron with seconds are not supported.
+    #
     def brute_frequency(year=2017)
 
       FREQUENCY_CACHE["#{to_cron_s}|#{year}"] ||=
