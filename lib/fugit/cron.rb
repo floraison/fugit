@@ -67,6 +67,8 @@ module Fugit
       original = s
       s = SPECIALS[s] || s
 
+      return nil unless s.is_a?(String)
+
 #p s; Raabro.pp(Parser.parse(s, debug: 3))
       h = Parser.parse(s)
 

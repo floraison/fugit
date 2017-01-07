@@ -4,6 +4,7 @@
 
 ## fugit 0.9.5  not yet released
 
+* Implement Fugit.determine_type(s)
 * Rename core.rb to parse.rb
 
 

@@ -23,6 +23,22 @@ describe Fugit::Duration do
       expect(Fugit::Duration.parse(1001.05).to_plain_s).to eq('1001.05s')
     end
 
+    it "returns the input immediately if it's a duration" do
+
+      d = Fugit::Duration.parse('1s'); expect(d.class).to eq(Fugit::Duration)
+
+      d1 = Fugit::Duration.parse(d)
+
+      expect(d1.class).to eq(Fugit::Duration)
+      expect(d1.object_id).to eq(d.object_id)
+    end
+
+    it 'returns nil if it cannot parse' do
+
+      expect(Fugit::Duration.parse(true)).to eq(nil)
+      expect(Fugit::Duration.parse('nada')).to eq(nil)
+    end
+
     DAY_S = 24 * 3600
 
     [

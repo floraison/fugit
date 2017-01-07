@@ -62,5 +62,15 @@ module Fugit
     parse(s, opts) ||
     fail(ArgumentError.new("found no time information in #{s.inspect}"))
   end
+
+  def self.determine_type(s)
+
+    case self.parse(s)
+      when ::Time then 'at'
+      when ::Fugit::Cron then 'cron'
+      when ::Fugit::Duration then 'in'
+      else nil
+    end
+  end
 end
 

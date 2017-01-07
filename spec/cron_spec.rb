@@ -261,6 +261,22 @@ describe Fugit::Cron do
 
   describe '.parse' do
 
+    it "returns the input immediately if it's a cron" do
+
+      c = Fugit.parse('* * * * *'); expect(c.class).to eq(Fugit::Cron)
+
+      c1 = Fugit::Cron.parse(c)
+
+      expect(c1.class).to eq(Fugit::Cron)
+      expect(c1.object_id).to eq(c.object_id)
+    end
+
+    it 'returns nil if it cannot parse' do
+
+      expect(Fugit::Cron.parse(true)).to eq(nil)
+      expect(Fugit::Cron.parse('nada')).to eq(nil)
+    end
+
     it 'parses @reboot'
 
     context 'success' do

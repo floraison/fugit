@@ -32,6 +32,10 @@ module Fugit
 
     def self.parse(s)
 
+      return s if s.is_a?(Fugit::Cron) || s.is_a?(Fugit::Duration)
+
+      return nil unless s.is_a?(String)
+
 #p s; Raabro.pp(Parser.parse(s, debug: 3))
       a = Parser.parse(s)
 

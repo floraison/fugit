@@ -84,9 +84,8 @@ describe Fugit do
 
     it 'returns nil when it cannot parse' do
 
-      x = Fugit.parse('I have a pen, I have an apple, pineapple!')
-
-      expect(x).to eq(nil)
+      expect(Fugit.parse(true)).to eq(nil)
+      expect(Fugit.parse('I have a pen, I have an apple, pen apple')).to eq(nil)
     end
   end
 
@@ -108,6 +107,23 @@ describe Fugit do
         'found no time information in ' +
         '"I have a pen, I have an apple, pineapple!"'
       )
+    end
+  end
+
+  describe '.determine_type' do
+
+    it 'returns nil if it cannot determine' do
+
+      expect(Fugit.determine_type('nada')).to eq(nil)
+      expect(Fugit.determine_type(true)).to eq(nil)
+    end
+
+    it 'returns the right type' do
+
+      expect(Fugit.determine_type('* * * * *')).to eq('cron')
+      expect(Fugit.determine_type('* * * * * *')).to eq('cron')
+      expect(Fugit.determine_type('1s')).to eq('in')
+      expect(Fugit.determine_type('2017-01-01')).to eq('at')
     end
   end
 end

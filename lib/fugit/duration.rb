@@ -40,9 +40,11 @@ module Fugit
 
       original = s
 
-      s = s
-      #s = s.to_i if s.is_a?(Numeric)
-      s = s.to_s.strip
+      s = s.to_s if s.is_a?(Numeric)
+
+      return nil unless s.is_a?(String)
+
+      s = s.strip
       s = s + 's' if s.match(/\A-?(\d*\.)?\d+\z/)
 #p [ original, s ]; Raabro.pp(Parser.parse(s, debug: 3))
 

@@ -35,6 +35,12 @@ describe Fugit::Nat do
         expect(c.to_cron_s).to eq(cron)
       end
     end
+
+    it 'returns nil if it cannot parse' do
+
+      expect(Fugit::Nat.parse(true)).to eq(nil)
+      expect(Fugit::Nat.parse('nada')).to eq(nil)
+    end
   end
 end
 
