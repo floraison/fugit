@@ -4,6 +4,8 @@
 
 ## fugit 0.9.5  not yet released
 
+* Rename core.rb to parse.rb
+
 
 ## fugit 0.9.4  released 2017-01-06
 

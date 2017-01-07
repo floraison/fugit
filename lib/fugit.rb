@@ -33,9 +33,9 @@ require 'stringio'
 
 require 'raabro'
 
-require 'fugit/core'
 require 'fugit/misc'
 require 'fugit/cron'
 require 'fugit/duration'
 require 'fugit/nat'
+require 'fugit/parse'
 
