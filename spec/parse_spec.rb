@@ -58,6 +58,44 @@ describe Fugit do
         expect(r.class).to eq(kla)
       end
     end
+
+    it 'parses "nats"' do
+
+      c = Fugit.parse('every day at noon')
+
+      expect(c.class).to eq(Fugit::Cron)
+      expect(c.to_cron_s).to eq('0 12 * * *')
+    end
+
+    it 'disables nat parsing when nat: false'
+
+    it 'returns nil when it cannot parse' do
+
+      x = Fugit.parse('I have a pen, I have an apple, pineapple!')
+
+      expect(x).to eq(nil)
+    end
+  end
+
+  describe '.do_parse' do
+
+    it 'parses' do
+
+      c = Fugit.do_parse('every day at midnight')
+
+      expect(c.class).to eq(Fugit::Cron)
+      expect(c.to_cron_s).to eq('0 0 * * *')
+    end
+
+    it 'fails when it cannot parse' do
+      expect {
+        Fugit.do_parse('I have a pen, I have an apple, pineapple!')
+      }.to raise_error(
+        ArgumentError,
+        'found no time information in ' +
+        '"I have a pen, I have an apple, pineapple!"'
+      )
+    end
   end
 end
 

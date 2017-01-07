@@ -36,38 +36,25 @@ module Fugit
     Time.parse(s)
   end
 
-  def self.parse_cron(s)
-
-    ::Fugit::Cron.parse(s)
-  end
-
-  def self.do_parse_cron(s)
-
-    ::Fugit::Cron.do_parse(s)
-  end
-
-  def self.parse_duration(s)
-
-    ::Fugit::Duration.parse(s)
-  end
-
-  def self.do_parse_duration(s)
-
-    ::Fugit::Duration.do_parse(s)
-  end
-
+  def self.parse_cron(s); ::Fugit::Cron.parse(s); end
+  def self.parse_duration(s); ::Fugit::Duration.parse(s); end
   def self.parse_in(s); parse_duration(s); end
+  def self.parse_nat(s); ::Fugit::Nat.parse(s); end
+
+  def self.do_parse_cron(s); ::Fugit::Cron.do_parse(s); end
+  def self.do_parse_duration(s); ::Fugit::Duration.do_parse(s); end
   def self.do_parse_in(s); do_parse_duration(s); end
+  def self.do_parse_nat(s); ::Fugit::Nat.do_parse(s); end
 
   def self.parse(s)
 
-    parse_cron(s) || parse_duration(s) || parse_at(s)
+    parse_cron(s) || parse_duration(s) || parse_at(s) || parse_nat(s)
   end
 
   def self.do_parse(s)
 
     parse(s) ||
-    fail(ArgumentError.new("fugit found no time information in #{s}.inspect"))
+    fail(ArgumentError.new("found no time information in #{s.inspect}"))
   end
 end
 

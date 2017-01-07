@@ -45,6 +45,11 @@ module Fugit
       end
     end
 
+    def self.do_parse(s)
+
+      parse(s) || fail(ArgumentError.new("could not parse a nat #{s.inspect}"))
+    end
+
     def self.parse_cron(a)
 
       h = { min: nil, hou: [], dom: [ nil ], mon: [ nil ], dow: [ nil ] }
