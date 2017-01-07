@@ -46,14 +46,20 @@ module Fugit
   def self.do_parse_in(s); do_parse_duration(s); end
   def self.do_parse_nat(s); ::Fugit::Nat.do_parse(s); end
 
-  def self.parse(s)
+  def self.parse(s, opts={})
 
-    parse_cron(s) || parse_duration(s) || parse_at(s) || parse_nat(s)
+    opts[:at] = opts[:in] if opts.has_key?(:in)
+
+    (opts[:cron] != false && parse_cron(s)) ||
+    (opts[:duration] != false && parse_duration(s)) ||
+    (opts[:at] != false && parse_at(s)) ||
+    (opts[:nat] != false && parse_nat(s)) ||
+    nil
   end
 
-  def self.do_parse(s)
+  def self.do_parse(s, opts={})
 
-    parse(s) ||
+    parse(s, opts) ||
     fail(ArgumentError.new("found no time information in #{s.inspect}"))
   end
 end

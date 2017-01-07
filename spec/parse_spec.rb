@@ -67,7 +67,20 @@ describe Fugit do
       expect(c.to_cron_s).to eq('0 12 * * *')
     end
 
-    it 'disables nat parsing when nat: false'
+    it 'disables nat parsing when nat: false' do
+
+      x = Fugit.parse('* * * * 1', nat: false)
+      expect(x.class).to eq(Fugit::Cron)
+
+      x = Fugit.parse('every day at noon', nat: false)
+      expect(x).to eq(nil)
+
+      x = Fugit.parse('* * * * 1', cron: false)
+      expect(x).to eq(nil)
+
+      x = Fugit.parse('every day at noon', cron: false)
+      expect(x.class).to eq(Fugit::Cron)
+    end
 
     it 'returns nil when it cannot parse' do
 
