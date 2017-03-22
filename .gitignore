@@ -9,6 +9,7 @@ pkg/
 
 .errors
 .rspec.out
+.bxsinfo
 
 .todo.md
 
