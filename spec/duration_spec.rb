@@ -116,15 +116,17 @@ describe Fugit::Duration do
 
     [
 
-      [ '3600s', '3600s', '1h' ],
-      [ '1y3600s', '1Y3600s', '1Y1h' ],
-      [ '1d60s', '86460s', '1D1m' ],
+      %w[ 3600s    3600s     1h     ],
+      %w[ 1y3600s  1Y3600s   1Y1h   ],
+      %w[ 1d60s    86460s    1D1m   ],
 
-      [ '3d-3h', '248400s', '2D21h' ],
+      %w[ 3d-3h    248400s   2D21h  ],
 
     ].each do |source, step, target|
 
-      it "deflates #{source.inspect} via #{step.inspect} into #{target.inspect}" do
+      it(
+        "deflates #{source.inspect} via #{step.inspect} into #{target.inspect}"
+      ) do
 
         d = Fugit::Duration.new(source)
 
