@@ -9,7 +9,9 @@ pkg/
 
 .errors
 .rspec.out
-.bxsinfo
+
+.bxsinfo.yaml
+.bxsenvs.yaml
 
 .todo.md
 
