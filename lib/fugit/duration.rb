@@ -96,6 +96,12 @@ module Fugit
       s.string
     end
 
+    class << self
+      def to_plain_s(o); do_parse(o).to_plain_s; end
+      def to_iso_s(o); do_parse(o).to_iso_s; end
+      def to_long_s(o, opts={}); do_parse(o).to_long_s(opts); end
+    end
+
     # Warning: this is an "approximation", months are 30 days and years are
     # 365 days, ...
     #

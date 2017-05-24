@@ -396,5 +396,40 @@ describe Fugit::Duration do
       expect(Fugit.time_to_s(t)).to eq('2017-12-31T00:00:00')
     end
   end
+
+  describe '.to_plain_s(o)' do
+
+    it 'works' do
+
+      expect(Fugit::Duration.to_plain_s(1000)).to eq('1000s')
+      expect(Fugit::Duration.to_plain_s('100d')).to eq('100D')
+    end
+  end
+
+  describe '.to_iso_s(o)' do
+
+    it 'works' do
+
+      expect(Fugit::Duration.to_iso_s(1000)).to eq('PT1000S')
+      expect(Fugit::Duration.to_iso_s('100d')).to eq('P100D')
+      expect(Fugit::Duration.to_iso_s('77d88s')).to eq('P77DT88S')
+    end
+
+    it 'may fail with an ArgumentError' do
+
+      expect {
+        Fugit::Duration.to_iso_s('77d88')
+      }.to raise_error(ArgumentError, 'not a duration "77d88"')
+    end
+  end
+
+  describe '.to_long_s(o)' do
+
+    it 'works' do
+
+      expect(Fugit::Duration.to_long_s(1000)).to eq('1000 seconds')
+      expect(Fugit::Duration.to_long_s('100d')).to eq('100 days')
+    end
+  end
 end
 

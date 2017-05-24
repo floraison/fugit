@@ -97,7 +97,16 @@ d += 3600
 
 p d.to_plain_s  # => "2Y2M1D5h3600s"
 ```
-TODO: continue me
+
+The `to_*_s` methods are also available as class methods:
+```
+p Fugit::Duration.to_plain_s('1y2M1d4h')
+  # => "1Y2M1D4h"
+p Fugit::Duration.to_iso_s('1y2M1d4h')
+  # => "P1Y2M1DT4H" ISO 8601 duration
+p Fugit::Duration.to_long_s('1y2M1d4h')
+  # => "1 year, 2 months, 1 day, and 4 hours"
+```
 
 
 ## LICENSE

@@ -4,6 +4,8 @@
 
 ## fugit 0.9.6  not yet released
 
+* Provide Duration.to_long_s / .to_iso_s / .to_plain_s at class level
+
 
 ## fugit 0.9.5  released 2017-01-07
 
