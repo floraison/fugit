@@ -97,9 +97,9 @@ module Fugit
     end
 
     class << self
-      def to_plain_s(o); do_parse(o).to_plain_s; end
-      def to_iso_s(o); do_parse(o).to_iso_s; end
-      def to_long_s(o, opts={}); do_parse(o).to_long_s(opts); end
+      def to_plain_s(o); do_parse(o).deflate.to_plain_s; end
+      def to_iso_s(o); do_parse(o).deflate.to_iso_s; end
+      def to_long_s(o, opts={}); do_parse(o).deflate.to_long_s(opts); end
     end
 
     # Warning: this is an "approximation", months are 30 days and years are

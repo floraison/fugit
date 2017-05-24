@@ -403,8 +403,8 @@ describe Fugit::Duration do
 
     it 'works' do
 
-      expect(Fugit::Duration.to_plain_s(1000)).to eq('1000s')
-      expect(Fugit::Duration.to_plain_s('100d')).to eq('100D')
+      expect(Fugit::Duration.to_plain_s(1000)).to eq('16m40s')
+      expect(Fugit::Duration.to_plain_s('100d')).to eq('14W2D')
     end
   end
 
@@ -412,9 +412,9 @@ describe Fugit::Duration do
 
     it 'works' do
 
-      expect(Fugit::Duration.to_iso_s(1000)).to eq('PT1000S')
-      expect(Fugit::Duration.to_iso_s('100d')).to eq('P100D')
-      expect(Fugit::Duration.to_iso_s('77d88s')).to eq('P77DT88S')
+      expect(Fugit::Duration.to_iso_s(1000)).to eq('PT16M40S')
+      expect(Fugit::Duration.to_iso_s('100d')).to eq('P14W2D')
+      expect(Fugit::Duration.to_iso_s('77d88s')).to eq('P11WT1M28S')
     end
 
     it 'may fail with an ArgumentError' do
@@ -429,8 +429,10 @@ describe Fugit::Duration do
 
     it 'works' do
 
-      expect(Fugit::Duration.to_long_s(1000)).to eq('1000 seconds')
-      expect(Fugit::Duration.to_long_s('100d')).to eq('100 days')
+      expect(
+        Fugit::Duration.to_long_s(1000)).to eq('16 minutes, and 40 seconds')
+      expect(
+        Fugit::Duration.to_long_s('100d')).to eq('14 weeks, and 2 days')
     end
   end
 end
