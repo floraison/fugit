@@ -2,6 +2,9 @@
 # fugit CHANGELOG.md
 
 
+## fugit 0.9.7  not yet released
+
+
 ## fugit 0.9.6  released 2017-05-24
 
 * Provide Duration.to_long_s / .to_iso_s / .to_plain_s at class level
