@@ -281,14 +281,6 @@ describe Fugit::Cron do
 
     context 'success' do
 
-      success =
-        proc { |cron, expected|
-          it "parses #{cron}" do
-            c = Fugit::Cron.parse(cron)
-            expect(c.to_cron_s).to eq(expected)
-          end
-        }
-
       [
 
         [ '@yearly', '0 0 1 1 *' ],
@@ -324,7 +316,9 @@ describe Fugit::Cron do
         [ '0 0 * * 1-5/2', '0 0 * * 1,3,5' ],
         [ '0 0 * * 3/2', '0 0 * * 3' ],
 
-      ].each(&success)
+      ].each { |c, e|
+        it("parses #{c}") { expect(Fugit::Cron.parse(c).to_cron_s).to eq(e) }
+      }
 
       context 'negative monthdays' do
 
@@ -336,7 +330,9 @@ describe Fugit::Cron do
           [ '* * L * *', '* * -1 * *' ],
           [ '* * -7-L * *', '* * -7,-6,-5,-4,-3,-2,-1 * *' ],
           [ '* * last * *', '* * -1 * *' ],
-        ].each(&success)
+        ].each { |c, e|
+          it("parses #{c}") { expect(Fugit::Cron.parse(c).to_cron_s).to eq(e) }
+        }
       end
 
       context 'months' do
@@ -344,7 +340,9 @@ describe Fugit::Cron do
         [
           [ '* * * jan-mar *', '* * * 1,2,3 *' ],
           [ '* * * Jan-Aug/2 *', '* * * 1,3,5,7 *' ],
-        ].each(&success)
+        ].each { |c, e|
+          it("parses #{c}") { expect(Fugit::Cron.parse(c).to_cron_s).to eq(e) }
+        }
       end
 
       context 'weekdays' do
@@ -356,8 +354,10 @@ describe Fugit::Cron do
           [ '* * * * sun,2-4', '* * * * 0,2,3,4' ],
           [ '* * * * sun,mon-tue', '* * * * 0,1,2' ],
           [ '* * * * sun,Sun,0,7', '* * * * 0' ],
-#a_eq '0 0 * * mon#1,tue', [[0], [0], [0], nil, nil, [2], ["1#1"]]
-        ].each(&success)
+#a_e  q '0 0 * * mon#1,tue', [[0], [0], [0], nil, nil, [2], ["1#1"]]
+        ].each { |c, e|
+          it("parses #{c}") { expect(Fugit::Cron.parse(c).to_cron_s).to eq(e) }
+        }
       end
 
       context 'weekdays #' do
@@ -367,7 +367,9 @@ describe Fugit::Cron do
           [ '0 0 * * mon#-1,tue', '0 0 * * 1#-1,2' ],
           [ '0 0 * * mon#L,tue', '0 0 * * 1#-1,2' ],
           [ '0 0 * * mon#last,tue', '0 0 * * 1#-1,2' ],
-        ].each(&success)
+        ].each { |c, e|
+          it("parses #{c}") { expect(Fugit::Cron.parse(c).to_cron_s).to eq(e) }
+        }
       end
     end
 
