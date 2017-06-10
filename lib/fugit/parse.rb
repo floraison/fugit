@@ -3,13 +3,12 @@ module Fugit
 
   def self.parse_at(s)
 
-    Time.parse(s) rescue nil
+    ::EtOrbi.make_time(s) rescue nil
   end
 
   def self.do_parse_at(s)
 
-    return s if s.is_a?(Time)
-    Time.parse(s)
+    ::EtOrbi.make_time(s)
   end
 
   def self.parse_cron(s); ::Fugit::Cron.parse(s); end
@@ -42,9 +41,9 @@ module Fugit
   def self.determine_type(s)
 
     case self.parse(s)
-      when ::Time then 'at'
       when ::Fugit::Cron then 'cron'
       when ::Fugit::Duration then 'in'
+      when ::Time, ::EtOrbi::EoTime then 'at'
       else nil
     end
   end

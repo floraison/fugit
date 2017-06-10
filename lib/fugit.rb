@@ -8,6 +8,7 @@ require 'time'
 require 'stringio'
 
 require 'raabro'
+require 'et-orbi'
 
 require 'fugit/misc'
 require 'fugit/cron'

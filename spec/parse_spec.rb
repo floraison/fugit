@@ -16,7 +16,7 @@ describe Fugit do
 
       t = Fugit.parse('2017-01-03 11:21:17')
 
-      expect(t.class).to eq(::Time)
+      expect(t.class).to eq(::EtOrbi::EoTime)
       expect(Fugit.time_to_plain_s(t)).to eq('2017-01-03 11:21:17')
     end
 
@@ -45,10 +45,10 @@ describe Fugit do
     end
 
     [
-      [ '0 0 1 jan *', Fugit::Cron ],
-      [ '12y12M', Fugit::Duration ],
-      [ '2017-12-12', Time ],
-      #[ 'every day at noon', Fugit::Cron ],
+      [ '0 0 1 jan *', ::Fugit::Cron ],
+      [ '12y12M', ::Fugit::Duration ],
+      [ '2017-12-12', ::EtOrbi::EoTime ],
+      #[ 'every day at noon', ::Fugit::Cron ],
     ].each do |str, kla|
 
       it "parses #{str.inspect} into a #{kla} instance" do
