@@ -17,7 +17,7 @@ describe Fugit do
       t = Fugit.parse_at('2017-01-03 11:21:17')
 
       expect(t.class).to eq(::EtOrbi::EoTime)
-      expect(Fugit.time_to_plain_s(t)).to eq('2017-01-03 11:21:17')
+      expect(Fugit.time_to_plain_s(t, false)).to eq('2017-01-03 11:21:17')
     end
 
     it 'returns an EoTime instance as is' do

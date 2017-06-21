@@ -75,9 +75,9 @@ describe Fugit::Cron do
           nt = c.next_time(now || NOW)
 
           expect(
-            Fugit.time_to_plain_s(nt)
+            Fugit.time_to_plain_s(nt, false)
           ).to eq(
-            Fugit.time_to_plain_s(ent)
+            Fugit.time_to_plain_s(ent, false)
           )
         end
       }
@@ -214,9 +214,9 @@ describe Fugit::Cron do
           pt = c.previous_time(now)
 
           expect(
-            Fugit.time_to_plain_s(pt)
+            Fugit.time_to_plain_s(pt, false)
           ).to eq(
-            Fugit.time_to_plain_s(ept)
+            Fugit.time_to_plain_s(ept, false)
           )
 
           expect(c.match?(ept)).to eq(true) # quick check
@@ -521,9 +521,9 @@ describe Fugit::Cron do
         c = Fugit::Cron.parse(cron)
 
         if nt
-          expect(Fugit.time_to_plain_s(c.next_time(from))).to eq(nt)
+          expect(Fugit.time_to_plain_s(c.next_time(from), false)).to eq(nt)
         else
-          expect(Fugit.time_to_plain_s(c.previous_time(from))).to eq(pt)
+          expect(Fugit.time_to_plain_s(c.previous_time(from), false)).to eq(pt)
         end
       end
     end

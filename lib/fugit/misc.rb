@@ -19,9 +19,9 @@ module Fugit
     isostamp(true, true, false, t)
   end
 
-  def self.time_to_plain_s(t=Time.now)
+  def self.time_to_plain_s(t=Time.now, z=true)
 
-    t.strftime('%Y-%m-%d %H:%M:%S') + (t.utc? ? ' Z' : '')
+    t.strftime('%Y-%m-%d %H:%M:%S') + (z && t.utc? ? ' Z' : '')
   end
 
   def self.time_to_zone_s(t=Time.now)

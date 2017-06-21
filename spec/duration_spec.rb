@@ -221,9 +221,9 @@ describe Fugit::Duration do
         t1 = d.add(t)
 
         expect(
-          Fugit.time_to_plain_s(t1)
+          Fugit.time_to_plain_s(t1, false)
         ).to eq(
-          Fugit.time_to_plain_s(Time.parse(tt))
+          Fugit.time_to_plain_s(Time.parse(tt), false)
         )
       end
     end
