@@ -82,7 +82,7 @@ module Fugit
         y = @t.year
         m = @t.month + 1
         if m == 13; m = 1; y += 1; end
-        @t = Time.send((@t.utc? ? :utc : :local), y, m)
+        @t = ::Time.send((@t.utc? ? :utc : :local), y, m)
         self
       end
       def inc_day; inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec); end
@@ -178,7 +178,7 @@ module Fugit
       hour_match?(t) && min_match?(t) && sec_match?(t)
     end
 
-    def next_time(from=Time.now)
+    def next_time(from=::Time.now)
 
       t = TimeCursor.new(from)
 
@@ -196,7 +196,7 @@ module Fugit
       t.time
     end
 
-    def previous_time(from=Time.now)
+    def previous_time(from=::Time.now)
 
       t = TimeCursor.new(from)
 
@@ -228,7 +228,7 @@ module Fugit
 
           deltas = []
 
-          t = Time.parse("#{year}-01-01") - 1
+          t = ::Time.parse("#{year}-01-01") - 1
           t0 = nil
           t1 = nil
           loop do
