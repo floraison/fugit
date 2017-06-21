@@ -58,22 +58,20 @@ module Fugit
       parse(s) || fail(ArgumentError.new("not a cron string #{s.inspect}"))
     end
 
-    class TimeCursor # TODO at some point, use ZoTime
+    class TimeCursor
 
       def initialize(t)
-        @t = t.is_a?(TimeCursor) ? t.time : t
+        @t = t.is_a?(TimeCursor) ? t.time : ::EtOrbi.make_time(t)
       end
 
       def time; @t; end
       def to_i; @t.to_i; end
 
-      %w[ year month day wday hour min sec ]
+      %w[ year month day wday hour min sec wday_in_month ]
         .collect(&:to_sym).each { |k| define_method(k) { @t.send(k) } }
 
       def inc(i)
-        u = @t.utc?
-        @t = ::Time.at(@t.to_i + i)
-        @t = @t.utc if u
+        @t = @t + i
         self
       end
       def dec(i); inc(-i); end
@@ -82,7 +80,7 @@ module Fugit
         y = @t.year
         m = @t.month + 1
         if m == 13; m = 1; y += 1; end
-        @t = ::Time.send((@t.utc? ? :utc : :local), y, m)
+        @t = ::EtOrbi.make(y, m)
         self
       end
       def inc_day; inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec); end
@@ -107,20 +105,6 @@ module Fugit
       def dec_sec(seconds)
         target = seconds.reverse.find { |s| s < @t.sec } || seconds.last
         inc(target - @t.sec)
-      end
-
-      def count_weeks(inc)
-        c = 0
-        t = @t
-        until t.month != @t.month
-          c += 1
-          t += inc * (7 * 24 * 3600)
-        end
-        c
-      end
-
-      def wday_in_month
-        [ count_weeks(-1), - count_weeks(1) ]
       end
     end
 
@@ -177,7 +161,7 @@ module Fugit
       hour_match?(t) && min_match?(t) && sec_match?(t)
     end
 
-    def next_time(from=::Time.now)
+    def next_time(from=::EtOrbi::EoTime.now)
 
       t = TimeCursor.new(from)
 
@@ -195,7 +179,7 @@ module Fugit
       t.time
     end
 
-    def previous_time(from=::Time.now)
+    def previous_time(from=::EtOrbi::EoTime.now)
 
       t = TimeCursor.new(from)
 
@@ -227,7 +211,7 @@ module Fugit
 
           deltas = []
 
-          t = ::Time.parse("#{year}-01-01") - 1
+          t = EtOrbi.make_time("#{year}-01-01") - 1
           t0 = nil
           t1 = nil
           loop do

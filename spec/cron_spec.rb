@@ -97,7 +97,7 @@ describe Fugit::Cron do
           in_zone(tz) do
 
             c = Fugit::Cron.parse(cron)
-            f = Time.parse(from)
+            f = ::EtOrbi.make_time(from)
             nt = c.next_time(f).localtime
 
             expect(Fugit.time_to_zone_s(nt)).to eq(target)
