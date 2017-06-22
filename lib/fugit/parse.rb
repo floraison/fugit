@@ -41,10 +41,10 @@ module Fugit
   def self.determine_type(s)
 
     case self.parse(s)
-      when ::Fugit::Cron then 'cron'
-      when ::Fugit::Duration then 'in'
-      when ::Time, ::EtOrbi::EoTime then 'at'
-      else nil
+    when ::Fugit::Cron then 'cron'
+    when ::Fugit::Duration then 'in'
+    when ::Time, ::EtOrbi::EoTime then 'at'
+    else nil
     end
   end
 end

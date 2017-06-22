@@ -116,19 +116,19 @@ module Fugit
             v = tt.string.downcase
 
             case k
-              when :numeral_hour
-                [ k, NUMS.index(v) ]
-              when :simple_hour
-                [ k, v.to_i ]
-              when :digital_hour
-                v = v.gsub(/:/, '')
-                [ k, [ v[0, 2], v[2, 2] ] ]
-              when :name_hour
-                [ :digital_hour, NHOURS[v] ]
-              when :name_day
-                [ k, WEEKDAYS.index(v[0, 3]) ]
-              else
-                [ k, v ]
+            when :numeral_hour
+              [ k, NUMS.index(v) ]
+            when :simple_hour
+              [ k, v.to_i ]
+            when :digital_hour
+              v = v.gsub(/:/, '')
+              [ k, [ v[0, 2], v[2, 2] ] ]
+            when :name_hour
+              [ :digital_hour, NHOURS[v] ]
+            when :name_day
+              [ k, WEEKDAYS.index(v[0, 3]) ]
+            else
+              [ k, v ]
             end
           }
       end
