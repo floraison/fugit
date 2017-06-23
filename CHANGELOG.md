@@ -2,7 +2,7 @@
 # fugit CHANGELOG.md
 
 
-## fugit 1.0.0  not yet released
+## fugit 1.0.0  released 2017-06-23
 
 * introduce et-orbi dependency (1.0.5 or better)
 * Wire #deflate into Duration.to_long_s / .to_iso_s / .to_plain_s
