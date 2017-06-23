@@ -201,10 +201,10 @@ describe Fugit::Duration do
       t = Time.parse('2017-01-03 17:02:00')
 
       t1 = d.add(t)
-      expect(Fugit.time_to_plain_s(t1)).to eq('2018-01-03 17:03:17')
+      expect(Fugit.time_to_plain_s(t1, false)).to eq('2018-01-03 17:03:17')
 
       t1 = d + t
-      expect(Fugit.time_to_plain_s(t1)).to eq('2018-01-03 17:03:17')
+      expect(Fugit.time_to_plain_s(t1, false)).to eq('2018-01-03 17:03:17')
     end
 
     [
@@ -398,7 +398,7 @@ describe Fugit::Duration do
       t = d.next_time(Time.parse('2016-12-31'))
 
       expect(t.class).to eq(::EtOrbi::EoTime)
-      expect(Fugit.time_to_s(t)).to eq('2017-12-31T00:00:00')
+      expect(Fugit.time_to_plain_s(t, false)).to eq('2017-12-31 00:00:00')
     end
   end
 
