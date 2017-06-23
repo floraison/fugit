@@ -245,17 +245,20 @@ describe Fugit::Duration do
       )
     end
 
-    it 'preserves the zone of a Time instance' do
+    it 'preserves the zone of an EoTime instance (local)' do
 
-      t = Time.now
+      t = ::EtOrbi::EoTime.now
       t1 = Fugit.parse('1Y2M3m') + t
 
       expect(t1.zone).to eq(t.zone)
+    end
 
-      t = Time.now.utc
+    it 'preserves the zone of an EoTime instance (UTC)' do
+
+      t = ::EtOrbi::EoTime.parse('2017-06-22 00:00:00 UTC')
       t1 = Fugit.parse('1Y2M3m') + t
 
-      expect(t1.zone).to eq('UTC')
+      expect(t1.zone.canonical_identifier).to eq('UTC')
     end
   end
 
@@ -380,7 +383,7 @@ describe Fugit::Duration do
       d = Fugit::Duration.new('1Y')
       t = d.next_time
 
-      expect(t.class).to eq(Time)
+      expect(t.class).to eq(::EtOrbi::EoTime)
 
       expect(
         t.strftime('%Y-%m-%d')
@@ -394,7 +397,7 @@ describe Fugit::Duration do
       d = Fugit::Duration.new('1Y')
       t = d.next_time(Time.parse('2016-12-31'))
 
-      expect(t.class).to eq(Time)
+      expect(t.class).to eq(::EtOrbi::EoTime)
       expect(Fugit.time_to_s(t)).to eq('2017-12-31T00:00:00')
     end
   end

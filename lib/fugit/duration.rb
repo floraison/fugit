@@ -170,6 +170,8 @@ module Fugit
 
     def add_to_time(t)
 
+      t = ::EtOrbi.make_time(t)
+
       INFLA_KEYS.each do |k, a|
 
         v = @h[k]; next unless v
@@ -192,7 +194,7 @@ module Fugit
           at[0], at[1] = at[0] - n, m
         end
 
-        t = Time.send(t.utc? ? :utc : :local, *at)
+        t = ::EtOrbi.make_time(at, t.zone)
       end
 
       t
@@ -217,7 +219,7 @@ module Fugit
       when Numeric then add_numeric(-a)
       when Fugit::Duration then add_duration(-a)
       when String then add_duration(-self.class.parse(a))
-      when ::Time, EtOrbi::EoTime then add_to_time(a)
+      when ::Time, ::EtOrbi::EoTime then add_to_time(a)
       else fail ArgumentError.new(
         "cannot substract #{a.class} instance to a Fugit::Duration")
       end
@@ -235,7 +237,7 @@ module Fugit
       @h.hash
     end
 
-    def next_time(from=Time.now)
+    def next_time(from=::EtOrbi::EoTime.now)
 
       add(from)
     end
