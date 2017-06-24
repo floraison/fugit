@@ -2,6 +2,9 @@
 # fugit CHANGELOG.md
 
 
+## fugit 1.1.0  not yet released
+
+
 ## fugit 1.0.0  released 2017-06-23
 
 * introduce et-orbi dependency (1.0.5 or better)
