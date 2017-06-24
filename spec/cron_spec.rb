@@ -229,21 +229,21 @@ describe Fugit::Cron do
   describe '#brute_frequency' do
 
     [
-      [ '* * * * *', [ '1m', '1m', 525600, '52W1D', '1y', 525600 ] ],
-      [ '0 0 * * *', [ '1D', '1D', 365, '52W1D', '1y', 365 ] ],
-      [ '0 0 * * sun', [ '1W', '1W', 53, '53W', '1y', 52 ] ],
-      [ '0 0 1 1 *', [ '52W1D', '52W1D', 1, '52W1D', '1y', 1 ] ],
-      [ '0 0 29 2 *', [ '208W5D', '208W5D', 1, '208W5D', '4y', 0 ] ],
+      [ '* * * * *',
+        'dmin: 1m, dmax: 1m, ocs: 525600, spn: 52W1D, spnys: 1, yocs: 525600' ],
+      [ '0 0 * * *',
+        'dmin: 1D, dmax: 1D, ocs: 365, spn: 52W1D, spnys: 1, yocs: 365' ],
+      [ '0 0 * * sun',
+        'dmin: 1W, dmax: 1W, ocs: 53, spn: 53W, spnys: 1, yocs: 52' ],
+      [ '0 0 1 1 *',
+        'dmin: 52W1D, dmax: 52W1D, ocs: 1, spn: 52W1D, spnys: 1, yocs: 1' ],
+      [ '0 0 29 2 *',
+        'dmin: 208W5D, dmax: 208W5D, ocs: 1, spn: 208W5D, spnys: 4, yocs: 0' ]
     ].each do |cron, freq|
 
       it "computes #{freq.inspect} for #{cron.inspect}" do
 
-        f = Fugit::Cron.parse(cron).brute_frequency
-
-        [ 0, 1, 3 ].each { |i|
-          f[i] = Fugit::Duration.new(f[i]).deflate.to_plain_s
-        }
-        f[4] = "#{f[4]}y"
+        f = Fugit::Cron.parse(cron).brute_frequency.to_debug_s
 
         expect(f).to eq(freq)
       end
@@ -252,9 +252,9 @@ describe Fugit::Cron do
     it 'accepts a year argument' do
 
       expect(
-        Fugit::Cron.parse('0 0 * * sun').brute_frequency(2016)
+        Fugit::Cron.parse('0 0 * * sun').brute_frequency(2016).to_debug_s
       ).to eq(
-        [ 604800, 604800, 52, 31449600, 0, 52 ]
+        'dmin: 1W, dmax: 1W, ocs: 52, spn: 52W, spnys: 0, yocs: 52'
       )
     end
   end

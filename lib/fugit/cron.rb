@@ -223,14 +223,36 @@ module Fugit
             t = t1
           end
 
-          occurences = deltas.size
-          span = t1 - t0
-          span_years = span / (365 * 24 * 3600)
-          yearly_occurences = occurences.to_f / span_years
-
-          [ deltas.min, deltas.max, occurences,
-            span.to_i, span_years.to_i, yearly_occurences.to_i ]
+          Frequency.new(deltas, t1 - t0)
         end
+    end
+
+    class Frequency
+
+      attr_reader :span, :delta_min, :delta_max, :occurrences
+      attr_reader :span_years, :yearly_occurrences
+
+      def initialize(deltas, span)
+
+        @span = span
+
+        @delta_min = deltas.min; @delta_max = deltas.max
+        @occurrences = deltas.size
+        @span_years = span / (365 * 24 * 3600)
+        @yearly_occurrences = @occurrences.to_f / @span_years
+      end
+
+      def to_debug_s
+
+        {
+          dmin: Fugit::Duration.new(delta_min).deflate.to_plain_s,
+          dmax: Fugit::Duration.new(delta_max).deflate.to_plain_s,
+          ocs: occurrences,
+          spn: Fugit::Duration.new(span.to_i).deflate.to_plain_s,
+          spnys: span_years.to_i,
+          yocs: yearly_occurrences.to_i
+        }.collect { |k, v| "#{k}: #{v}" }.join(', ')
+      end
     end
 
     def to_a
