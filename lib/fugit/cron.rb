@@ -200,7 +200,8 @@ module Fugit
     # Mostly used as a #next_time sanity check.
     # Avoid for "business" use, it's slow.
     #
-    # 2017 is non leap year (though it is preceded by a leap second)
+    # 2017 is a non leap year (though it is preceded by
+    # a leap second on 2016-12-31)
     #
     # Nota bene: cron with seconds are not supported.
     #
