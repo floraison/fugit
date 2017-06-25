@@ -148,6 +148,14 @@ describe Fugit::Cron do
         end
       end
     end
+
+    it 'returns a plain second' do
+
+      c = Fugit::Cron.parse('* * * * *')
+      nt = c.next_time
+
+      expect(nt.seconds.to_s).to eq(nt.seconds.to_i.to_s + '.0')
+    end
   end
 
   describe '#match?' do

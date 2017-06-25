@@ -4,6 +4,7 @@
 
 ## fugit 1.1.0  not yet released
 
+* Ensure Fugit::Cron.next_time returns plain seconds (.0, not .1234...)
 * Introduce Fugit::Frequency for cron
 
 

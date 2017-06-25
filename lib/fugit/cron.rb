@@ -62,6 +62,7 @@ module Fugit
 
       def initialize(t)
         @t = t.is_a?(TimeCursor) ? t.time : ::EtOrbi.make_time(t)
+        @t.seconds = @t.seconds.to_i
       end
 
       def time; @t; end
