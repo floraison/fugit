@@ -72,6 +72,8 @@ describe Fugit::Duration do
       [ '.4s', '0.4s', 'PT0.4S', 0.4 ],
       [ 'PT.5S', '0.5s', 'PT0.5S', 0.5 ],
 
+      [ '1.0d1.0w1.0d', '1.0W2.0D', 'P1.0W2.0D', 777_600.0 ],
+
     ].each do |source, target, iso_target, sec|
 
       it "parses #{source.inspect}" do
