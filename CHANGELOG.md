@@ -4,6 +4,7 @@
 
 ## fugit 1.1.0  not yet released
 
+* Introduce "signed durations", "-1Y+2Y-3m"
 * Ensure `1.0d1.0w1.0d` gets parsed correctly
 * Ensure Fugit::Cron.next_time returns plain seconds (.0, not .1234...)
 * Introduce Fugit::Frequency for cron

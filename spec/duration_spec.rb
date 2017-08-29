@@ -48,8 +48,11 @@ describe Fugit::Duration do
       [ '10d10h', '10D10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
       [ '100', '100s', 'PT100S', 100 ],
 
-      [ '-1y-2M', '-1Y-2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
+      [ '-1y-2M', '-1Y2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
       [ '1M-1y-1M', '-1Y', 'P-1Y', - 365 * DAY_S ],
+
+      [ '-1y+2M', '-1Y+2M', 'P-1Y2M', - 365 * DAY_S + 60 * DAY_S ],
+      [ '1M+1y-1M', '1Y', 'P1Y', 365 * DAY_S ],
 
       [ '1y 2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
       [ '1M 1y  1M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
@@ -64,8 +67,8 @@ describe Fugit::Duration do
       [ 'P10DT10H', '10D10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
       [ 'PT100S', '100s', 'PT100S', 100 ],
 
-      [ 'P-1Y-2M', '-1Y-2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
-      [ 'p1M-1y-1Mt-1M', '-1Y-1m', 'P-1YT-1M', -31536060 ],
+      [ 'P-1Y-2M', '-1Y2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
+      [ 'p1M-1y-1Mt-1M', '-1Y1m', 'P-1YT-1M', -31536060 ],
 
       [ '1.4s', '1.4s', 'PT1.4S', 1.4 ],
       [ 'PT1.5S', '1.5s', 'PT1.5S', 1.5 ],
@@ -152,7 +155,7 @@ describe Fugit::Duration do
       d = Fugit::Duration.new('1y2m-3h')
       od = d.opposite
 
-      expect(od.to_plain_s).to eq('-1Y3h-2m')
+      expect(od.to_plain_s).to eq('-1Y+3h-2m')
       expect(od.to_iso_s).to eq('P-1YT3H-2M')
     end
   end
@@ -164,7 +167,7 @@ describe Fugit::Duration do
       d = Fugit::Duration.new('1y2m-3h')
       od = - d
 
-      expect(od.to_plain_s).to eq('-1Y3h-2m')
+      expect(od.to_plain_s).to eq('-1Y+3h-2m')
       expect(od.to_iso_s).to eq('P-1YT3H-2M')
     end
   end
@@ -193,8 +196,8 @@ describe Fugit::Duration do
       d = Fugit.parse('1Y2h')
       s = '1Y-1h1s'
 
-      expect(d.add(s).to_plain_s).to eq('2Y1h1s')
-      expect((d + s).to_plain_s).to eq('2Y1h1s')
+      expect(d.add(s).to_plain_s).to eq('2Y1h-1s')
+      expect((d + s).to_plain_s).to eq('2Y1h-1s')
     end
 
     it 'yields a Time instance when adding a Time instance' do
@@ -292,8 +295,8 @@ describe Fugit::Duration do
       d = Fugit.parse('1Y2h')
       s = '1Y-1h1s'
 
-      expect(d.substract(s).to_plain_s).to eq('3h-1s')
-      expect((d - s).to_plain_s).to eq('3h-1s')
+      expect(d.substract(s).to_plain_s).to eq('3h1s')
+      expect((d - s).to_plain_s).to eq('3h1s')
     end
 
     it 'fails else' do

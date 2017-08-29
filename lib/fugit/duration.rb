@@ -22,7 +22,7 @@ module Fugit
 
       s = s.strip
       s = s + 's' if s.match(/\A-?(\d*\.)?\d+\z/)
-#p [ original, s ]; Raabro.pp(Parser.parse(s, debug: 3))
+#p [ original, s ]; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
 
       h =
         if opts[:iso]
@@ -32,6 +32,7 @@ module Fugit
         else
           Parser.parse(s) || IsoParser.parse(opts[:stricter] ? s : s.upcase)
         end
+#p h
 
       h ? self.allocate.send(:init, original, h) : nil
     end
@@ -55,9 +56,13 @@ module Fugit
 
     def to_plain_s
 
-      KEYS.inject(StringIO.new) { |s, (k, a)|
-        v = @h[k]; next s unless v; s << v.to_s; s << a[:a]
-      }.string
+      KEYS.inject([ StringIO.new, '+' ]) { |(s, sign), (k, a)|
+        v = @h[k]
+        next [ s, sign ] unless v
+        sign1 = v < 0 ? '-' : '+'
+        s << (sign1 != sign ? sign1 : '') << v.abs.to_s << a[:a]
+        [ s, sign1 ]
+      }[0].string
     end
 
     def to_iso_s
@@ -272,23 +277,48 @@ module Fugit
 
       def sep(i); rex(nil, i, /([ \t,]+|and)*/i); end
 
-      def yea(i); rex(:yea, i, /-?((\d*\.)?\d+) *y(ears?)?/i); end
-      def mon(i); rex(:mon, i, /-?((\d*\.)?\d+) *(M|months?)/); end
-      def wee(i); rex(:wee, i, /-?((\d*\.)?\d+) *(weeks?|w)/i); end
-      def day(i); rex(:day, i, /-?((\d*\.)?\d+) *(days?|d)/i); end
-      def hou(i); rex(:hou, i, /-?((\d*\.)?\d+) *(hours?|h)/i); end
-      def min(i); rex(:min, i, /-?((\d*\.)?\d+) *(mins?|minutes?|m)/); end
+      def yea(i); rex(:yea, i, /((\d*\.)?\d+) *y(ears?)?/i); end
+      def mon(i); rex(:mon, i, /((\d*\.)?\d+) *(M|months?)/); end
+      def wee(i); rex(:wee, i, /((\d*\.)?\d+) *(weeks?|w)/i); end
+      def day(i); rex(:day, i, /((\d*\.)?\d+) *(days?|d)/i); end
+      def hou(i); rex(:hou, i, /((\d*\.)?\d+) *(hours?|h)/i); end
+      def min(i); rex(:min, i, /((\d*\.)?\d+) *(mins?|minutes?|m)/); end
 
-      def sec(i); rex(:sec, i, /-?((\d*\.)?\d+) *(secs?|seconds?|s)/i); end
+      def sec(i); rex(:sec, i, /((\d*\.)?\d+) *(secs?|seconds?|s)/i); end
         # always last!
 
       def elt(i); alt(nil, i, :yea, :mon, :wee, :day, :hou, :min, :sec); end
+      def sign(i); rex(:sign, i, /[-+]?/); end
 
-      def dur(i); jseq(:dur, i, :elt, :sep); end
+      def sdur(i); seq(:sdur, i, :sign, '?', :elt, '+'); end
+
+      def dur(i); jseq(:dur, i, :sdur, :sep); end
 
       # rewrite parsed tree
 
-      def rewrite_dur(t); Fugit::Duration.common_rewrite_dur(t); end
+      def merge(h0, h1)
+
+#p [ h0, h1 ]
+        sign = h1.delete(:sign) || 1
+
+        h1.inject(h0) { |h, (k, v)| h.merge(k => (h[k] || 0) + sign * v) }
+      end
+
+      def rewrite_sdur(t)
+
+#Raabro.pp(t, colours: true)
+        h = Fugit::Duration.common_rewrite_dur(t)
+
+        sign = t.sublookup(:sign)
+        sign = (sign && sign.string == '-') ? -1 : 1
+
+        h.merge(sign: sign)
+      end
+
+      def rewrite_dur(t)
+
+        t.children.inject({}) { |h, ct| merge(h, ct.name ? rewrite(ct) : {}) }
+      end
     end
 
     module IsoParser include Raabro
