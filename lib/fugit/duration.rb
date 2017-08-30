@@ -145,6 +145,8 @@ module Fugit
         s = m
       end
 
+      h = { sec: 0 } if h.empty?
+
       self.class.allocate.init(@original, h)
     end
 
@@ -252,8 +254,10 @@ module Fugit
 
       @original = original
 
-      @h = h.reject { |k, v| v == 0 && k != :sec }
+      @h = h.reject { |k, v| v == 0 }
         # which copies h btw
+
+      @h = { sec: 0 } if @h.empty?
 
       self
     end

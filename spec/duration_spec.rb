@@ -134,6 +134,8 @@ describe Fugit::Duration do
 
       %w[ 3d-3h    248400s   2D21h  ],
 
+      %w[ 0s       0s        0s  ],
+
     ].each do |source, step, target|
 
       it(
