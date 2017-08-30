@@ -46,7 +46,7 @@ describe Fugit::Duration do
       [ '1y2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
       [ '1M1y1M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
       [ '10d10h', '10D10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
-      [ '100', '100s', 'PT100S', 100 ],
+      [ '100s', '100s', 'PT100S', 100 ],
 
       [ '-1y-2M', '-1Y2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
       [ '1M-1y-1M', '-1Y', 'P-1Y', - 365 * DAY_S ],
@@ -76,6 +76,8 @@ describe Fugit::Duration do
       [ 'PT.5S', '0.5s', 'PT0.5S', 0.5 ],
 
       [ '1.0d1.0w1.0d', '1.0W2.0D', 'P1.0W2.0D', 777_600.0 ],
+
+      [ '-5.s', '-5.0s', 'PT-5.0S', -5.0 ],
 
     ].each do |source, target, iso_target, sec|
 

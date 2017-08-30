@@ -16,12 +16,11 @@ module Fugit
 
       original = s
 
-      s = s.to_s if s.is_a?(Numeric)
+      s = "#{s}s" if s.is_a?(Numeric)
 
       return nil unless s.is_a?(String)
 
       s = s.strip
-      s = s + 's' if s.match(/\A-?(\d*\.)?\d+\z/)
 #p [ original, s ]; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
 
       h =
@@ -277,14 +276,14 @@ module Fugit
 
       def sep(i); rex(nil, i, /([ \t,]+|and)*/i); end
 
-      def yea(i); rex(:yea, i, /((\d*\.)?\d+) *y(ears?)?/i); end
-      def mon(i); rex(:mon, i, /((\d*\.)?\d+) *(M|months?)/); end
-      def wee(i); rex(:wee, i, /((\d*\.)?\d+) *(weeks?|w)/i); end
-      def day(i); rex(:day, i, /((\d*\.)?\d+) *(days?|d)/i); end
-      def hou(i); rex(:hou, i, /((\d*\.)?\d+) *(hours?|h)/i); end
-      def min(i); rex(:min, i, /((\d*\.)?\d+) *(mins?|minutes?|m)/); end
+      def yea(i); rex(:yea, i, /(\d+\.\d*|(\d*\.)?\d+) *y(ears?)?/i); end
+      def mon(i); rex(:mon, i, /(\d+\.\d*|(\d*\.)?\d+) *(M|months?)/); end
+      def wee(i); rex(:wee, i, /(\d+\.\d*|(\d*\.)?\d+) *(weeks?|w)/i); end
+      def day(i); rex(:day, i, /(\d+\.\d*|(\d*\.)?\d+) *(days?|d)/i); end
+      def hou(i); rex(:hou, i, /(\d+\.\d*|(\d*\.)?\d+) *(hours?|h)/i); end
+      def min(i); rex(:min, i, /(\d+\.\d*|(\d*\.)?\d+) *(mins?|minutes?|m)/); end
 
-      def sec(i); rex(:sec, i, /((\d*\.)?\d+) *(secs?|seconds?|s)/i); end
+      def sec(i); rex(:sec, i, /(\d+\.\d*|(\d*\.)?\d+) *(secs?|seconds?|s)/i); end
         # always last!
 
       def elt(i); alt(nil, i, :yea, :mon, :wee, :day, :hou, :min, :sec); end
@@ -298,7 +297,6 @@ module Fugit
 
       def merge(h0, h1)
 
-#p [ h0, h1 ]
         sign = h1.delete(:sign) || 1
 
         h1.inject(h0) { |h, (k, v)| h.merge(k => (h[k] || 0) + sign * v) }
@@ -306,7 +304,6 @@ module Fugit
 
       def rewrite_sdur(t)
 
-#Raabro.pp(t, colours: true)
         h = Fugit::Duration.common_rewrite_dur(t)
 
         sign = t.sublookup(:sign)
@@ -317,6 +314,7 @@ module Fugit
 
       def rewrite_dur(t)
 
+#Raabro.pp(t, colours: true)
         t.children.inject({}) { |h, ct| merge(h, ct.name ? rewrite(ct) : {}) }
       end
     end
