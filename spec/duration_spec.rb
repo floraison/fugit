@@ -19,8 +19,13 @@ describe Fugit::Duration do
 
     it 'accepts a Numeric' do
 
+      expect(Fugit::Duration.parse(0).to_plain_s).to eq('0s')
       expect(Fugit::Duration.parse(1000).to_plain_s).to eq('1000s')
       expect(Fugit::Duration.parse(1001.05).to_plain_s).to eq('1001.05s')
+
+      expect(Fugit::Duration.parse(0).to_iso_s).to eq('PT0S')
+      expect(Fugit::Duration.parse(1000).to_iso_s).to eq('PT1000S')
+      expect(Fugit::Duration.parse(1001.05).to_iso_s).to eq('PT1001.05S')
     end
 
     it "returns the input immediately if it's a duration" do

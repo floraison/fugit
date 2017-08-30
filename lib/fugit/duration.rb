@@ -252,7 +252,7 @@ module Fugit
 
       @original = original
 
-      @h = h.reject { |k, v| v == 0 }
+      @h = h.reject { |k, v| v == 0 && k != :sec }
         # which copies h btw
 
       self

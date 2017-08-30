@@ -4,6 +4,7 @@
 
 ## fugit 1.1.0  not yet released
 
+* Stringify 0 seconds as "0s"
 * Ignore "-5" and "-5.", only accept "-5s" and "-5.s"
 * Introduce "signed durations", "-1Y+2Y-3m"
 * Ensure `1.0d1.0w1.0d` gets parsed correctly
