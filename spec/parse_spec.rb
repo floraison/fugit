@@ -33,7 +33,7 @@ describe Fugit do
       d = Fugit.parse('1Y3M2d')
 
       expect(d.class).to eq(Fugit::Duration)
-      expect(d.to_plain_s).to eq('1Y3M2D')
+      expect(d.to_plain_s).to eq('1y3M2d')
     end
 
     it 'parses durations' do
@@ -41,7 +41,7 @@ describe Fugit do
       d = Fugit.parse('1Y2h')
 
       expect(d.class).to eq(Fugit::Duration)
-      expect(d.to_plain_s).to eq('1Y2h')
+      expect(d.to_plain_s).to eq('1y2h')
     end
 
     [

@@ -48,39 +48,39 @@ describe Fugit::Duration do
 
     [
 
-      [ '1y2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-      [ '1M1y1M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-      [ '10d10h', '10D10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
+      [ '1y2M', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ '1M1y1M', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ '10d10h', '10d10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
       [ '100s', '100s', 'PT100S', 100 ],
 
-      [ '-1y-2M', '-1Y2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
-      [ '1M-1y-1M', '-1Y', 'P-1Y', - 365 * DAY_S ],
+      [ '-1y-2M', '-1y2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
+      [ '1M-1y-1M', '-1y', 'P-1Y', - 365 * DAY_S ],
 
-      [ '-1y+2M', '-1Y+2M', 'P-1Y2M', - 365 * DAY_S + 60 * DAY_S ],
-      [ '1M+1y-1M', '1Y', 'P1Y', 365 * DAY_S ],
+      [ '-1y+2M', '-1y+2M', 'P-1Y2M', - 365 * DAY_S + 60 * DAY_S ],
+      [ '1M+1y-1M', '1y', 'P1Y', 365 * DAY_S ],
 
-      [ '1y 2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-      [ '1M 1y  1M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-      [ ' 1M1y1M ', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ '1y 2M', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ '1M 1y  1M', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ ' 1M1y1M ', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
 
-      [ '1 year and 2 months', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-      [ '1 y, 2 M, and 2 months', '1Y4M', 'P1Y4M', 41904000 ],
-      [ '1 y, 2 M and 2 m', '1Y2M2m', 'P1Y2MT2M', 36720120 ],
+      [ '1 year and 2 months', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ '1 y, 2 M, and 2 months', '1y4M', 'P1Y4M', 41904000 ],
+      [ '1 y, 2 M and 2 m', '1y2M2m', 'P1Y2MT2M', 36720120 ],
 
-      [ 'P1Y2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-      [ 'P1Y2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-      [ 'P10DT10H', '10D10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
+      [ 'P1Y2M', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ 'P1Y2M', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ 'P10DT10H', '10d10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
       [ 'PT100S', '100s', 'PT100S', 100 ],
 
-      [ 'P-1Y-2M', '-1Y2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
-      [ 'p1M-1y-1Mt-1M', '-1Y1m', 'P-1YT-1M', -31536060 ],
+      [ 'P-1Y-2M', '-1y2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
+      [ 'p1M-1y-1Mt-1M', '-1y1m', 'P-1YT-1M', -31536060 ],
 
       [ '1.4s', '1.4s', 'PT1.4S', 1.4 ],
       [ 'PT1.5S', '1.5s', 'PT1.5S', 1.5 ],
       [ '.4s', '0.4s', 'PT0.4S', 0.4 ],
       [ 'PT.5S', '0.5s', 'PT0.5S', 0.5 ],
 
-      [ '1.0d1.0w1.0d', '1.0W2.0D', 'P1.0W2.0D', 777_600.0 ],
+      [ '1.0d1.0w1.0d', '1.0w2.0d', 'P1.0W2.0D', 777_600.0 ],
 
       [ '-5.s', '-5.0s', 'PT-5.0S', -5.0 ],
 
@@ -129,10 +129,10 @@ describe Fugit::Duration do
     [
 
       %w[ 3600s    3600s     1h     ],
-      %w[ 1y3600s  1Y3600s   1Y1h   ],
-      %w[ 1d60s    86460s    1D1m   ],
+      %w[ 1y3600s  1y3600s   1y1h   ],
+      %w[ 1d60s    86460s    1d1m   ],
 
-      %w[ 3d-3h    248400s   2D21h  ],
+      %w[ 3d-3h    248400s   2d21h  ],
 
       %w[ 0s       0s        0s  ],
 
@@ -164,7 +164,7 @@ describe Fugit::Duration do
       d = Fugit::Duration.new('1y2m-3h')
       od = d.opposite
 
-      expect(od.to_plain_s).to eq('-1Y+3h-2m')
+      expect(od.to_plain_s).to eq('-1y+3h-2m')
       expect(od.to_iso_s).to eq('P-1YT3H-2M')
     end
   end
@@ -176,7 +176,7 @@ describe Fugit::Duration do
       d = Fugit::Duration.new('1y2m-3h')
       od = - d
 
-      expect(od.to_plain_s).to eq('-1Y+3h-2m')
+      expect(od.to_plain_s).to eq('-1y+3h-2m')
       expect(od.to_iso_s).to eq('P-1YT3H-2M')
     end
   end
@@ -187,17 +187,17 @@ describe Fugit::Duration do
 
       d = Fugit.parse('1Y2h')
 
-      expect(d.add(1).to_plain_s).to eq('1Y2h1s')
-      expect((d + 1).to_plain_s).to eq('1Y2h1s')
+      expect(d.add(1).to_plain_s).to eq('1y2h1s')
+      expect((d + 1).to_plain_s).to eq('1y2h1s')
     end
 
     it 'adds Duration instances' do
 
-      d0 = Fugit.parse('1Y2h')
+      d0 = Fugit.parse('1y2h')
       d1 = Fugit.parse('1Y2h1s')
 
-      expect(d0.add(d1).to_plain_s).to eq('2Y4h1s')
-      expect((d0 + d1).to_plain_s).to eq('2Y4h1s')
+      expect(d0.add(d1).to_plain_s).to eq('2y4h1s')
+      expect((d0 + d1).to_plain_s).to eq('2y4h1s')
     end
 
     it 'adds String instances (parses them as Duration)' do
@@ -205,8 +205,8 @@ describe Fugit::Duration do
       d = Fugit.parse('1Y2h')
       s = '1Y-1h1s'
 
-      expect(d.add(s).to_plain_s).to eq('2Y1h-1s')
-      expect((d + s).to_plain_s).to eq('2Y1h-1s')
+      expect(d.add(s).to_plain_s).to eq('2y1h-1s')
+      expect((d + s).to_plain_s).to eq('2y1h-1s')
     end
 
     it 'yields a Time instance when adding a Time instance' do
@@ -282,11 +282,11 @@ describe Fugit::Duration do
 
       d = Fugit.parse('1Y2h')
 
-      expect(d.add(-1).to_plain_s).to eq('1Y2h-1s')
-      expect((d + -1).to_plain_s).to eq('1Y2h-1s')
-      expect((d - 1).to_plain_s).to eq('1Y2h-1s')
+      expect(d.add(-1).to_plain_s).to eq('1y2h-1s')
+      expect((d + -1).to_plain_s).to eq('1y2h-1s')
+      expect((d - 1).to_plain_s).to eq('1y2h-1s')
 
-      expect((d - 1).deflate.to_plain_s).to eq('1Y1h59m59s')
+      expect((d - 1).deflate.to_plain_s).to eq('1y1h59m59s')
     end
 
     it 'substracts Duration instances' do
@@ -421,7 +421,7 @@ describe Fugit::Duration do
     it 'works' do
 
       expect(Fugit::Duration.to_plain_s(1000)).to eq('16m40s')
-      expect(Fugit::Duration.to_plain_s('100d')).to eq('14W2D')
+      expect(Fugit::Duration.to_plain_s('100d')).to eq('14w2d')
     end
   end
 

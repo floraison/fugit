@@ -42,10 +42,10 @@ module Fugit
     end
 
     KEYS = {
-      yea: { a: 'Y', i: 'Y', s: 365 * 24 * 3600, x: 0, l: 'year' },
+      yea: { a: 'y', i: 'Y', s: 365 * 24 * 3600, x: 0, l: 'year' },
       mon: { a: 'M', i: 'M', s: 30 * 24 * 3600, x: 1, l: 'month' },
-      wee: { a: 'W', i: 'W', s: 7 * 24 * 3600, I: true, l: 'week' },
-      day: { a: 'D', i: 'D', s: 24 * 3600, I: true, l: 'day' },
+      wee: { a: 'w', i: 'W', s: 7 * 24 * 3600, I: true, l: 'week' },
+      day: { a: 'd', i: 'D', s: 24 * 3600, I: true, l: 'day' },
       hou: { a: 'h', i: 'H', s: 3600, I: true, l: 'hour' },
       min: { a: 'm', i: 'M', s: 60, I: true, l: 'minute' },
       sec: { a: 's', i: 'S', s: 1, I: true, l: 'second' },

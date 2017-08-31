@@ -4,6 +4,7 @@
 
 ## fugit 1.1.0  not yet released
 
+* Follow rufus-scheduler not "2Y1W5D" but "2y1w5d"
 * Ensure Duration#deflate preserves at least `{ sec: 0 }`
 * Stringify 0 seconds as "0s"
 * Ignore "-5" and "-5.", only accept "-5s" and "-5.s"
