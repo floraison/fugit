@@ -42,27 +42,30 @@ module Fugit
     end
 
     KEYS = {
-      yea: { a: 'Y', i: 'Y', s: 365 * 24 * 3600, x: 0, l: 'year' },
-      mon: { a: 'M', i: 'M', s: 30 * 24 * 3600, x: 1, l: 'month' },
-      wee: { a: 'W', i: 'W', s: 7 * 24 * 3600, I: true, l: 'week' },
-      day: { a: 'D', i: 'D', s: 24 * 3600, I: true, l: 'day' },
-      hou: { a: 'h', i: 'H', s: 3600, I: true, l: 'hour' },
-      min: { a: 'm', i: 'M', s: 60, I: true, l: 'minute' },
-      sec: { a: 's', i: 'S', s: 1, I: true, l: 'second' },
+      yea: { a: 'Y', r: 'y', i: 'Y', s: 365 * 24 * 3600, x: 0, l: 'year' },
+      mon: { a: 'M', r: 'M', i: 'M', s: 30 * 24 * 3600, x: 1, l: 'month' },
+      wee: { a: 'W', r: 'w', i: 'W', s: 7 * 24 * 3600, I: true, l: 'week' },
+      day: { a: 'D', r: 'd', i: 'D', s: 24 * 3600, I: true, l: 'day' },
+      hou: { a: 'h', r: 'h', i: 'H', s: 3600, I: true, l: 'hour' },
+      min: { a: 'm', r: 'm', i: 'M', s: 60, I: true, l: 'minute' },
+      sec: { a: 's', r: 's', i: 'S', s: 1, I: true, l: 'second' },
     }
     INFLA_KEYS, NON_INFLA_KEYS =
       KEYS.partition { |k, v| v[:I] }
 
-    def to_plain_s
+    def _to_s(key)
 
       KEYS.inject([ StringIO.new, '+' ]) { |(s, sign), (k, a)|
         v = @h[k]
         next [ s, sign ] unless v
         sign1 = v < 0 ? '-' : '+'
-        s << (sign1 != sign ? sign1 : '') << v.abs.to_s << a[:a]
+        s << (sign1 != sign ? sign1 : '') << v.abs.to_s << a[key]
         [ s, sign1 ]
       }[0].string
-    end
+    end; protected :_to_s
+
+    def to_plain_s; _to_s(:a); end
+    def to_rufus_s; _to_s(:r); end
 
     def to_iso_s
 

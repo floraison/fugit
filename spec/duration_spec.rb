@@ -48,43 +48,43 @@ describe Fugit::Duration do
 
     [
 
-      [ '1y2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-      [ '1M1y1M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-      [ '10d10h', '10D10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
-      [ '100s', '100s', 'PT100S', 100 ],
+      [ '1y2M', '1Y2M', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ '1M1y1M', '1Y2M', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ '10d10h', '10D10h', '10d10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
+      [ '100s', '100s', '100s', 'PT100S', 100 ],
 
-      [ '-1y-2M', '-1Y2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
-      [ '1M-1y-1M', '-1Y', 'P-1Y', - 365 * DAY_S ],
+      [ '-1y-2M', '-1Y2M', '-1y2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
+      [ '1M-1y-1M', '-1Y', '-1y', 'P-1Y', - 365 * DAY_S ],
 
-      [ '-1y+2M', '-1Y+2M', 'P-1Y2M', - 365 * DAY_S + 60 * DAY_S ],
-      [ '1M+1y-1M', '1Y', 'P1Y', 365 * DAY_S ],
+      [ '-1y+2M', '-1Y+2M', '-1y+2M', 'P-1Y2M', - 365 * DAY_S + 60 * DAY_S ],
+      [ '1M+1y-1M', '1Y', '1y', 'P1Y', 365 * DAY_S ],
 
-      [ '1y 2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-      [ '1M 1y  1M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-      [ ' 1M1y1M ', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ '1y 2M', '1Y2M', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ '1M 1y  1M', '1Y2M', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ ' 1M1y1M ', '1Y2M', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
 
-      [ '1 year and 2 months', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-      [ '1 y, 2 M, and 2 months', '1Y4M', 'P1Y4M', 41904000 ],
-      [ '1 y, 2 M and 2 m', '1Y2M2m', 'P1Y2MT2M', 36720120 ],
+      [ '1 year and 2 months', '1Y2M', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ '1 y, 2 M, and 2 months', '1Y4M', '1y4M', 'P1Y4M', 41904000 ],
+      [ '1 y, 2 M and 2 m', '1Y2M2m', '1y2M2m', 'P1Y2MT2M', 36720120 ],
 
-      [ 'P1Y2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-      [ 'P1Y2M', '1Y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
-      [ 'P10DT10H', '10D10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
-      [ 'PT100S', '100s', 'PT100S', 100 ],
+      [ 'P1Y2M', '1Y2M', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ 'P1Y2M', '1Y2M', '1y2M', 'P1Y2M', 365 * DAY_S + 60 * DAY_S ],
+      [ 'P10DT10H', '10D10h', '10d10h', 'P10DT10H', 10 * DAY_S + 10 * 3600 ],
+      [ 'PT100S', '100s', '100s', 'PT100S', 100 ],
 
-      [ 'P-1Y-2M', '-1Y2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
-      [ 'p1M-1y-1Mt-1M', '-1Y1m', 'P-1YT-1M', -31536060 ],
+      [ 'P-1Y-2M', '-1Y2M', '-1y2M', 'P-1Y-2M', - 365 * DAY_S - 60 * DAY_S ],
+      [ 'p1M-1y-1Mt-1M', '-1Y1m', '-1y1m', 'P-1YT-1M', -31536060 ],
 
-      [ '1.4s', '1.4s', 'PT1.4S', 1.4 ],
-      [ 'PT1.5S', '1.5s', 'PT1.5S', 1.5 ],
-      [ '.4s', '0.4s', 'PT0.4S', 0.4 ],
-      [ 'PT.5S', '0.5s', 'PT0.5S', 0.5 ],
+      [ '1.4s', '1.4s', '1.4s', 'PT1.4S', 1.4 ],
+      [ 'PT1.5S', '1.5s', '1.5s', 'PT1.5S', 1.5 ],
+      [ '.4s', '0.4s', '0.4s', 'PT0.4S', 0.4 ],
+      [ 'PT.5S', '0.5s', '0.5s', 'PT0.5S', 0.5 ],
 
-      [ '1.0d1.0w1.0d', '1.0W2.0D', 'P1.0W2.0D', 777_600.0 ],
+      [ '1.0d1.0w1.0d', '1.0W2.0D', '1.0w2.0d', 'P1.0W2.0D', 777_600.0 ],
 
-      [ '-5.s', '-5.0s', 'PT-5.0S', -5.0 ],
+      [ '-5.s', '-5.0s', '-5.0s', 'PT-5.0S', -5.0 ],
 
-    ].each do |source, target, iso_target, sec|
+    ].each do |source, target, rufus_target, iso_target, sec|
 
       it "parses #{source.inspect}" do
 
@@ -92,6 +92,7 @@ describe Fugit::Duration do
 
         expect(d.class).to eq(::Fugit::Duration)
         expect(d.to_plain_s).to eq(target)
+        expect(d.to_rufus_s).to eq(rufus_target)
         expect(d.to_iso_s).to eq(iso_target)
         expect(d.to_sec).to eq(sec)
       end
