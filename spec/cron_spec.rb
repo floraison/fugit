@@ -238,15 +238,15 @@ describe Fugit::Cron do
 
     [
       [ '* * * * *',
-        'dmin: 1m, dmax: 1m, ocs: 525600, spn: 52w1d, spnys: 1, yocs: 525600' ],
+        'dmin: 1m, dmax: 1m, ocs: 525600, spn: 52W1D, spnys: 1, yocs: 525600' ],
       [ '0 0 * * *',
-        'dmin: 1d, dmax: 1d, ocs: 365, spn: 52w1d, spnys: 1, yocs: 365' ],
+        'dmin: 1D, dmax: 1D, ocs: 365, spn: 52W1D, spnys: 1, yocs: 365' ],
       [ '0 0 * * sun',
-        'dmin: 1w, dmax: 1w, ocs: 53, spn: 53w, spnys: 1, yocs: 52' ],
+        'dmin: 1W, dmax: 1W, ocs: 53, spn: 53W, spnys: 1, yocs: 52' ],
       [ '0 0 1 1 *',
-        'dmin: 52w1d, dmax: 52w1d, ocs: 1, spn: 52w1d, spnys: 1, yocs: 1' ],
+        'dmin: 52W1D, dmax: 52W1D, ocs: 1, spn: 52W1D, spnys: 1, yocs: 1' ],
       [ '0 0 29 2 *',
-        'dmin: 208w5d, dmax: 208w5d, ocs: 1, spn: 208w5d, spnys: 4, yocs: 0' ]
+        'dmin: 208W5D, dmax: 208W5D, ocs: 1, spn: 208W5D, spnys: 4, yocs: 0' ]
     ].each do |cron, freq|
 
       it "computes #{freq.inspect} for #{cron.inspect}" do
@@ -262,7 +262,7 @@ describe Fugit::Cron do
       expect(
         Fugit::Cron.parse('0 0 * * sun').brute_frequency(2016).to_debug_s
       ).to eq(
-        'dmin: 1w, dmax: 1w, ocs: 52, spn: 52w, spnys: 0, yocs: 52'
+        'dmin: 1W, dmax: 1W, ocs: 52, spn: 52W, spnys: 0, yocs: 52'
       )
     end
   end
