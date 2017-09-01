@@ -3,7 +3,7 @@ module Fugit
 
   class Duration
 
-    attr_reader :original, :h
+    attr_reader :original, :h, :options
 
     def self.new(s)
 
@@ -33,7 +33,7 @@ module Fugit
         end
 #p h
 
-      h ? self.allocate.send(:init, original, h) : nil
+      h ? self.allocate.send(:init, original, opts, h) : nil
     end
 
     def self.do_parse(s, opts={})
@@ -109,6 +109,10 @@ module Fugit
       def to_long_s(o, opts={}); do_parse(o).deflate.to_long_s(opts); end
     end
 
+    # For now, let's alias to #h
+    #
+    def to_h; h; end
+
     # Warning: this is an "approximation", months are 30 days and years are
     # 365 days, ...
     #
@@ -130,7 +134,7 @@ module Fugit
           h
         }
 
-      self.class.allocate.init(@original, h)
+      self.class.allocate.init(@original, {}, h)
     end
 
     def deflate
@@ -148,16 +152,14 @@ module Fugit
         s = m
       end
 
-      h = { sec: 0 } if h.empty?
-
-      self.class.allocate.init(@original, h)
+      self.class.allocate.init(@original, {}, h)
     end
 
     def opposite
 
       h = @h.inject({}) { |h, (k, v)| h[k] = -v; h }
 
-      self.class.allocate.init(nil, h)
+      self.class.allocate.init(nil, {}, h)
     end
 
     alias -@ opposite
@@ -167,14 +169,14 @@ module Fugit
       h = @h.dup
       h[:sec] = (h[:sec] || 0) + n.to_i
 
-      self.class.allocate.init(nil, h)
+      self.class.allocate.init(nil,{}, h)
     end
 
     def add_duration(d)
 
       h = d.h.inject(@h.dup) { |h, (k, v)| h[k] = (h[k] || 0) + v; h }
 
-      self.class.allocate.init(nil, h)
+      self.class.allocate.init(nil, {}, h)
     end
 
     def add_to_time(t)
@@ -253,14 +255,20 @@ module Fugit
 
     protected
 
-    def init(original, h)
+    def init(original, options, h)
 
       @original = original
+      @options = options
 
       @h = h.reject { |k, v| v == 0 }
         # which copies h btw
 
-      @h = { sec: 0 } if @h.empty?
+      if options[:drop_seconds]
+        @h.delete(:sec)
+        @h = { min: 0 } if @h.empty?
+      else
+        @h = { sec: 0 } if @h.empty?
+      end
 
       self
     end

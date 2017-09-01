@@ -111,6 +111,29 @@ describe Fugit::Duration do
         Fugit::Duration.parse('1y', iso: true)
       ).to eq(nil)
     end
+
+    context 'drop_seconds: true' do
+
+      [
+        [ '1M', { mon: 1 } ],
+        [ '1M10s', { mon: 1 } ],
+      ].each do |source, target|
+
+        it "drops seconds for #{source.inspect}" do
+
+          expect(
+            Fugit::Duration.parse(source, drop_seconds: true).h
+          ).to eq(
+            target
+          )
+        end
+      end
+    end
+
+    context 'months: true' do
+
+      it 'modulates months into 30 days'
+    end
   end
 
   describe '.do_parse' do
