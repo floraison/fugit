@@ -4,6 +4,7 @@
 
 ## fugit 1.1.0  not yet released
 
+* Introduce Fugit::Duration#drop_seconds
 * Alias Fugit::Duration#to_h to Fugit::Duration#h
 * Introduce to_rufus_s (1y2M3d) vs to_plain_s (1Y2M3D)
 * Ensure Duration#deflate preserves at least `{ sec: 0 }`

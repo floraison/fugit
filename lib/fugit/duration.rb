@@ -253,6 +253,17 @@ module Fugit
       add(from)
     end
 
+    # Returns a copy of this duration, omitting its seconds.
+    #
+    def drop_seconds
+
+      h = @h.dup
+      h.delete(:sec)
+      h[:min] = 0 if h.empty?
+
+      self.class.allocate.init(nil, { literal: true }, h)
+    end
+
     protected
 
     def init(original, options, h)
@@ -260,14 +271,11 @@ module Fugit
       @original = original
       @options = options
 
-      @h = h.reject { |k, v| v == 0 }
-        # which copies h btw
-
-      if options[:drop_seconds]
-        @h.delete(:sec)
-        @h = { min: 0 } if @h.empty?
+      if options[:literal]
+        @h = h
       else
-        @h = { sec: 0 } if @h.empty?
+        @h = h.reject { |k, v| v == 0 }
+        @h[:sec] = 0 if @h.empty?
       end
 
       self

@@ -125,24 +125,6 @@ describe Fugit::Duration do
       ).to eq(nil)
     end
 
-    context 'drop_seconds: true' do
-
-      [
-        [ '1M', { mon: 1 } ],
-        [ '1M10s', { mon: 1 } ],
-      ].each do |source, target|
-
-        it "drops seconds for #{source.inspect}" do
-
-          expect(
-            Fugit::Duration.parse(source, drop_seconds: true).h
-          ).to eq(
-            target
-          )
-        end
-      end
-    end
-
     context 'months: true' do
 
       it 'modulates months into 30 days'
@@ -450,6 +432,25 @@ describe Fugit::Duration do
 
       expect(t.class).to eq(::EtOrbi::EoTime)
       expect(Fugit.time_to_plain_s(t, false)).to eq('2017-12-31 00:00:00')
+    end
+  end
+
+  describe '#drop_seconds' do
+
+    [
+      [ '1M10s', { mon: 1, sec: 10 }, { mon: 1 } ],
+      [ '1M', { mon: 1 }, { mon: 1 } ],
+      [ 0, { sec: 0 }, { min: 0 } ],
+    ].each do |src, h0, h1|
+
+      it "returns a copy of the duration without its seconds (#{src})" do
+
+        d = Fugit::Duration.parse(src)
+        d1 = d.drop_seconds
+
+        expect(d.h).to eq(h0)
+        expect(d1.h).to eq(h1)
+      end
     end
   end
 
