@@ -17,15 +17,28 @@ describe Fugit::Duration do
       expect(Fugit::Duration.parse('NADA')).to eq(nil)
     end
 
-    it 'accepts a Numeric' do
+    [
+      [ 0, '0s' ],
+      [ 1000, '1000s' ],
+      [ 1001.05, '1001.05s' ],
+    ].each do |source, target|
 
-      expect(Fugit::Duration.parse(0).to_plain_s).to eq('0s')
-      expect(Fugit::Duration.parse(1000).to_plain_s).to eq('1000s')
-      expect(Fugit::Duration.parse(1001.05).to_plain_s).to eq('1001.05s')
+      it "turns numeric #{source.inspect} into #{target.inspect}" do
 
-      expect(Fugit::Duration.parse(0).to_iso_s).to eq('PT0S')
-      expect(Fugit::Duration.parse(1000).to_iso_s).to eq('PT1000S')
-      expect(Fugit::Duration.parse(1001.05).to_iso_s).to eq('PT1001.05S')
+        expect(Fugit::Duration.parse(source).to_plain_s).to eq(target)
+      end
+    end
+
+    [
+      [ 0, 'PT0S' ],
+      [ 1000, 'PT1000S' ],
+      [ 1001.05, 'PT1001.05S' ],
+    ].each do |source, target|
+
+      it "turns numeric #{source.inspect} into ISO #{target.inspect}" do
+
+        expect(Fugit::Duration.parse(source).to_iso_s).to eq(target)
+      end
     end
 
     it "returns the input immediately if it's a duration" do
