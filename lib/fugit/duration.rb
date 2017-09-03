@@ -137,13 +137,28 @@ module Fugit
       self.class.allocate.init(@original, {}, h)
     end
 
-    def deflate
+    def deflate(options={})
 
       id = inflate
       h = id.h.dup
       s = h.delete(:sec) || 0
 
-      INFLA_KEYS.each do |k, v|
+      keys = INFLA_KEYS
+
+      mon = options[:month]
+      yea = options[:year]
+      keys = keys.dup if mon || yea
+
+      if mon
+        mon = "#{mon}d" if mon.is_a?(Integer)
+        keys.unshift([ :mon, { s: Fugit::Duration.parse(mon).to_sec } ])
+      end
+      if yea
+        yea = "#{yea}d" if yea.is_a?(Integer)
+        keys.unshift([ :yea, { s: Fugit::Duration.parse(yea).to_sec } ])
+      end
+
+      keys.each do |k, v|
 
         n = s / v[:s]; next if n == 0
         m = s % v[:s]

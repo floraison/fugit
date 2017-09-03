@@ -124,11 +124,6 @@ describe Fugit::Duration do
         Fugit::Duration.parse('1y', iso: true)
       ).to eq(nil)
     end
-
-    context 'months: true' do
-
-      it 'modulates months into 30 days'
-    end
   end
 
   describe '.do_parse' do
@@ -153,7 +148,7 @@ describe Fugit::Duration do
 
       %w[ 3d-3h    248400s   2D21h  ],
 
-      %w[ 0s       0s        0s  ],
+      %w[ 0s       0s        0s     ],
 
     ].each do |source, step, target|
 
@@ -172,6 +167,82 @@ describe Fugit::Duration do
 
         expect(cd.class).to eq(::Fugit::Duration)
         expect(cd.to_plain_s).to eq(target)
+      end
+    end
+
+    context 'month: 30' do
+
+      [
+
+        %w[ 3600s 1h ],
+        [ "#{30 * 24 * 3600}s", '1M' ],
+        [ "#{1 + 30 * 24 * 3600}s", '1M1s' ],
+
+      ].each do |source, target|
+
+        it "deflates #{source.inspect} into #{target.inspect}" do
+
+          d = Fugit::Duration.new(source).deflate(month: 30)
+
+          expect(d.to_plain_s).to eq(target)
+        end
+      end
+    end
+
+    context 'month: "29d"' do
+
+      [
+
+        %w[ 3600s 1h ],
+        [ "#{30 * 24 * 3600}s", '1M1D' ],
+        [ "#{1 + 30 * 24 * 3600}s", '1M1D1s' ],
+
+      ].each do |source, target|
+
+        it "deflates #{source.inspect} into #{target.inspect}" do
+
+          d = Fugit::Duration.new(source).deflate(month: '29d')
+
+          expect(d.to_plain_s).to eq(target)
+        end
+      end
+    end
+
+    context 'year: 365' do
+
+      [
+
+        %w[ 3600s 1h ],
+        [ '366d', '1Y1D' ],
+        [ '53w', '1Y6D' ],
+
+      ].each do |source, target|
+
+        it "deflates #{source.inspect} into #{target.inspect}" do
+
+          d = Fugit::Duration.new(source).deflate(year: 365)
+
+          expect(d.to_plain_s).to eq(target)
+        end
+      end
+    end
+
+    context 'year: "52w"' do
+
+      [
+
+        %w[ 3600s 1h ],
+        [ '366d', '1Y2D' ],
+        [ '53w', '1Y1W' ],
+
+      ].each do |source, target|
+
+        it "deflates #{source.inspect} into #{target.inspect}" do
+
+          d = Fugit::Duration.new(source).deflate(year: '52w')
+
+          expect(d.to_plain_s).to eq(target)
+        end
       end
     end
   end
