@@ -1,5 +1,6 @@
 
 language: ruby
+
 rvm:
   #- 1.8.7 # no, since it doesn't get fun(a, *b, c) or fun0\n.fun1
   #- 1.9.3 # Travis broken September 2017
@@ -9,10 +10,13 @@ rvm:
   - 2.4.2
   #- jruby-19mode # Travis broken September 2017
   #- jruby-20mode # Travis broken September 2017
-matrix:
-  include:
-    - rvm: jruby-9.1.13.0
-    #- env: JRUBY_OPTS="--profile.api"
+  - jruby-9.1.13.0
+
+#matrix:
+#  include:
+#    - rvm: jruby-9.1.13.0
+#    #- env: JRUBY_OPTS="--profile.api"
+
 #before_install: gem install bundler
 script: bundle exec rspec
 branches:
@@ -23,4 +27,7 @@ branches:
 
 sudo: false
 cache: bundler
+
+#env:
+#  - XX=0
 
