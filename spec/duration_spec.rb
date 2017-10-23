@@ -19,6 +19,7 @@ describe Fugit::Duration do
 
     [
       [ 0, '0s' ],
+      [ 0.3, '0.3s' ],
       [ 1000, '1000s' ],
       [ 1001.05, '1001.05s' ],
     ].each do |source, target|
@@ -96,6 +97,9 @@ describe Fugit::Duration do
       [ '1.0d1.0w1.0d', '1.0W2.0D', '1.0w2.0d', 'P1.0W2.0D', 777_600.0 ],
 
       [ '-5.s', '-5.0s', '-5.0s', 'PT-5.0S', -5.0 ],
+
+      [ '0.3', '0.3s', '0.3s', 'PT0.3S', 0.3 ],
+      [ '0.1s0.3', '0.4s', '0.4s', 'PT0.4S', 0.4 ],
 
     ].each do |source, target, rufus_target, iso_target, sec|
 

@@ -321,10 +321,10 @@ module Fugit
       def hou(i); rex(:hou, i, /(\d+\.\d*|(\d*\.)?\d+) *(hours?|h)/i); end
       def min(i); rex(:min, i, /(\d+\.\d*|(\d*\.)?\d+) *(mins?|minutes?|m)/); end
 
-      def sec(i); rex(:sec, i, /(\d+\.\d*|(\d*\.)?\d+) *(secs?|seconds?|s)/i); end
-        # always last!
+      def sec(i); rex(:sec, i, /(\d+\.\d*|(\d*\.)?\d+) *(secs?|seconds?|s)/i); end 
+      def sek(i); rex(:sec, i, /(\d+\.\d*|\.\d+)$/); end
 
-      def elt(i); alt(nil, i, :yea, :mon, :wee, :day, :hou, :min, :sec); end
+      def elt(i); alt(nil, i, :yea, :mon, :wee, :day, :hou, :min, :sec, :sek); end
       def sign(i); rex(:sign, i, /[-+]?/); end
 
       def sdur(i); seq(:sdur, i, :sign, '?', :elt, '+'); end
