@@ -19,6 +19,7 @@ describe Fugit::Duration do
 
     [
       [ 0, '0s' ],
+      [ 7, '7s' ],
       [ 0.3, '0.3s' ],
       [ 1000, '1000s' ],
       [ 1001.05, '1001.05s' ],
@@ -98,6 +99,8 @@ describe Fugit::Duration do
 
       [ '-5.s', '-5.0s', '-5.0s', 'PT-5.0S', -5.0 ],
 
+      [ '7d7', '7D7s', '7d7s', 'P7DT7S', 7 * 24 * 3600 + 7 ],
+      [ '7', '7s', '7s', 'PT7S', 7 ],
       [ '0.3', '0.3s', '0.3s', 'PT0.3S', 0.3 ],
       [ '0.1s0.3', '0.4s', '0.4s', 'PT0.4S', 0.4 ],
 
@@ -573,8 +576,8 @@ describe Fugit::Duration do
     it 'may fail with an ArgumentError' do
 
       expect {
-        Fugit::Duration.to_iso_s('77d88')
-      }.to raise_error(ArgumentError, 'not a duration "77d88"')
+        Fugit::Duration.to_iso_s('77d88k')
+      }.to raise_error(ArgumentError, 'not a duration "77d88k"')
     end
   end
 
