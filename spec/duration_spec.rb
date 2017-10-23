@@ -154,6 +154,8 @@ describe Fugit::Duration do
 
       %w[ 0s       0s        0s     ],
 
+      %w[ 0.1s     0.1s      0.1s   ],
+
     ].each do |source, step, target|
 
       it(
