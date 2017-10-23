@@ -174,6 +174,26 @@ describe Fugit::Duration do
       end
     end
 
+    context 'month: true' do
+
+      [
+        [ '1M4W3s', { mon: 1, wee: 4, sec: 3 }, { mon: 1, wee: 4, sec: 3 } ],
+        [ '5w3s', { wee: 5, sec: 3 }, { mon: 1, day: 5, sec: 3 } ],
+        [ '40d', { day: 40 }, { mon: 1, wee: 1, day: 3 } ],
+        [ 40 * 24 * 3600, { sec: 40 * 24 * 3600 }, { mon: 1, wee: 1, day: 3 } ],
+      ].each do |src, h0, h1|
+
+        it "returns a copy of the duration without its seconds (#{src})" do
+
+          d = Fugit::Duration.parse(src)
+          d1 = d.deflate(:month => true)
+
+          expect(d.h).to eq(h0)
+          expect(d1.h).to eq(h1)
+        end
+      end
+    end
+
     context 'month: 30' do
 
       [

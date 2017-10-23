@@ -150,10 +150,12 @@ module Fugit
       keys = keys.dup if mon || yea
 
       if mon
+        mon = 30 if mon == true
         mon = "#{mon}d" if mon.is_a?(Integer)
         keys.unshift([ :mon, { s: Fugit::Duration.parse(mon).to_sec } ])
       end
       if yea
+        yea = 365 if yea == true
         yea = "#{yea}d" if yea.is_a?(Integer)
         keys.unshift([ :yea, { s: Fugit::Duration.parse(yea).to_sec } ])
       end
