@@ -162,15 +162,13 @@ module Fugit
 
       keys.each do |k, v|
 
-        next if v[:s] >= 1 && s < v[:s]
-        n = s / v[:s]; next if n == 0
+        next if v[:s] > 1 && s < v[:s]
+        n = s / v[:s]
         m = s % v[:s]
 
         h[k] = (h[k] || 0) + n
         s = m
       end
-        #
-      h[:sec] = (h[:sec] || 0) + s if s > 0
 
       self.class.allocate.init(@original, {}, h)
     end
