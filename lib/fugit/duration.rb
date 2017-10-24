@@ -113,6 +113,11 @@ module Fugit
     #
     def to_h; h; end
 
+    def to_rufus_h
+
+      KEYS.inject({}) { |h, (ks, kh)| v = @h[ks]; h[kh[:r].to_sym] = v if v; h }
+    end
+
     # Warning: this is an "approximation", months are 30 days and years are
     # 365 days, ...
     #

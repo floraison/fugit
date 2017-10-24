@@ -510,6 +510,59 @@ describe Fugit::Duration do
     end
   end
 
+  describe '#to_rufus_h' do
+
+    [
+
+      [ '1y2M', { :y => 1, :M => 2 } ],
+      [ '1M1y1M', { :M => 2, :y => 1 } ],
+      [ '10d10h', { :d => 10, :h => 10 } ],
+      [ '100s', { :s => 100 } ],
+
+      [ '-1y-2M', { :y => -1, :M => -2 } ],
+      [ '1M-1y-1M', { :y => -1 } ],
+
+      [ '-1y+2M', { :y => -1, :M => 2 } ],
+      [ '1M+1y-1M', { :y => 1 } ],
+
+      [ '1y 2M', { :y => 1, :M => 2 } ],
+      [ '1M 1y  1M', { :y => 1, :M => 2 } ],
+      [ ' 1M1y1M ', { :y => 1, :M => 2 } ],
+
+      [ '1 year and 2 months', { :y => 1, :M => 2 } ],
+      [ '1 y, 2 M, and 2 months', { :y => 1, :M => 4 } ],
+      [ '1 y, 2 M and 2 m', { :y => 1, :M => 2, :m => 2 } ],
+
+      [ 'P1Y2M', { :y => 1, :M => 2} ],
+      [ 'P10DT10H', { :d => 10, :h => 10 } ],
+      [ 'PT100S', { :s => 100 } ],
+
+      [ 'P-1Y-2M', { :y => -1, :M => -2 } ],
+      [ 'p1M-1y-1Mt-1M', { :y => -1, :m => -1 } ],
+
+      [ '1.4s', { :s => 1.4 } ],
+      [ 'PT1.5S', { :s => 1.5 } ],
+      [ '.4s', { :s => 0.4 } ],
+      [ 'PT.5S', { :s => 0.5 } ],
+
+      [ '1.0d1.0w1.0d', { :w => 1.0, :d => 2.0 } ],
+
+      [ '-5.s', { :s => -5.0 } ],
+
+      [ '7d7', { :d => 7, :s => 7 } ],
+      [ '7', { :s => 7 } ],
+      [ '0.3', { :s => 0.3 } ],
+      [ '0.1s0.3', { :s => 0.4 } ],
+
+    ].each do |d, h|
+
+      it "renders #{d.inspect} as #{h.inspect}" do
+
+        expect(Fugit::Duration.parse(d).to_rufus_h).to eq(h)
+      end
+    end
+  end
+
   describe '#next_time' do
 
     it 'returns now + this duration if no argument' do
