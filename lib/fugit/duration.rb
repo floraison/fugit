@@ -142,6 +142,10 @@ module Fugit
       self.class.allocate.init(@original, {}, h)
     end
 
+    # Round float seconds to 9 decimals when deflating
+    #
+    SECOND_ROUND = 9
+
     def deflate(options={})
 
       id = inflate
@@ -165,15 +169,15 @@ module Fugit
         keys.unshift([ :yea, { s: Fugit::Duration.parse(yea).to_sec } ])
       end
 
-      keys.each do |k, v|
+      keys[0..-2].each do |k, v|
 
-        next if v[:s] > 1 && s < v[:s]
-        n = s / v[:s]
-        m = s % v[:s]
+        vs = v[:s]; next if s < vs
 
-        h[k] = (h[k] || 0) + n
-        s = m
+        h[k] = (h[k] || 0) + s.to_i / vs
+        s = s % vs
       end
+
+      h[:sec] = s.is_a?(Integer) ? s : s.round(SECOND_ROUND)
 
       self.class.allocate.init(@original, {}, h)
     end
