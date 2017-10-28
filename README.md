@@ -131,29 +131,40 @@ p Fugit::Duration.to_long_s('1y2M1d4h')
 Points in time are parsed and given back as EtOrbi::EoTime instances.
 
 ```ruby
-Fugit.parse('2017-12-12').to_s
+Fugit.parse_at('2017-12-12').to_s
   # ==> "2017-12-12 00:00:00 +0900" (at least here in Hiroshima)
 
+Fugit.parse_at('2017-12-12 12:00:00 America/New_York').to_s
+  # ==> "2017-12-12 12:00:00 -0500"
+```
+
+Directly with `Fugit.parse(s)` is OK too:
+```ruby
 Fugit.parse('2017-12-12 12:00:00 America/New_York').to_s
   # ==> "2017-12-12 12:00:00 -0500"
 ```
 
-## fugit "nats"
+## `Fugit::Nat`
 
 Fugit understand some kind of "natural" language:
 
 For example, those "every" get turned into `Fugit::Cron` instances:
 ```ruby
-Fugit.parse('every day at five')                  # ==> '0 5 * * *'
-Fugit.parse('every weekday at five')              # ==> '0 5 * * 1,2,3,4,5'
-Fugit.parse('every day at 5 pm')                  # ==> '0 17 * * *'
-Fugit.parse('every tuesday at 5 pm')              # ==> '0 17 * * 2'
-Fugit.parse('every wed at 5 pm')                  # ==> '0 17 * * 3'
-Fugit.parse('every day at 16:30')                 # ==> '30 16 * * *'
-Fugit.parse('every day at noon')                  # ==> '0 12 * * *'
-Fugit.parse('every day at midnight')              # ==> '0 0 * * *'
-Fugit.parse('every tuesday and monday at 5pm')    # ==> '0 17 * * 1,2'
-Fugit.parse('every wed or Monday at 5pm and 11')  # ==> '0 11,17 * * 1,3'
+Fugit::Nat.parse('every day at five')                  # ==> '0 5 * * *'
+Fugit::Nat.parse('every weekday at five')              # ==> '0 5 * * 1,2,3,4,5'
+Fugit::Nat.parse('every day at 5 pm')                  # ==> '0 17 * * *'
+Fugit::Nat.parse('every tuesday at 5 pm')              # ==> '0 17 * * 2'
+Fugit::Nat.parse('every wed at 5 pm')                  # ==> '0 17 * * 3'
+Fugit::Nat.parse('every day at 16:30')                 # ==> '30 16 * * *'
+Fugit::Nat.parse('every day at noon')                  # ==> '0 12 * * *'
+Fugit::Nat.parse('every day at midnight')              # ==> '0 0 * * *'
+Fugit::Nat.parse('every tuesday and monday at 5pm')    # ==> '0 17 * * 1,2'
+Fugit::Nat.parse('every wed or Monday at 5pm and 11')  # ==> '0 11,17 * * 1,3'
+```
+
+Directly with `Fugit.parse(s)` is OK too:
+```ruby
+Fugit.parse('every day at five')  # ==> Fugit::Cron instance '0 5 * * *'
 ```
 
 
