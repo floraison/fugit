@@ -251,7 +251,7 @@ module Fugit
     end
     alias + add
 
-    def substract(a)
+    def subtract(a)
 
       case a
       when Numeric then add_numeric(-a)
@@ -259,10 +259,10 @@ module Fugit
       when String then add_duration(-self.class.parse(a))
       when ::Time, ::EtOrbi::EoTime then add_to_time(a)
       else fail ArgumentError.new(
-        "cannot substract #{a.class} instance to a Fugit::Duration")
+        "cannot subtract #{a.class} instance to a Fugit::Duration")
       end
     end
-    alias - substract
+    alias - subtract
 
     def ==(o)
 
