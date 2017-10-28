@@ -126,14 +126,20 @@ p Fugit::Duration.to_long_s('1y2M1d4h')
   # => "1 year, 2 months, 1 day, and 4 hours"
 ```
 
-## `EtOrbi::EoTime`
+## `Fugit::At`
 
 Points in time are parsed and given back as EtOrbi::EoTime instances.
 
 ```ruby
-Fugit.parse_at('2017-12-12').to_s
+Fugit::At.parse('2017-12-12').to_s
   # ==> "2017-12-12 00:00:00 +0900" (at least here in Hiroshima)
 
+Fugit::At.parse('2017-12-12 12:00:00 America/New_York').to_s
+  # ==> "2017-12-12 12:00:00 -0500"
+```
+
+Directly with `Fugit.parse_at(s)` is OK too:
+```ruby
 Fugit.parse_at('2017-12-12 12:00:00 America/New_York').to_s
   # ==> "2017-12-12 12:00:00 -0500"
 ```

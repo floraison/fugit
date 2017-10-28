@@ -1,25 +1,17 @@
 
 module Fugit
 
-  def self.parse_at(s)
-
-    ::EtOrbi.make_time(s) rescue nil
-  end
-
-  def self.do_parse_at(s)
-
-    ::EtOrbi.make_time(s)
-  end
-
   def self.parse_cron(s); ::Fugit::Cron.parse(s); end
   def self.parse_duration(s); ::Fugit::Duration.parse(s); end
-  def self.parse_in(s); parse_duration(s); end
   def self.parse_nat(s); ::Fugit::Nat.parse(s); end
+  def self.parse_at(s); ::Fugit::At.parse(s); end
+  def self.parse_in(s); parse_duration(s); end
 
   def self.do_parse_cron(s); ::Fugit::Cron.do_parse(s); end
   def self.do_parse_duration(s); ::Fugit::Duration.do_parse(s); end
-  def self.do_parse_in(s); do_parse_duration(s); end
   def self.do_parse_nat(s); ::Fugit::Nat.do_parse(s); end
+  def self.do_parse_at(s); ::Fugit::At.do_parse(s); end
+  def self.do_parse_in(s); do_parse_duration(s); end
 
   def self.parse(s, opts={})
 
