@@ -42,5 +42,14 @@ describe Fugit::Nat do
       expect(Fugit::Nat.parse('nada')).to eq(nil)
     end
   end
+
+  describe '.do_parse' do
+
+    it 'fails if it cannot parse' do
+
+      expect { Fugit::Nat.do_parse(true) }.to raise_error(ArgumentError)
+      expect { Fugit::Nat.do_parse('nada') }.to raise_error(ArgumentError)
+    end
+  end
 end
 

@@ -100,6 +100,7 @@ describe Fugit do
     end
 
     it 'fails when it cannot parse' do
+
       expect {
         Fugit.do_parse('I have a pen, I have an apple, pineapple!')
       }.to raise_error(

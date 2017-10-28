@@ -27,6 +27,22 @@ Fugit will probably become the foundation for [rufus-scheduler](https://github.c
 * ...
 
 
+## `Fugit.parse(s)`
+
+The simplest way to use fugit is via `Fugit.parse(s)`.
+
+```ruby
+require 'fugit'
+
+Fugit.parse('0 0 1 jan *').class         # ==> ::Fugit::Cron
+Fugit.parse('12y12M').class              # ==> ::Fugit::Duration
+
+Fugit.parse('2017-12-12').class          # ==> ::EtOrbi::EoTime
+Fugit.parse('2017-12-12 UTC').class      # ==> ::EtOrbi::EoTime
+
+Fugit.parse('every day at noon').class   # ==> ::Fugit::Cron
+```
+
 ## `Fugit::Cron`
 
 A class `Fugit::Cron` to parse cron strings and then `#next_time` and `#previous_time` to compute the next or the previous occurrence respectively.
@@ -108,6 +124,36 @@ p Fugit::Duration.to_iso_s('1y2M1d4h')
   # => "P1Y2M1DT4H" ISO 8601 duration
 p Fugit::Duration.to_long_s('1y2M1d4h')
   # => "1 year, 2 months, 1 day, and 4 hours"
+```
+
+## `EtOrbi::EoTime`
+
+Points in time are parsed and given back as EtOrbi::EoTime instances.
+
+```ruby
+Fugit.parse('2017-12-12').to_s
+  # ==> "2017-12-12 00:00:00 +0900" (at least here in Hiroshima)
+
+Fugit.parse('2017-12-12 12:00:00 America/New_York').to_s
+  # ==> "2017-12-12 12:00:00 -0500"
+```
+
+## fugit "nats"
+
+Fugit understand some kind of "natural" language:
+
+For example, those "every" get turned into `Fugit::Cron` instances:
+```ruby
+Fugit.parse('every day at five')                  # ==> '0 5 * * *'
+Fugit.parse('every weekday at five')              # ==> '0 5 * * 1,2,3,4,5'
+Fugit.parse('every day at 5 pm')                  # ==> '0 17 * * *'
+Fugit.parse('every tuesday at 5 pm')              # ==> '0 17 * * 2'
+Fugit.parse('every wed at 5 pm')                  # ==> '0 17 * * 3'
+Fugit.parse('every day at 16:30')                 # ==> '30 16 * * *'
+Fugit.parse('every day at noon')                  # ==> '0 12 * * *'
+Fugit.parse('every day at midnight')              # ==> '0 0 * * *'
+Fugit.parse('every tuesday and monday at 5pm')    # ==> '0 17 * * 1,2'
+Fugit.parse('every wed or Monday at 5pm and 11')  # ==> '0 11,17 * * 1,3'
 ```
 
 
