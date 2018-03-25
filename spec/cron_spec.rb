@@ -63,26 +63,23 @@ describe Fugit::Cron do
 
   describe '#next_time' do
 
-    success =
-      proc { |cron, next_time, now|
+    NEXT_TIMES.each do |cron, next_time, now|
 
-        it "succeeds #{cron.inspect} -> #{next_time.inspect}" do
+      it "succeeds #{cron.inspect} -> #{next_time.inspect}" do
 
-          c = Fugit::Cron.parse(cron)
-          ent = Time.parse(next_time)
-          now = Time.parse(now) if now
+        c = Fugit::Cron.parse(cron)
+        ent = Time.parse(next_time)
+        now = Time.parse(now) if now
 
-          nt = c.next_time(now || NOW)
+        nt = c.next_time(now || NOW)
 
-          expect(
-            Fugit.time_to_plain_s(nt, false)
-          ).to eq(
-            Fugit.time_to_plain_s(ent, false)
-          )
-        end
-      }
-
-    NEXT_TIMES.each(&success)
+        expect(
+          Fugit.time_to_plain_s(nt, false)
+        ).to eq(
+          Fugit.time_to_plain_s(ent, false)
+        )
+      end
+    end
 
     context 'implicit tz DST transition' do
 
@@ -160,19 +157,16 @@ describe Fugit::Cron do
 
   describe '#match?' do
 
-    success =
-      proc { |cron, next_time, _|
+    NEXT_TIMES.each do |cron, next_time, _|
 
-        it "succeeds #{cron.inspect} ? #{next_time.inspect}" do
+      it "succeeds #{cron.inspect} ? #{next_time.inspect}" do
 
-          c = Fugit::Cron.parse(cron)
-          ent = Time.parse(next_time)
+        c = Fugit::Cron.parse(cron)
+        ent = Time.parse(next_time)
 
-          expect(c.match?(ent)).to be(true)
-        end
-      }
-
-    NEXT_TIMES.each(&success)
+        expect(c.match?(ent)).to be(true)
+      end
+    end
   end
 
   PREVIOUS_TIMES = [
@@ -209,29 +203,26 @@ describe Fugit::Cron do
 
   describe '#previous_time' do
 
-    success =
-      proc { |cron, previous_time, now|
+    PREVIOUS_TIMES.each do |cron, previous_time, now|
 
-        now = now ? Time.parse(now) : NOW
+      now = now ? Time.parse(now) : NOW
 
-        it "succeeds #{cron.inspect} #{now} -> #{previous_time.inspect}" do
+      it "succeeds #{cron.inspect} #{now} -> #{previous_time.inspect}" do
 
-          c = Fugit::Cron.parse(cron)
-          ept = Time.parse(previous_time)
+        c = Fugit::Cron.parse(cron)
+        ept = Time.parse(previous_time)
 
-          pt = c.previous_time(now)
+        pt = c.previous_time(now)
 
-          expect(
-            Fugit.time_to_plain_s(pt, false)
-          ).to eq(
-            Fugit.time_to_plain_s(ept, false)
-          )
+        expect(
+          Fugit.time_to_plain_s(pt, false)
+        ).to eq(
+          Fugit.time_to_plain_s(ept, false)
+        )
 
-          expect(c.match?(ept)).to eq(true) # quick check
-        end
-      }
-
-    PREVIOUS_TIMES.each(&success)
+        expect(c.match?(ept)).to eq(true) # quick check
+      end
+    end
   end
 
   describe '#brute_frequency' do
