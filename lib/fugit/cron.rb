@@ -66,7 +66,7 @@ module Fugit
     class TimeCursor
 
       def initialize(t)
-        @t = t.is_a?(TimeCursor) ? t.time : ::EtOrbi.make_time(t)
+        @t = t.is_a?(TimeCursor) ? t.time : t
         @t.seconds = @t.seconds.to_i
       end
 
@@ -169,7 +169,8 @@ module Fugit
 
     def next_time(from=::EtOrbi::EoTime.now)
 
-      t = TimeCursor.new(from)
+      from = ::EtOrbi.make_time(from)
+      t = TimeCursor.new(from.translate(@timezone))
 
       loop do
 #p [ :l, Fugit.time_to_s(t.time) ]
@@ -182,12 +183,13 @@ module Fugit
         break
       end
 
-      t.time
+      t.time.translate(from.zone)
     end
 
     def previous_time(from=::EtOrbi::EoTime.now)
 
-      t = TimeCursor.new(from)
+      from = ::EtOrbi.make_time(from)
+      t = TimeCursor.new(from.translate(@timezone))
 
       loop do
 #p [ :l, Fugit.time_to_s(t.time) ]
@@ -200,7 +202,7 @@ module Fugit
         break
       end
 
-      t.time
+      t.time.translate(from.zone)
     end
 
     # Mostly used as a #next_time sanity check.

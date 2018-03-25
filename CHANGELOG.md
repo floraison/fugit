@@ -4,6 +4,8 @@
 
 ## fugit 1.1.0  not yet released
 
+* Travel in Cron zone in #next_time and #previous_time, return from zone
+* Parse and store timezone in Fugit::Cron
 * Introduce Fugit::Duration#deflate month: d / year: d
 * Introduce Fugit::Duration#drop_seconds
 * Alias Fugit::Duration#to_h to Fugit::Duration#h

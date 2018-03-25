@@ -124,6 +124,28 @@ describe Fugit::Cron do
         end
       end
 
+      it 'correctly increments every minute into DST (explicit TZ)' do
+
+        in_zone 'America/Los_Angeles' do
+
+          c = Fugit::Cron.parse('* * * * * Europe/Berlin')
+          t = EtOrbi::EoTime.parse('2015-03-08 01:57:00')
+
+          points =
+            4.times.collect do
+              t = c.next_time(t)
+              t.strftime('%H:%M_%Z') + '__' + t.dup.utc.strftime('%H:%M_%Z')
+            end
+
+          expect(points.join("\n")).to eq(%w[
+            01:58_PST__09:58_UTC
+            01:59_PST__09:59_UTC
+            03:00_PDT__10:00_UTC
+            03:01_PDT__10:01_UTC
+          ].join("\n"))
+        end
+      end
+
       it 'correctly increments out of DST' do
 
         in_zone 'America/Los_Angeles' do
@@ -152,6 +174,19 @@ describe Fugit::Cron do
       nt = c.next_time
 
       expect(nt.seconds.to_s).to eq(nt.seconds.to_i.to_s + '.0')
+    end
+
+    context 'explicit timezone' do
+
+      it 'computes in the cron zone but returns in the from zone' do
+
+        c = Fugit::Cron.parse('* * * * * Europe/Rome')
+        f = EtOrbi.parse('2017-03-25 21:59 Asia/Tokyo')
+        t = c.next_time(f)
+
+        expect(t.class).to eq(EtOrbi::EoTime)
+        expect(t.iso8601).to eq('2017-03-25T22:00:00+09:00')
+      end
     end
   end
 
