@@ -18,9 +18,35 @@ module Fugit
 
     attr_reader :minutes, :hours, :monthdays, :months, :weekdays
 
-    def self.new(original)
+    class << self
 
-      parse(original)
+      def new(original)
+
+        parse(original)
+      end
+
+      def parse(s)
+
+        return s if s.is_a?(self)
+
+        original = s
+        s = SPECIALS[s] || s
+
+        return nil unless s.is_a?(String)
+
+#p s; Raabro.pp(Parser.parse(s, debug: 3))
+        h = Parser.parse(s)
+
+        return nil unless h
+
+        self.allocate.send(:init, s, h)
+      end
+
+      def do_parse(s)
+
+        parse(s) ||
+        fail(ArgumentError.new("not a cron string #{s.inspect}"))
+      end
     end
 
     def to_cron_s
@@ -34,28 +60,6 @@ module Fugit
           (@months || [ '*' ]).join(','),
           (@weekdays || [ [ '*' ] ]).map { |d| d.compact.join('#') }.join(',')
         ].compact.join(' ')
-    end
-
-    def self.parse(s)
-
-      return s if s.is_a?(self)
-
-      original = s
-      s = SPECIALS[s] || s
-
-      return nil unless s.is_a?(String)
-
-#p s; Raabro.pp(Parser.parse(s, debug: 3))
-      h = Parser.parse(s)
-
-      return nil unless h
-
-      self.allocate.send(:init, s, h)
-    end
-
-    def self.do_parse(s)
-
-      parse(s) || fail(ArgumentError.new("not a cron string #{s.inspect}"))
     end
 
     class TimeCursor
