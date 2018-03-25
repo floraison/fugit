@@ -14,9 +14,8 @@ module Fugit
       '@hourly' => '0 * * * *',
     }
 
-    attr_reader :original
-
-    attr_reader :minutes, :hours, :monthdays, :months, :weekdays
+    attr_reader :original, :zone
+    attr_reader :minutes, :hours, :monthdays, :months, :weekdays, :timezone
 
     class << self
 
@@ -34,7 +33,7 @@ module Fugit
 
         return nil unless s.is_a?(String)
 
-#p s; Raabro.pp(Parser.parse(s, debug: 3))
+#p s; Raabro.pp(Parser.parse(s, debug: 3), colors: true)
         h = Parser.parse(s)
 
         return nil unless h
@@ -51,15 +50,17 @@ module Fugit
 
     def to_cron_s
 
-      @cron_s ||=
+      @cron_s ||= begin
         [
           @seconds == [ 0 ] ? nil : (@seconds || [ '*' ]).join(','),
           (@minutes || [ '*' ]).join(','),
           (@hours || [ '*' ]).join(','),
           (@monthdays || [ '*' ]).join(','),
           (@months || [ '*' ]).join(','),
-          (@weekdays || [ [ '*' ] ]).map { |d| d.compact.join('#') }.join(',')
+          (@weekdays || [ [ '*' ] ]).map { |d| d.compact.join('#') }.join(','),
+          @timezone ? @timezone.to_s : nil
         ].compact.join(' ')
+      end
     end
 
     class TimeCursor
@@ -292,6 +293,7 @@ module Fugit
       determine_monthdays(h[:dom])
       determine_months(h[:mon])
       determine_weekdays(h[:dow])
+      determine_timezone(h[:tz])
 
       self
     end
@@ -373,6 +375,11 @@ module Fugit
       @weekdays = nil if @weekdays.empty?
     end
 
+    def determine_timezone(z)
+
+      @zone, @timezone = z
+    end
+
     module Parser include Raabro
 
       WEEKDAYS = %w[ sunday monday tuesday wednesday thursday friday saturday ]
@@ -448,11 +455,19 @@ module Fugit
       def lmon_(i); seq(nil, i, :list_mon, :s); end
       alias ldow list_dow
 
+      def _tz_name(i)
+        rex(nil, i, / +[A-Z][a-zA-Z0-9]+(\/[A-Z][a-zA-Z0-9_]+){0,2}/)
+      end
+      def _tz_delta(i)
+        rex(nil, i, / +[-+]([01][0-9]|2[0-4]):?(00|15|30|45)/)
+      end
+      def _tz(i); alt(:tz, i, :_tz_delta, :_tz_name); end
+
       def classic_cron(i)
-        seq(:ccron, i, :lmin_, :lhou_, :ldom_, :lmon_, :ldow)
+        seq(:ccron, i, :lmin_, :lhou_, :ldom_, :lmon_, :ldow, :_tz, '?')
       end
       def second_cron(i)
-        seq(:scron, i, :lsec_, :lmin_, :lhou_, :ldom_, :lmon_, :ldow)
+        seq(:scron, i, :lsec_, :lmin_, :lhou_, :ldom_, :lmon_, :ldow, :_tz, '?')
       end
 
       def cron(i)
@@ -497,12 +512,26 @@ module Fugit
           .collect { |et| rewrite_elt(t.name, et) }
       end
 
+      def rewrite_tz(t)
+
+        s = t.string.strip
+        z = EtOrbi.get_tzone(s)
+
+        [ s, z ]
+      end
+
       def rewrite_cron(t)
 
-        t
+        hcron = t
           .sublookup(nil) # go to :ccron or :scron
           .subgather(nil) # list min, hou, mon, ...
-          .inject({}) { |h, tt| h[tt.name] = rewrite_entry(tt); h }
+          .inject({}) { |h, tt|
+            h[tt.name] = tt.name == :tz ? rewrite_tz(tt) : rewrite_entry(tt)
+            h }
+
+        z, tz = hcron[:tz]; return nil if z && ! tz
+
+        hcron
       end
     end
   end

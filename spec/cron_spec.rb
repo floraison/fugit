@@ -370,6 +370,37 @@ describe Fugit::Cron do
           it("parses #{c}") { expect(Fugit::Cron.parse(c).to_cron_s).to eq(e) }
         }
       end
+
+      context 'timezone' do
+
+        [
+          [ '* * * * * America/Los_Angeles', 'America/Los_Angeles' ],
+          [ '* * * * * +09:00', '+09:00' ],
+        ].each { |c, z|
+
+          it "parses #{c}" do
+
+            c = Fugit::Cron.parse(c)
+            tz = EtOrbi.get_tzone(z) || fail("unknown tz #{z.inspect}")
+
+            expect(c.class).to eq(Fugit::Cron)
+            expect(c.zone).to eq(z)
+            expect(c.timezone).to eq(tz)
+          end
+        }
+
+        [
+          '* * * * * America/SaoPaulo',
+          '* * * * * America/Los Angeles',
+          '* * * * * Issy_Les_Moulineaux',
+        ].each { |c|
+
+          it "returns nil for #{c.inspect}" do
+
+            expect(Fugit::Cron.parse(c)).to eq(nil)
+          end
+        }
+      end
     end
 
     context 'failure' do
