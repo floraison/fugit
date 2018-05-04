@@ -4,6 +4,8 @@
 
 ## fugit 1.1.1  not yet released
 
+* Depend on et-orbi 1.1.1 and better
+
 
 ## fugit 1.1.0  released 2018-03-27
 
