@@ -2,6 +2,9 @@
 # fugit CHANGELOG.md
 
 
+## fugit 1.1.1  not yet released
+
+
 ## fugit 1.1.0  released 2018-03-27
 
 * Travel in Cron zone in #next_time and #previous_time, return from zone
