@@ -21,7 +21,7 @@ Fugit will probably become the foundation for [rufus-scheduler](https://github.c
 ### Similar, somehow overlapping projects
 
 * [chronic](https://github.com/mojombo/chronic) - a pure Ruby natural language date parser
-* [parse-cron](https://github.com/siebertm/parse-cron) - parses cron expressions and calculates the next occurence after a given date
+* [parse-cron](https://github.com/siebertm/parse-cron) - parses cron expressions and calculates the next occurrence after a given date
 * [ice_cube](https://github.com/seejohnrun/ice_cube) - Ruby date recurrence library
 * [ISO8601](https://github.com/arnau/ISO8601) - Ruby parser to work with ISO8601 dateTimes and durations
 * ...
@@ -47,7 +47,7 @@ Fugit.parse('every day at noon').class   # ==> ::Fugit::Cron
 
 A class `Fugit::Cron` to parse cron strings and then `#next_time` and `#previous_time` to compute the next or the previous occurrence respectively.
 
-There is also a `#brute_frequency` method which returns an array `[ shortest delta, longest delta, occurrence count ]` where delta is the time between two occurences.
+There is also a `#brute_frequency` method which returns an array `[ shortest delta, longest delta, occurrence count ]` where delta is the time between two occurrences.
 
 ```ruby
 require 'fugit'

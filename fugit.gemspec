@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.summary = 'time tools for flor'
 
   s.description = %{
-Time tools for flor and the floraison project. Cron parsing and occurence computing. Timestamps and more.
+Time tools for flor and the floraison project. Cron parsing and occurrence computing. Timestamps and more.
   }.strip
 
   #s.files = `git ls-files`.split("\n")
