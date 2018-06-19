@@ -524,6 +524,24 @@ describe Fugit::Cron do
       end
     end
   end
+
+  describe '#seconds' do
+
+    {
+
+      '* * * * *' => [ 0 ],
+      '5 * * * * *' => [ 5 ],
+      '5,10 * * * * *' => [ 5, 10 ],
+      '*/10 * * * * *' => [ 0, 10, 20, 30, 40, 50 ],
+
+    }.each do |string, expected|
+
+      it "returns #{expected.inspect} for #{string}" do
+
+        expect(Fugit::Cron.parse(string).seconds).to eq(expected)
+      end
+    end
+  end
 end
 
 describe Fugit::Cron do
