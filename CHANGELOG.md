@@ -2,6 +2,11 @@
 # fugit CHANGELOG.md
 
 
+## fugit 1.1.2  not yet released
+
+* Added Fugit::Cron#seconds (Tero Marttila in gh-3)
+
+
 ## fugit 1.1.1  released 2018-05-04
 
 * Depend on et-orbi 1.1.1 and better
