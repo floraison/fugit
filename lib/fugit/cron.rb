@@ -15,7 +15,7 @@ module Fugit
     }
 
     attr_reader :original, :zone
-    attr_reader :minutes, :hours, :monthdays, :months, :weekdays, :timezone
+    attr_reader :seconds, :minutes, :hours, :monthdays, :months, :weekdays, :timezone
 
     class << self
 
