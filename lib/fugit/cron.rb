@@ -28,7 +28,6 @@ module Fugit
 
         return s if s.is_a?(self)
 
-        original = s
         s = SPECIALS[s] || s
 
         return nil unless s.is_a?(String)
@@ -94,7 +93,7 @@ module Fugit
       def inc_min; inc(60 - @t.sec); end
 
       def inc_sec(seconds)
-        if s = seconds.find { |s| s > @t.sec }
+        if s = seconds.find { |local_s| local_s > @t.sec }
           inc(s - @t.sec)
         else
           inc(60 - @t.sec + seconds.first)
@@ -123,7 +122,7 @@ module Fugit
 
       return true if @weekdays.nil?
 
-      wd, hsh = @weekdays.find { |wd, hsh| wd == nt.wday }
+      wd, hsh = @weekdays.find { |local_wd, _hsh| local_wd == nt.wday }
 
       return false unless wd
       return true if hsh.nil?
@@ -329,28 +328,28 @@ module Fugit
     end
 
     def determine_seconds(a)
-      @seconds = (a || [ 0 ]).inject([]) { |a, r| a.concat(expand(0, 59, r)) }
+      @seconds = (a || [ 0 ]).inject([]) { |local_a, r| local_a.concat(expand(0, 59, r)) }
       compact(:@seconds)
     end
 
     def determine_minutes(a)
-      @minutes = a.inject([]) { |a, r| a.concat(expand(0, 59, r)) }
+      @minutes = a.inject([]) { |local_a, r| local_a.concat(expand(0, 59, r)) }
       compact(:@minutes)
     end
 
     def determine_hours(a)
-      @hours = a.inject([]) { |a, r| a.concat(expand(0, 23, r)) }
+      @hours = a.inject([]) { |local_a, r| local_a.concat(expand(0, 23, r)) }
       @hours = @hours.collect { |h| h == 24 ? 0 : h }
       compact(:@hours)
     end
 
     def determine_monthdays(a)
-      @monthdays = a.inject([]) { |a, r| a.concat(expand(1, 31, r)) }
+      @monthdays = a.inject([]) { |local_a, r| local_a.concat(expand(1, 31, r)) }
       compact(:@monthdays)
     end
 
     def determine_months(a)
-      @months = a.inject([]) { |a, r| a.concat(expand(1, 12, r)) }
+      @months = a.inject([]) { |local_a, r| local_a.concat(expand(1, 12, r)) }
       compact(:@months)
     end
 
@@ -358,16 +357,16 @@ module Fugit
 
       @weekdays = []
 
-      a.each do |a, z, s, h| # a to z, slash and hash
+      a.each do |local_a, z, s, h| # a to z, slash and hash
         if h
-          @weekdays << [ a, h ]
+          @weekdays << [ local_a, h ]
         elsif s
-          ((a || 0)..(z || (a ? a : 6))).step(s < 1 ? 1 : s)
+          ((local_a || 0)..(z || (local_a ? local_a : 6))).step(s < 1 ? 1 : s)
             .each { |i| @weekdays << [ i ] }
         elsif z
-          (a..z).each { |i| @weekdays << [ i ] }
-        elsif a
-          @weekdays << [ a ]
+          (local_a..z).each { |i| @weekdays << [ i ] }
+        elsif local_a
+          @weekdays << [ local_a ]
         #else
         end
       end
