@@ -28,7 +28,6 @@ module Fugit
 
         return s if s.is_a?(self)
 
-        original = s
         s = SPECIALS[s] || s
 
         return nil unless s.is_a?(String)
@@ -94,8 +93,8 @@ module Fugit
       def inc_min; inc(60 - @t.sec); end
 
       def inc_sec(seconds)
-        if s = seconds.find { |s| s > @t.sec }
-          inc(s - @t.sec)
+        if sec = seconds.find { |s| s > @t.sec }
+          inc(sec - @t.sec)
         else
           inc(60 - @t.sec + seconds.first)
         end
@@ -123,7 +122,7 @@ module Fugit
 
       return true if @weekdays.nil?
 
-      wd, hsh = @weekdays.find { |wd, hsh| wd == nt.wday }
+      wd, hsh = @weekdays.find { |d, _| d == nt.wday }
 
       return false unless wd
       return true if hsh.nil?
@@ -328,37 +327,38 @@ module Fugit
       arr.sort!
     end
 
-    def determine_seconds(a)
-      @seconds = (a || [ 0 ]).inject([]) { |a, r| a.concat(expand(0, 59, r)) }
+    def determine_seconds(arr)
+      @seconds = (arr || [ 0 ]).inject([]) { |a, s| a.concat(expand(0, 59, s)) }
       compact(:@seconds)
     end
 
-    def determine_minutes(a)
-      @minutes = a.inject([]) { |a, r| a.concat(expand(0, 59, r)) }
+    def determine_minutes(arr)
+      @minutes = arr.inject([]) { |a, m| a.concat(expand(0, 59, m)) }
       compact(:@minutes)
     end
 
-    def determine_hours(a)
-      @hours = a.inject([]) { |a, r| a.concat(expand(0, 23, r)) }
-      @hours = @hours.collect { |h| h == 24 ? 0 : h }
+    def determine_hours(arr)
+      @hours = arr
+        .inject([]) { |a, h| a.concat(expand(0, 23, h)) }
+        .collect { |h| h == 24 ? 0 : h }
       compact(:@hours)
     end
 
-    def determine_monthdays(a)
-      @monthdays = a.inject([]) { |a, r| a.concat(expand(1, 31, r)) }
+    def determine_monthdays(arr)
+      @monthdays = arr.inject([]) { |a, d| a.concat(expand(1, 31, d)) }
       compact(:@monthdays)
     end
 
-    def determine_months(a)
-      @months = a.inject([]) { |a, r| a.concat(expand(1, 12, r)) }
+    def determine_months(arr)
+      @months = arr.inject([]) { |a, m| a.concat(expand(1, 12, m)) }
       compact(:@months)
     end
 
-    def determine_weekdays(a)
+    def determine_weekdays(arr)
 
       @weekdays = []
 
-      a.each do |a, z, s, h| # a to z, slash and hash
+      arr.each do |a, z, s, h| # a to z, slash and hash
         if h
           @weekdays << [ a, h ]
         elsif s

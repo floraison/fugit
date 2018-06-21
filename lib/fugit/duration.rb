@@ -128,7 +128,7 @@ module Fugit
 
     def inflate
 
-      h =
+      params =
         @h.inject({ sec: 0 }) { |h, (k, v)|
           a = KEYS[k]
           if a[:I]
@@ -139,7 +139,7 @@ module Fugit
           h
         }
 
-      self.class.allocate.init(@original, {}, h)
+      self.class.allocate.init(@original, {}, params)
     end
 
     # Round float seconds to 9 decimals when deflating
@@ -184,9 +184,9 @@ module Fugit
 
     def opposite
 
-      h = @h.inject({}) { |h, (k, v)| h[k] = -v; h }
+      params = @h.inject({}) { |h, (k, v)| h[k] = -v; h }
 
-      self.class.allocate.init(nil, {}, h)
+      self.class.allocate.init(nil, {}, params)
     end
 
     alias -@ opposite
@@ -201,9 +201,9 @@ module Fugit
 
     def add_duration(d)
 
-      h = d.h.inject(@h.dup) { |h, (k, v)| h[k] = (h[k] || 0) + v; h }
+      params = d.h.inject(@h.dup) { |h, (k, v)| h[k] = (h[k] || 0) + v; h }
 
-      self.class.allocate.init(nil, {}, h)
+      self.class.allocate.init(nil, {}, params)
     end
 
     def add_to_time(t)
@@ -312,10 +312,10 @@ module Fugit
 
       t
         .subgather(nil)
-        .inject({}) { |h, t|
-          v = t.string; v = v.index('.') ? v.to_f : v.to_i
+        .inject({}) { |h, tt|
+          v = tt.string; v = v.index('.') ? v.to_f : v.to_i
             # drops ending ("y", "m", ...) by itself
-          h[t.name] = (h[t.name] || 0) + v
+          h[tt.name] = (h[tt.name] || 0) + v
           h
         }
     end

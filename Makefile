@@ -19,6 +19,9 @@ gemspec_validate:
 name: gemspec_validate
 	@echo "$(NAME) $(VERSION)"
 
+cw:
+	find lib -name "*.rb" -exec ruby -cw {} \;
+
 build: gemspec_validate
 	gem build $(NAME).gemspec
 	mkdir -p pkg
@@ -28,5 +31,5 @@ push: build
 	gem push pkg/$(NAME)-$(VERSION).gem
 
 
-.PHONY: build push
+.PHONY: build push cw
 
