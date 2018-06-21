@@ -2,6 +2,9 @@
 # fugit CHANGELOG.md
 
 
+## fugit 1.1.3  not yet released
+
+
 ## fugit 1.1.2  released 2018-06-20
 
 * Added Fugit::Cron#seconds (Tero Marttila in gh-3)
