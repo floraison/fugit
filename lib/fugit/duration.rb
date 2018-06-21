@@ -129,14 +129,14 @@ module Fugit
     def inflate
 
       h =
-        @h.inject({ sec: 0 }) { |h, (k, v)|
+        @h.inject({ sec: 0 }) { |local_h, (k, v)|
           a = KEYS[k]
           if a[:I]
-            h[:sec] += (v * a[:s])
+            local_h[:sec] += (v * a[:s])
           else
-            h[k] = v
+            local_h[k] = v
           end
-          h
+          local_h
         }
 
       self.class.allocate.init(@original, {}, h)
@@ -184,7 +184,7 @@ module Fugit
 
     def opposite
 
-      h = @h.inject({}) { |h, (k, v)| h[k] = -v; h }
+      h = @h.inject({}) { |local_h, (k, v)| local_h[k] = -v; local_h }
 
       self.class.allocate.init(nil, {}, h)
     end
@@ -201,7 +201,7 @@ module Fugit
 
     def add_duration(d)
 
-      h = d.h.inject(@h.dup) { |h, (k, v)| h[k] = (h[k] || 0) + v; h }
+      h = d.h.inject(@h.dup) { |local_h, (k, v)| local_h[k] = (local_h[k] || 0) + v; local_h }
 
       self.class.allocate.init(nil, {}, h)
     end
@@ -312,10 +312,10 @@ module Fugit
 
       t
         .subgather(nil)
-        .inject({}) { |h, t|
-          v = t.string; v = v.index('.') ? v.to_f : v.to_i
+        .inject({}) { |h, local_t|
+          v = local_t.string; v = v.index('.') ? v.to_f : v.to_i
             # drops ending ("y", "m", ...) by itself
-          h[t.name] = (h[t.name] || 0) + v
+          h[local_t.name] = (h[local_t.name] || 0) + v
           h
         }
     end

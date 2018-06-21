@@ -49,7 +49,7 @@ module Fugit
         end
       end
       h[:min] ||= [ 0 ]
-      h[:dow].sort_by! { |a, z| a || 0 }
+      h[:dow].sort_by! { |local_a, z| local_a || 0 }
 
       Fugit::Cron.allocate.send(:init, nil, h)
     end
