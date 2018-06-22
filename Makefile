@@ -13,7 +13,7 @@ cl: count_lines
 
 gemspec_validate:
 	@echo "---"
-	ruby -e "s = eval(File.read(Dir['*.gemspec'].first)); s.validate"
+	ruby -e "s = eval(File.read(Dir['*.gemspec'].first)); p s.validate"
 	@echo "---"
 
 name: gemspec_validate
@@ -30,6 +30,10 @@ build: gemspec_validate
 push: build
 	gem push pkg/$(NAME)-$(VERSION).gem
 
+spec:
+	bundle exec rspec
+test: spec
 
-.PHONY: build push cw
+
+.PHONY: count_lines gemspec_validate name cw build push spec
 
