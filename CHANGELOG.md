@@ -2,6 +2,9 @@
 # fugit CHANGELOG.md
 
 
+## fugit 1.1.4  not yet released
+
+
 ## fugit 1.1.3  released 2018-06-21
 
 * Silenced Ruby warnings (Utilum in gh-4)
