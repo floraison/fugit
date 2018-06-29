@@ -20,7 +20,7 @@ require 'fugit'
 def in_zone(zone_name, &block)
 
   prev_tz = ENV['TZ']
-  ENV['TZ'] = zone_name
+  ENV['TZ'] = zone_name if zone_name
 
   block.call
 

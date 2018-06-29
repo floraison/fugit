@@ -27,12 +27,15 @@ describe Fugit::Cron do
     [ '* * L * *', '2016-02-29 00:00:00', '2016-02-01' ],
     [ '* * last * *', '2016-02-29 00:00:00', '2016-02-01' ],
     [ '* * -1 * *', '2016-02-29 00:00:00', '2016-02-01' ],
+    [ '* * L * *', '2016-02-29 00:00:00', '2016-02-01' ],
     [ '0 0 -4,-3 * *', '2016-02-26 00:00:00', '2016-02-01' ],
     [ '0 0 -4,-3 * *', '2016-02-27 00:00:00', '2016-02-26 12:00' ],
 
     [ '* * * * sun', '2017-01-8' ],
 
     [ '* * -2 * *', '2017-01-30' ],
+    [ '* * -1 * *', '2017-01-31' ],
+    [ '* * L * *', '2017-01-31' ],
 
     [ '* * * * mon#2', '2017-01-09' ],
     [ '* * * * mon#-1', '2017-01-30' ],
@@ -59,25 +62,44 @@ describe Fugit::Cron do
     [ '30 04 1,15 * 5', '2017-01-06 04:30:00', '2017-01-03' ],
     [ '30 04 1,15 * 5', '2017-01-15 04:30:00', '2017-01-14' ],
     [ '30 04 1,15 * 5', '2017-01-20 04:30:00', '2017-01-16' ],
+
+    #
+    # gh-5  '0 8 L * * mon-thu', last day of month on Saturday
+
+    [ '0 8 L * mon-thu',
+      '2018-07-29 09:00:00', '2018-06-28 18:00:00', 'Europe/Berlin' ],
+      #
+    [ '0 9 -2 * *',
+      '2018-06-29 09:00:00', '2018-06-28 18:00:00', 'Europe/Berlin' ],
+    [ '0 0 -5 * *',
+      '2018-07-27 00:00:00', '2018-06-28 18:00:00', 'Europe/Berlin' ],
   ]
 
   describe '#next_time' do
 
-    NEXT_TIMES.each do |cron, next_time, now|
+    NEXT_TIMES.each do |cron, next_time, now, zone_name|
 
       it "succeeds #{cron.inspect} -> #{next_time.inspect}" do
 
-        c = Fugit::Cron.parse(cron)
-        ent = Time.parse(next_time)
-        now = Time.parse(now) if now
+        in_zone(zone_name) do
 
-        nt = c.next_time(now || NOW)
+          c = Fugit::Cron.parse(cron)
 
-        expect(
-          Fugit.time_to_plain_s(nt, false)
-        ).to eq(
-          Fugit.time_to_plain_s(ent, false)
-        )
+          expect(c.class).to eq(Fugit::Cron)
+
+          ent = Time.parse(next_time)
+          now = Time.parse(now) if now
+
+          nt = c.next_time(now || NOW)
+
+          expect(
+            Fugit.time_to_plain_s(nt, false)
+          ).to eq(
+            Fugit.time_to_plain_s(ent, false)
+          )
+
+          expect(nt.zone.name).to eq(zone_name) if zone_name
+        end
       end
     end
 
