@@ -66,13 +66,22 @@ describe Fugit::Cron do
     #
     # gh-5  '0 8 L * * mon-thu', last day of month on Saturday
 
+    # Note: The day of a command's execution can be specified by two fields --
+    # day of month, and day of week.  If both fields are restricted (ie, are
+    # not *), the command will be run when either field matches the current
+    # time.  For example, ``30 4 1,15 * 5'' would cause a command to be run
+    # at 4:30 am on the 1st and 15th of each month, plus every Friday.
+
     [ '0 8 L * mon-thu',
-      '2018-07-29 09:00:00', '2018-06-28 18:00:00', 'Europe/Berlin' ],
+      '2018-06-30 08:00:00', '2018-06-28 18:00:00', 'Europe/Berlin' ],
       #
     [ '0 9 -2 * *',
       '2018-06-29 09:00:00', '2018-06-28 18:00:00', 'Europe/Berlin' ],
     [ '0 0 -5 * *',
       '2018-07-27 00:00:00', '2018-06-28 18:00:00', 'Europe/Berlin' ],
+      #
+    [ '0 8 L * *',
+      '2018-06-30 08:00:00', '2018-06-28 18:00:00', 'Europe/Berlin' ],
   ]
 
   describe '#next_time' do
