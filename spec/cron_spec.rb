@@ -182,19 +182,22 @@ describe Fugit::Cron do
         in_zone 'America/Los_Angeles' do
 
           c = Fugit::Cron.parse('15 * * * *')
-          t = Time.parse('2015-11-01 00:50:00')
+          t = Time.parse('2015-11-01 00:14:00')
 
           points =
-            3.times.collect do
-              t = c.next_time(t)
-              t.strftime("%H:%M_%Z") + '__' + t.dup.utc.strftime("%H:%M_%Z")
-            end
+            5.times
+              .collect {
+                t = c.next_time(t)
+                t.to_zs + ' // ' + t.to_t.to_s }
+              .join("\n")
 
-          expect(points.join("\n")).to eq(%w[
-            01:15_PDT__08:15_UTC
-            01:15_PST__09:15_UTC
-            02:15_PST__10:15_UTC
-          ].join("\n"))
+          expect(points).to eq(%{
+            2015-11-01 00:15:00 America/Los_Angeles // 2015-11-01 00:15:00 -0700
+            2015-11-01 01:15:00 America/Los_Angeles // 2015-11-01 01:15:00 -0700
+            2015-11-01 02:15:00 America/Los_Angeles // 2015-11-01 02:15:00 -0800
+            2015-11-01 03:15:00 America/Los_Angeles // 2015-11-01 03:15:00 -0800
+            2015-11-01 04:15:00 America/Los_Angeles // 2015-11-01 04:15:00 -0800
+          }.strip.split("\n").collect(&:strip).join("\n"))
         end
       end
 
@@ -206,12 +209,13 @@ describe Fugit::Cron do
           t = EtOrbi::EoTime.parse('2018-11-03 00:00:00')
 
           points =
-            4.times.collect do
-              t = c.next_time(t)
-              t.to_zs + ' // ' + t.to_t.to_s
-            end
+            4.times
+              .collect {
+                t = c.next_time(t)
+                t.to_zs + ' // ' + t.to_t.to_s }
+              .join("\n")
 
-          expect(points.join("\n")).to eq(%{
+          expect(points).to eq(%{
             2018-11-03 01:59:00 America/New_York // 2018-11-03 01:59:00 -0400
             2018-11-04 01:59:00 America/New_York // 2018-11-04 01:59:00 -0400
             2018-11-05 01:59:00 America/New_York // 2018-11-05 01:59:00 -0500
