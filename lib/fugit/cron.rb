@@ -169,6 +169,7 @@ module Fugit
     def next_time(from=::EtOrbi::EoTime.now)
 
       from = ::EtOrbi.make_time(from)
+      sfrom = from.strftime('%F/%T')
 
       t = TimeCursor.new(from.translate(@timezone))
         #
@@ -176,12 +177,20 @@ module Fugit
         # this Fugit::Cron instance
 
       loop do
+
         (from.to_i == t.to_i) && (t.inc(1); next)
         month_match?(t) || (t.inc_month; next)
         day_match?(t) || (t.inc_day; next)
         hour_match?(t) || (t.inc_hour; next)
         min_match?(t) || (t.inc_min; next)
         sec_match?(t) || (t.inc_sec(@seconds); next)
+
+        st = t.time.strftime('%F/%T')
+        (from, sfrom = t.time, st; next) if st == sfrom
+          #
+          # when transitioning out of DST, this prevents #next_time from
+          # yielding the same literal time twice in a row, see gh-6
+
         break
       end
 

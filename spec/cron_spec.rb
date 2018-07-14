@@ -198,6 +198,10 @@ describe Fugit::Cron do
             2015-11-01 03:15:00 America/Los_Angeles // 2015-11-01 03:15:00 -0800
             2015-11-01 04:15:00 America/Los_Angeles // 2015-11-01 04:15:00 -0800
           }.strip.split("\n").collect(&:strip).join("\n"))
+
+          expect(
+            c.brute_frequency(2015).occurrences
+          ).to eq(8759)
         end
       end
 
@@ -223,7 +227,7 @@ describe Fugit::Cron do
           }.strip.split("\n").collect(&:strip).join("\n"))
 
           expect(
-            c.brute_frequency(2018).occurences
+            c.brute_frequency(2018).occurrences
           ).to eq(365)
         end
       end
