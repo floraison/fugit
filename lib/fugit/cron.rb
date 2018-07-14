@@ -169,10 +169,13 @@ module Fugit
     def next_time(from=::EtOrbi::EoTime.now)
 
       from = ::EtOrbi.make_time(from)
+
       t = TimeCursor.new(from.translate(@timezone))
+        #
+        # the translation occurs in the timezone of
+        # this Fugit::Cron instance
 
       loop do
-#p [ :l, Fugit.time_to_s(t.time) ]
         (from.to_i == t.to_i) && (t.inc(1); next)
         month_match?(t) || (t.inc_month; next)
         day_match?(t) || (t.inc_day; next)
@@ -183,6 +186,9 @@ module Fugit
       end
 
       t.time.translate(from.zone)
+        #
+        # the answer time is in the same timezone as the `from`
+        # starting point
     end
 
     def previous_time(from=::EtOrbi::EoTime.now)
