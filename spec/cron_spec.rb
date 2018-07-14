@@ -197,6 +197,32 @@ describe Fugit::Cron do
           ].join("\n"))
         end
       end
+
+      it 'correctly increments out of DST (America/New_York)' do
+
+        in_zone 'America/New_York' do
+
+          c = Fugit::Cron.parse('59 1 * * *')
+          t = EtOrbi::EoTime.parse('2018-11-03 00:00:00')
+
+          points =
+            4.times.collect do
+              t = c.next_time(t)
+              t.to_zs + ' // ' + t.to_t.to_s
+            end
+
+          expect(points.join("\n")).to eq(%{
+            2018-11-03 01:59:00 America/New_York // 2018-11-03 01:59:00 -0400
+            2018-11-04 01:59:00 America/New_York // 2018-11-04 01:59:00 -0400
+            2018-11-05 01:59:00 America/New_York // 2018-11-05 01:59:00 -0500
+            2018-11-06 01:59:00 America/New_York // 2018-11-06 01:59:00 -0500
+          }.strip.split("\n").collect(&:strip).join("\n"))
+
+          expect(
+            c.brute_frequency(2018).occurences
+          ).to eq(365)
+        end
+      end
     end
 
     it 'returns a plain second' do
