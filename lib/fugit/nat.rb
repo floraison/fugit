@@ -143,7 +143,7 @@ module Fugit
           /\d+\s?(mon(ths?)?|d(ays?)?|h(ours?)?|m(in(ute)?s?)?|s(ec(ond)?s?)?)/i)
       end
 
-      def flag(i); rex(:flag, i, /(every|day|at|after|am|pm|on)/i); end
+      def flag(i); rex(:flag, i, /(every|day|at|after|am|pm|on|in)/i); end
 
       def datum(i)
         alt(nil, i,
