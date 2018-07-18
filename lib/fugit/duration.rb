@@ -331,9 +331,9 @@ module Fugit
       def wee(i); rex(:wee, i, /(\d+\.\d*|(\d*\.)?\d+) *(weeks?|w)/i); end
       def day(i); rex(:day, i, /(\d+\.\d*|(\d*\.)?\d+) *(days?|d)/i); end
       def hou(i); rex(:hou, i, /(\d+\.\d*|(\d*\.)?\d+) *(hours?|h)/i); end
-      def min(i); rex(:min, i, /(\d+\.\d*|(\d*\.)?\d+) *(mins?|minutes?|m)/); end
+      def min(i); rex(:min, i, /(\d+\.\d*|(\d*\.)?\d+) *(minutes?|mins?|m)/); end
 
-      def sec(i); rex(:sec, i, /(\d+\.\d*|(\d*\.)?\d+) *(secs?|seconds?|s)/i); end 
+      def sec(i); rex(:sec, i, /(\d+\.\d*|(\d*\.)?\d+) *(seconds?|secs?|s)/i); end
       def sek(i); rex(:sec, i, /(\d+\.\d*|\.\d+|\d+)$/); end
 
       def elt(i); alt(nil, i, :yea, :mon, :wee, :day, :hou, :min, :sec, :sek); end

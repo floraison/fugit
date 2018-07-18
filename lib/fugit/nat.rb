@@ -46,6 +46,10 @@ module Fugit
           (h[:dow] ||= []) << [ val ]
         elsif key == :flag && val == 'pm' && h[:hou]
           h[:hou][-1] =  [ h[:hou][-1].first + 12 ]
+        elsif key == :tz
+          h[:tz] = val
+        elsif key == :duration
+          process_duration(h, *val[0].to_h.first)
         end
       end
       h[:min] ||= [ 0 ]
@@ -53,6 +57,38 @@ module Fugit
 
       Fugit::Cron.allocate.send(:init, nil, h)
     end
+
+    def self.process_duration(h, interval, value)
+      send "process_duration_#{interval}", h, value
+    end
+
+    def self.process_duration_mon(h, value)
+      h[:hou] = [ 0 ]
+      h[:dom] = [ 1 ]
+      h[:mon] = [ "*/#{value}"]
+    end
+
+    def self.process_duration_day(h, value)
+      h[:hou] = [ 0 ]
+      h[:dom] = [ "*/#{value}"]
+    end
+
+    def self.process_duration_hou(h, value)
+      h[:hou] = [ "*/#{value}"]
+    end
+
+    def self.process_duration_min(h, value)
+      h[:hou] = [ "*" ]
+      h[:min] = [ "*/#{value}"]
+    end
+
+    def self.process_duration_sec(h, value)
+      h[:hou] = [ "*" ]
+      h[:min] = [ "*" ]
+      h[:sec] = [ "*/#{value}"]
+    end
+
+
 
     module Parser include Raabro
 
@@ -89,12 +125,27 @@ module Fugit
       def biz_day(i); rex(:biz_day, i, /(biz|business|week) *day/i); end
       def name_day(i); rex(:name_day, i, /#{WEEKDAYS.reverse.join('|')}/i); end
 
-      def flag(i); rex(:flag, i, /(every|day|at|after|am|pm)/i); end
+      def _tz_name(i)
+        rex(nil, i, /[A-Z][a-zA-Z0-9]+(\/[A-Z][a-zA-Z0-9\_]+){0,2}/)
+      end
+      def _tz_delta(i)
+        rex(nil, i, /[-+]([01][0-9]|2[0-4]):?(00|15|30|45)/)
+      end
+      def _tz(i); alt(:tz, i, :_tz_delta, :_tz_name); end
+
+      def duration(i)
+        rex(:duration, i, /\d+\s?(months|month|mon|days|day|d|hours|hour|h|minutes|minute|m|seconds|second|s)/i)
+      end
+
+
+      def flag(i); rex(:flag, i, /(every|day|at|after|am|pm|on)/i); end
 
       def datum(i)
         alt(nil, i,
-          :flag,
           :plain_day, :biz_day, :name_day,
+          :_tz,
+          :flag,
+          :duration,
           :name_hour, :numeral_hour, :digital_hour, :simple_hour)
       end
 
@@ -116,6 +167,10 @@ module Fugit
             v = tt.string.downcase
 
             case k
+            when :tz
+              [k, [ tt.string.strip, EtOrbi.get_tzone(tt.string.strip) ] ]
+            when :duration
+              [k, [ Fugit::Duration.parse(tt.string.strip) ] ]
             when :numeral_hour
               [ k, NUMS.index(v) ]
             when :simple_hour
