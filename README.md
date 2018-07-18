@@ -156,16 +156,17 @@ Fugit understand some kind of "natural" language:
 
 For example, those "every" get turned into `Fugit::Cron` instances:
 ```ruby
-Fugit::Nat.parse('every day at five')                  # ==> '0 5 * * *'
-Fugit::Nat.parse('every weekday at five')              # ==> '0 5 * * 1,2,3,4,5'
-Fugit::Nat.parse('every day at 5 pm')                  # ==> '0 17 * * *'
-Fugit::Nat.parse('every tuesday at 5 pm')              # ==> '0 17 * * 2'
-Fugit::Nat.parse('every wed at 5 pm')                  # ==> '0 17 * * 3'
-Fugit::Nat.parse('every day at 16:30')                 # ==> '30 16 * * *'
-Fugit::Nat.parse('every day at noon')                  # ==> '0 12 * * *'
-Fugit::Nat.parse('every day at midnight')              # ==> '0 0 * * *'
-Fugit::Nat.parse('every tuesday and monday at 5pm')    # ==> '0 17 * * 1,2'
-Fugit::Nat.parse('every wed or Monday at 5pm and 11')  # ==> '0 11,17 * * 1,3'
+Fugit::Nat.parse('every day at five')                         # ==> '0 5 * * *'
+Fugit::Nat.parse('every weekday at five')                     # ==> '0 5 * * 1,2,3,4,5'
+Fugit::Nat.parse('every day at 5 pm')                         # ==> '0 17 * * *'
+Fugit::Nat.parse('every tuesday at 5 pm')                     # ==> '0 17 * * 2'
+Fugit::Nat.parse('every wed at 5 pm')                         # ==> '0 17 * * 3'
+Fugit::Nat.parse('every day at 16:30')                        # ==> '30 16 * * *'
+Fugit::Nat.parse('every day at noon')                         # ==> '0 12 * * *'
+Fugit::Nat.parse('every day at midnight')                     # ==> '0 0 * * *'
+Fugit::Nat.parse('every tuesday and monday at 5pm')           # ==> '0 17 * * 1,2'
+Fugit::Nat.parse('every wed or Monday at 5pm and 11')         # ==> '0 11,17 * * 1,3'
+Fugit::Nat.parse('every day at 5 pm on America/Los_Angeles')  # ==> '0 17 * * * America/Los_Angeles'
 ```
 
 Directly with `Fugit.parse(s)` is OK too:

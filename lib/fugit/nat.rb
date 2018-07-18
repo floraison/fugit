@@ -46,6 +46,8 @@ module Fugit
           (h[:dow] ||= []) << [ val ]
         elsif key == :flag && val == 'pm' && h[:hou]
           h[:hou][-1] =  [ h[:hou][-1].first + 12 ]
+        elsif key == :tz
+          h[:tz] = val
         end
       end
       h[:min] ||= [ 0 ]
@@ -89,12 +91,22 @@ module Fugit
       def biz_day(i); rex(:biz_day, i, /(biz|business|week) *day/i); end
       def name_day(i); rex(:name_day, i, /#{WEEKDAYS.reverse.join('|')}/i); end
 
-      def flag(i); rex(:flag, i, /(every|day|at|after|am|pm)/i); end
+      def _tz_name(i)
+        rex(nil, i, /[A-Z][a-zA-Z0-9]+(\/[A-Z][a-zA-Z0-9\_]+){0,2}/)
+      end
+      def _tz_delta(i)
+        rex(nil, i, /[-+]([01][0-9]|2[0-4]):?(00|15|30|45)/)
+      end
+      def _tz(i); alt(:tz, i, :_tz_delta, :_tz_name); end
+
+
+      def flag(i); rex(:flag, i, /(every|day|at|after|am|pm|on)/i); end
 
       def datum(i)
         alt(nil, i,
-          :flag,
           :plain_day, :biz_day, :name_day,
+          :_tz,
+          :flag,
           :name_hour, :numeral_hour, :digital_hour, :simple_hour)
       end
 
@@ -116,6 +128,8 @@ module Fugit
             v = tt.string.downcase
 
             case k
+            when :tz
+              [k, [ tt.string.strip, EtOrbi.get_tzone(tt.string.strip) ] ]
             when :numeral_hour
               [ k, NUMS.index(v) ]
             when :simple_hour
