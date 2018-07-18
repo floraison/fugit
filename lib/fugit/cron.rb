@@ -57,7 +57,7 @@ module Fugit
           (@monthdays || [ '*' ]).join(','),
           (@months || [ '*' ]).join(','),
           (@weekdays || [ [ '*' ] ]).map { |d| d.compact.join('#') }.join(','),
-          @timezone ? @timezone.to_s : nil
+          @timezone ? @timezone.name : nil
         ].compact.join(' ')
       end
     end

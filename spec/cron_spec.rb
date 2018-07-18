@@ -573,6 +573,7 @@ describe Fugit::Cron do
       [ '0 */3 * * 1,2', '0 0,3,6,9,12,15,18,21 * * 1,2' ],
       [ '0 5 * * 1,2,3,4,5', '0 5 * * 1,2,3,4,5' ],
       [ '0 5 * * 1-4,fri#3', '0 5 * * 1,2,3,4,5#3' ],
+      ['* * * * * America/Los_Angeles', '* * * * * America/Los_Angeles']
       #[ '0 */3 * * 1,2', '0 */3 * * 1-2' ],
       #[ '0 5 * * 1,2,3,4,5', '0 5 * * 1-5' ],
       #[ '0 5 * * 1,2,3,4,fri#3', '0 5 * * 1-4,5#3' ],
@@ -587,6 +588,13 @@ describe Fugit::Cron do
         expect(sc).to eq(tc)
         expect(sc.to_cron_s).to eq(target)
       end
+    end
+
+    it "produces the same cron if parsing again the to_cron_s" do
+      c1 = Fugit::Cron.parse('* * * * * America/Los_Angeles')
+      c2 = Fugit::Cron.parse(c1.to_cron_s)
+
+      expect(c1).to eq(c2)
     end
   end
 
