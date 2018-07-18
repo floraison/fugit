@@ -59,36 +59,40 @@ module Fugit
     end
 
     def self.process_duration(h, interval, value)
+
       send "process_duration_#{interval}", h, value
     end
 
     def self.process_duration_mon(h, value)
+
       h[:hou] = [ 0 ]
       h[:dom] = [ 1 ]
-      h[:mon] = [ "*/#{value}"]
+      h[:mon] = [ "*/#{value}" ]
     end
 
     def self.process_duration_day(h, value)
+
       h[:hou] = [ 0 ]
-      h[:dom] = [ "*/#{value}"]
+      h[:dom] = [ "*/#{value}" ]
     end
 
     def self.process_duration_hou(h, value)
-      h[:hou] = [ "*/#{value}"]
+
+      h[:hou] = [ "*/#{value}" ]
     end
 
     def self.process_duration_min(h, value)
-      h[:hou] = [ "*" ]
-      h[:min] = [ "*/#{value}"]
+
+      h[:hou] = [ '*' ]
+      h[:min] = [ "*/#{value}" ]
     end
 
     def self.process_duration_sec(h, value)
-      h[:hou] = [ "*" ]
-      h[:min] = [ "*" ]
-      h[:sec] = [ "*/#{value}"]
+
+      h[:hou] = [ '*' ]
+      h[:min] = [ '*' ]
+      h[:sec] = [ "*/#{value}" ]
     end
-
-
 
     module Parser include Raabro
 
@@ -168,9 +172,9 @@ module Fugit
 
             case k
             when :tz
-              [k, [ tt.string.strip, EtOrbi.get_tzone(tt.string.strip) ] ]
+              [ k, [ tt.string.strip, EtOrbi.get_tzone(tt.string.strip) ] ]
             when :duration
-              [k, [ Fugit::Duration.parse(tt.string.strip) ] ]
+              [ k, [ Fugit::Duration.parse(tt.string.strip) ] ]
             when :numeral_hour
               [ k, NUMS.index(v) ]
             when :simple_hour
@@ -184,8 +188,7 @@ module Fugit
               [ k, WEEKDAYS.index(v[0, 3]) ]
             else
               [ k, v ]
-            end
-          }
+            end }
       end
     end
   end
