@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Cristian Bica https://github.com/cristianbica Nat improvements
 * Utilum https://github.com/utilum silenced Ruby warnings
 * Tero Marttila https://github.com/SpComb added missing Cron#seconds
 * Harry Lascelles https://github.com/hlascelles timezone reminder
