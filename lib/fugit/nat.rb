@@ -138,9 +138,10 @@ module Fugit
       def _tz(i); alt(:tz, i, :_tz_delta, :_tz_name); end
 
       def duration(i)
-        rex(:duration, i, /\d+\s?(months|month|mon|days|day|d|hours|hour|h|minutes|minute|m|seconds|second|s)/i)
+        rex(
+          :duration, i,
+          /\d+\s?(mon(ths?)?|d(ays?)?|h(ours?)?|m(in(ute)?s?)?|s(ec(ond)?s?)?)/i)
       end
-
 
       def flag(i); rex(:flag, i, /(every|day|at|after|am|pm|on)/i); end
 

@@ -328,12 +328,12 @@ module Fugit
 
       def yea(i); rex(:yea, i, /(\d+\.\d*|(\d*\.)?\d+) *y(ears?)?/i); end
       def mon(i); rex(:mon, i, /(\d+\.\d*|(\d*\.)?\d+) *(M|months?)/); end
-      def wee(i); rex(:wee, i, /(\d+\.\d*|(\d*\.)?\d+) *(weeks?|w)/i); end
-      def day(i); rex(:day, i, /(\d+\.\d*|(\d*\.)?\d+) *(days?|d)/i); end
-      def hou(i); rex(:hou, i, /(\d+\.\d*|(\d*\.)?\d+) *(hours?|h)/i); end
-      def min(i); rex(:min, i, /(\d+\.\d*|(\d*\.)?\d+) *(minutes?|mins?|m)/); end
+      def wee(i); rex(:wee, i, /(\d+\.\d*|(\d*\.)?\d+) *w(eeks?)?/i); end
+      def day(i); rex(:day, i, /(\d+\.\d*|(\d*\.)?\d+) *d(ays?)?/i); end
+      def hou(i); rex(:hou, i, /(\d+\.\d*|(\d*\.)?\d+) *h(ours?)?/i); end
+      def min(i); rex(:min, i, /(\d+\.\d*|(\d*\.)?\d+) *m(in(ute)?s?)?/); end
 
-      def sec(i); rex(:sec, i, /(\d+\.\d*|(\d*\.)?\d+) *(seconds?|secs?|s)/i); end
+      def sec(i); rex(:sec, i, /(\d+\.\d*|(\d*\.)?\d+) *s(ec(ond)?)?s?/i); end
       def sek(i); rex(:sec, i, /(\d+\.\d*|\.\d+|\d+)$/); end
 
       def elt(i); alt(nil, i, :yea, :mon, :wee, :day, :hou, :min, :sec, :sek); end
