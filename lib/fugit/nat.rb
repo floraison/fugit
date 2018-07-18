@@ -73,25 +73,25 @@ module Fugit
     def self.process_duration_day(h, value)
 
       h[:hou] = [ 0 ]
-      h[:dom] = [ "*/#{value}" ]
+      h[:dom] = [ value == 1 ? '*' : "*/#{value}" ]
     end
 
     def self.process_duration_hou(h, value)
 
-      h[:hou] = [ "*/#{value}" ]
+      h[:hou] = [ value == 1 ? '*' : "*/#{value}" ]
     end
 
     def self.process_duration_min(h, value)
 
       h[:hou] = [ '*' ]
-      h[:min] = [ "*/#{value}" ]
+      h[:min] = [ value == 1 ? '*' : "*/#{value}" ]
     end
 
     def self.process_duration_sec(h, value)
 
       h[:hou] = [ '*' ]
       h[:min] = [ '*' ]
-      h[:sec] = [ "*/#{value}" ]
+      h[:sec] = [ value == 1 ? '*' : "*/#{value}" ]
     end
 
     module Parser include Raabro
