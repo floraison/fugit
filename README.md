@@ -8,7 +8,7 @@ Time tools for [flor](https://github.com/floraison/flor) and the floraison group
 
 It uses [et-orbi](https://github.com/floraison/et-orbi) to represent time instances and [raabro](https://github.com/floraison/raabro) as a basis for its parsers.
 
-Fugit will probably become the foundation for [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) 4.x
+Fugit is a core dependency of [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) 3.5.x.
 
 
 ## Related projects
