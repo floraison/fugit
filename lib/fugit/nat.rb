@@ -63,7 +63,7 @@ module Fugit
 
       def process_duration(h, interval, value)
 
-        send "process_duration_#{interval}", h, value
+        send("process_duration_#{interval}", h, value)
       end
 
       def process_duration_mon(h, value)
