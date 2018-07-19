@@ -6,92 +6,96 @@ module Fugit
   #
   module Nat
 
-    def self.parse(s)
+    class << self
 
-      return s if s.is_a?(Fugit::Cron) || s.is_a?(Fugit::Duration)
+      def parse(s)
 
-      return nil unless s.is_a?(String)
+        return s if s.is_a?(Fugit::Cron) || s.is_a?(Fugit::Duration)
+
+        return nil unless s.is_a?(String)
 
 #p s; Raabro.pp(Parser.parse(s, debug: 3))
-      a = Parser.parse(s)
+        a = Parser.parse(s)
 
 #p a
-      return nil unless a
+        return nil unless a
 
-      if a.include?([ :flag, 'every' ])
-        parse_cron(a)
-      else
-        nil
-      end
-    end
-
-    def self.do_parse(s)
-
-      parse(s) || fail(ArgumentError.new("could not parse a nat #{s.inspect}"))
-    end
-
-    def self.parse_cron(a)
-
-      h = { min: nil, hou: [], dom: [ nil ], mon: [ nil ], dow: [ nil ] }
-
-      a.each do |key, val|
-        if key == :biz_day
-          h[:dow] = [ [ 1, 5 ] ]
-        elsif key == :simple_hour || key == :numeral_hour
-          (h[:hou] ||= []) << [ val ]
-        elsif key == :digital_hour
-          h[:hou] = [ val[0, 1] ]
-          h[:min] = [ val[1, 1] ]
-        elsif key == :name_day
-          (h[:dow] ||= []) << [ val ]
-        elsif key == :flag && val == 'pm' && h[:hou]
-          h[:hou][-1] =  [ h[:hou][-1].first + 12 ]
-        elsif key == :tz
-          h[:tz] = val
-        elsif key == :duration
-          process_duration(h, *val[0].to_h.first)
+        if a.include?([ :flag, 'every' ])
+          parse_cron(a)
+        else
+          nil
         end
       end
-      h[:min] ||= [ 0 ]
-      h[:dow].sort_by! { |d, _| d || 0 }
 
-      Fugit::Cron.allocate.send(:init, nil, h)
-    end
+      def do_parse(s)
 
-    def self.process_duration(h, interval, value)
+        parse(s) ||
+        fail(ArgumentError.new("could not parse a nat #{s.inspect}"))
+      end
 
-      send "process_duration_#{interval}", h, value
-    end
+      def parse_cron(a)
 
-    def self.process_duration_mon(h, value)
+        h = { min: nil, hou: [], dom: [ nil ], mon: [ nil ], dow: [ nil ] }
 
-      h[:hou] = [ 0 ]
-      h[:dom] = [ 1 ]
-      h[:mon] = [ "*/#{value}" ]
-    end
+        a.each do |key, val|
+          if key == :biz_day
+            h[:dow] = [ [ 1, 5 ] ]
+          elsif key == :simple_hour || key == :numeral_hour
+            (h[:hou] ||= []) << [ val ]
+          elsif key == :digital_hour
+            h[:hou] = [ val[0, 1] ]
+            h[:min] = [ val[1, 1] ]
+          elsif key == :name_day
+            (h[:dow] ||= []) << [ val ]
+          elsif key == :flag && val == 'pm' && h[:hou]
+            h[:hou][-1] =  [ h[:hou][-1].first + 12 ]
+          elsif key == :tz
+            h[:tz] = val
+          elsif key == :duration
+            process_duration(h, *val[0].to_h.first)
+          end
+        end
+        h[:min] ||= [ 0 ]
+        h[:dow].sort_by! { |d, _| d || 0 }
 
-    def self.process_duration_day(h, value)
+        Fugit::Cron.allocate.send(:init, nil, h)
+      end
 
-      h[:hou] = [ 0 ]
-      h[:dom] = [ value == 1 ? '*' : "*/#{value}" ]
-    end
+      def process_duration(h, interval, value)
 
-    def self.process_duration_hou(h, value)
+        send "process_duration_#{interval}", h, value
+      end
 
-      h[:hou] = [ value == 1 ? '*' : "*/#{value}" ]
-    end
+      def process_duration_mon(h, value)
 
-    def self.process_duration_min(h, value)
+        h[:hou] = [ 0 ]
+        h[:dom] = [ 1 ]
+        h[:mon] = [ "*/#{value}" ]
+      end
 
-      h[:hou] = [ '*' ]
-      h[:min] = [ value == 1 ? '*' : "*/#{value}" ]
-    end
+      def process_duration_day(h, value)
 
-    def self.process_duration_sec(h, value)
+        h[:hou] = [ 0 ]
+        h[:dom] = [ value == 1 ? '*' : "*/#{value}" ]
+      end
 
-      h[:hou] = [ '*' ]
-      h[:min] = [ '*' ]
-      h[:sec] = [ value == 1 ? '*' : "*/#{value}" ]
+      def process_duration_hou(h, value)
+
+        h[:hou] = [ value == 1 ? '*' : "*/#{value}" ]
+      end
+
+      def process_duration_min(h, value)
+
+        h[:hou] = [ '*' ]
+        h[:min] = [ value == 1 ? '*' : "*/#{value}" ]
+      end
+
+      def process_duration_sec(h, value)
+
+        h[:hou] = [ '*' ]
+        h[:min] = [ '*' ]
+        h[:sec] = [ value == 1 ? '*' : "*/#{value}" ]
+      end
     end
 
     module Parser include Raabro

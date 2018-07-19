@@ -1,32 +1,35 @@
 
 module Fugit
 
-  def self.isostamp(show_date, show_time, show_usec, time)
+  class << self
 
-    t = time || Time.now
-    s = StringIO.new
+    def isostamp(show_date, show_time, show_usec, time)
 
-    s << t.strftime('%Y-%m-%d') if show_date
-    s << t.strftime('T%H:%M:%S') if show_time
-    s << sprintf('.%06d', t.usec) if show_time && show_usec
-    s << 'Z' if show_time && time.utc?
+      t = time || Time.now
+      s = StringIO.new
 
-    s.string
-  end
+      s << t.strftime('%Y-%m-%d') if show_date
+      s << t.strftime('T%H:%M:%S') if show_time
+      s << sprintf('.%06d', t.usec) if show_time && show_usec
+      s << 'Z' if show_time && time.utc?
 
-  def self.time_to_s(t)
+      s.string
+    end
 
-    isostamp(true, true, false, t)
-  end
+    def time_to_s(t)
 
-  def self.time_to_plain_s(t=Time.now, z=true)
+      isostamp(true, true, false, t)
+    end
 
-    t.strftime('%Y-%m-%d %H:%M:%S') + (z && t.utc? ? ' Z' : '')
-  end
+    def time_to_plain_s(t=Time.now, z=true)
 
-  def self.time_to_zone_s(t=Time.now)
+      t.strftime('%Y-%m-%d %H:%M:%S') + (z && t.utc? ? ' Z' : '')
+    end
 
-    t.strftime('%Y-%m-%d %H:%M:%S %Z %z')
+    def time_to_zone_s(t=Time.now)
+
+      t.strftime('%Y-%m-%d %H:%M:%S %Z %z')
+    end
   end
 end
 

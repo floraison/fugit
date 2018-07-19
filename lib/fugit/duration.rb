@@ -5,40 +5,58 @@ module Fugit
 
     attr_reader :original, :h, :options
 
-    def self.new(s)
+    class << self
 
-      parse(s)
-    end
+      def new(s)
 
-    def self.parse(s, opts={})
+        parse(s)
+      end
 
-      return s if s.is_a?(self)
+      def parse(s, opts={})
 
-      original = s
+        return s if s.is_a?(self)
 
-      s = "#{s}s" if s.is_a?(Numeric)
+        original = s
 
-      return nil unless s.is_a?(String)
+        s = "#{s}s" if s.is_a?(Numeric)
 
-      s = s.strip
+        return nil unless s.is_a?(String)
+
+        s = s.strip
 #p [ original, s ]; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
 
-      h =
-        if opts[:iso]
-          IsoParser.parse(opts[:stricter] ? s : s.upcase)
-        elsif opts[:plain]
-          Parser.parse(s)
-        else
-          Parser.parse(s) || IsoParser.parse(opts[:stricter] ? s : s.upcase)
-        end
-#p h
+        h =
+          if opts[:iso]
+            IsoParser.parse(opts[:stricter] ? s : s.upcase)
+          elsif opts[:plain]
+            Parser.parse(s)
+          else
+            Parser.parse(s) || IsoParser.parse(opts[:stricter] ? s : s.upcase)
+          end
 
-      h ? self.allocate.send(:init, original, opts, h) : nil
-    end
+        h ? self.allocate.send(:init, original, opts, h) : nil
+      end
 
-    def self.do_parse(s, opts={})
+      def do_parse(s, opts={})
 
-      parse(s, opts) || fail(ArgumentError.new("not a duration #{s.inspect}"))
+        parse(s, opts) ||
+        fail(ArgumentError.new("not a duration #{s.inspect}"))
+      end
+
+      def to_plain_s(o); do_parse(o).deflate.to_plain_s; end
+      def to_iso_s(o); do_parse(o).deflate.to_iso_s; end
+      def to_long_s(o, opts={}); do_parse(o).deflate.to_long_s(opts); end
+
+      def common_rewrite_dur(t)
+
+        t
+          .subgather(nil)
+          .inject({}) { |h, tt|
+            v = tt.string; v = v.index('.') ? v.to_f : v.to_i
+              # drops ending ("y", "m", ...) by itself
+            h[tt.name] = (h[tt.name] || 0) + v
+            h }
+      end
     end
 
     KEYS = {
@@ -101,12 +119,6 @@ module Fugit
       end
 
       s.string
-    end
-
-    class << self
-      def to_plain_s(o); do_parse(o).deflate.to_plain_s; end
-      def to_iso_s(o); do_parse(o).deflate.to_iso_s; end
-      def to_long_s(o, opts={}); do_parse(o).deflate.to_long_s(opts); end
     end
 
     # For now, let's alias to #h
@@ -306,18 +318,6 @@ module Fugit
       end
 
       self
-    end
-
-    def self.common_rewrite_dur(t)
-
-      t
-        .subgather(nil)
-        .inject({}) { |h, tt|
-          v = tt.string; v = v.index('.') ? v.to_f : v.to_i
-            # drops ending ("y", "m", ...) by itself
-          h[tt.name] = (h[tt.name] || 0) + v
-          h
-        }
     end
 
     module Parser include Raabro

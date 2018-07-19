@@ -3,14 +3,17 @@ module Fugit
 
   module At
 
-    def self.parse(s)
+    class << self
 
-      ::EtOrbi.make_time(s) rescue nil
-    end
+      def parse(s)
 
-    def self.do_parse(s)
+        ::EtOrbi.make_time(s) rescue nil
+      end
 
-      ::EtOrbi.make_time(s)
+      def do_parse(s)
+
+        ::EtOrbi.make_time(s)
+      end
     end
   end
 end
