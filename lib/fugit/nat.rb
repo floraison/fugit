@@ -14,13 +14,10 @@ module Fugit
 
         return nil unless s.is_a?(String)
 
-#p s; Raabro.pp(Parser.parse(s, debug: 3))
+#p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
         a = Parser.parse(s)
 
-#p a
-        return nil unless a
-
-        if a.include?([ :flag, 'every' ])
+        if a && a.include?([ :flag, 'every' ])
           parse_cron(a)
         else
           nil
@@ -125,9 +122,6 @@ module Fugit
       def name_hour(i)
         rex(:name_hour, i, /(#{NHOURS.keys.join('|')})/i)
       end
-      def hour(i)
-        alt(nil, i, :numeral_hour, :name_hour, :digital_hour, :simple_hour);
-      end
 
       def plain_day(i); rex(:plain_day, i, /day/i); end
       def biz_day(i); rex(:biz_day, i, /(biz|business|week) *day/i); end
@@ -144,7 +138,10 @@ module Fugit
       def duration(i)
         rex(
           :duration, i,
-          /\d+\s?(mon(ths?)?|d(ays?)?|h(ours?)?|m(in(ute)?s?)?|s(ec(ond)?s?)?)/i)
+          /
+            \d+\s?
+            (mon(ths?)?|d(ays?)?|h(ours?)?|m(in(ute)?s?)?|s(ec(ond)?s?)?)
+          /ix)
       end
 
       def flag(i); rex(:flag, i, /(every|day|at|after|am|pm|on|in)/i); end
@@ -167,7 +164,7 @@ module Fugit
 
       def rewrite_nat(t)
 
-#Raabro.pp(t)
+#Raabro.pp(t, colours: true)
         t
           .subgather(nil)
           .collect { |tt|
