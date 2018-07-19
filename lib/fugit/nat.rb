@@ -139,12 +139,13 @@ module Fugit
         rex(
           :duration, i,
           /
-            \d+\s?
+            \d+
+            \s?
             (mon(ths?)?|d(ays?)?|h(ours?)?|m(in(ute)?s?)?|s(ec(ond)?s?)?)
           /ix)
       end
 
-      def flag(i); rex(:flag, i, /(every|day|at|after|am|pm|on|in)/i); end
+      def flag(i); rex(:flag, i, /(every|at|after|am|pm|on|in)/i); end
 
       def datum(i)
         alt(nil, i,
