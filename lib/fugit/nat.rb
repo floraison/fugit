@@ -70,7 +70,7 @@ module Fugit
 
         h[:hou] = [ 0 ]
         h[:dom] = [ 1 ]
-        h[:mon] = [ "*/#{value}" ]
+        h[:mon] = [ value == 1 ? '*' : "*/#{value}" ]
       end
 
       def process_duration_day(h, value)

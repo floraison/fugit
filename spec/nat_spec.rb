@@ -38,6 +38,7 @@ describe Fugit::Nat do
       [ 'every 15 seconds', '*/15 * * * * *' ],
       [ 'every 1 h', '0 * * * *' ],
       [ 'every 1 hour', '0 * * * *' ],
+      [ 'every 1 month', '0 0 1 * *' ],
 
 #      [ 'every 1st of the month at midnight', '' ],
 #      [ 'at 5 after 4, everyday', '' ],
