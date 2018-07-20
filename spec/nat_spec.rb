@@ -26,6 +26,7 @@ describe Fugit::Nat do
       [ 'every wed or Monday at 5pm and 11', '0 11,17 * * 1,3' ],
       [ 'every day at 5 pm on America/Bogota', '0 17 * * * America/Bogota' ],
       [ 'every day at 5 pm in Asia/Tokyo', '0 17 * * * Asia/Tokyo' ],
+
       [ 'every 3h', '0 */3 * * *' ],
       [ 'every 3 hours', '0 */3 * * *' ],
       [ 'every 4M', '0 0 1 */4 *' ],
@@ -40,6 +41,14 @@ describe Fugit::Nat do
       [ 'every 1 hour', '0 * * * *' ],
       [ 'every 1 month', '0 0 1 * *' ],
       [ 'every 1 second', '* * * * * *' ],
+
+      [ 'every second', '* * * * * *' ],
+      [ 'every minute', '* * * * *' ],
+      [ 'every day', '0 0 * * *' ],
+      [ 'every weekday', '0 0 * * 1,2,3,4,5' ],
+      [ 'every Monday and Tuesday', '0 0 * * 1,2' ],
+      [ 'every hour', '0 * * * *' ],
+      [ 'every month', '0 0 1 * *' ],
 
 #      [ 'every 1st of the month at midnight', '' ],
 #      [ 'at 5 after 4, everyday', '' ],
