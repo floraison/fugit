@@ -2,12 +2,12 @@
 # fugit CHANGELOG.md
 
 
-## fugit 1.1.4  not yet released
+## fugit 1.1.4  released 2018-07-20
 
-* Add duration support for Fugit::Nat (@cristianbica)
-* Fix Duration not correctly parsing minutes and seconds long format (@cristianbica)
-* Add timezone support for Fugit::Nat (@cristianbica)
-* Use timezone name when converting a Fugit::Cron to cron string (@cristianbica)
+* Add duration support for Fugit::Nat (@cristianbica gh-7)
+* Fix Duration not correctly parsing minutes and seconds long format (@cristianbica gh-7)
+* Add timezone support for Fugit::Nat (@cristianbica gh-7)
+* Use timezone name when converting a Fugit::Cron to cron string (@cristianbica gh-7)
 
 
 ## fugit 1.1.3  released 2018-06-21
