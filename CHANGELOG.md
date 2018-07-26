@@ -2,6 +2,9 @@
 # fugit CHANGELOG.md
 
 
+## fugit 1.1.5  not yet released
+
+
 ## fugit 1.1.4  released 2018-07-20
 
 * Add duration support for Fugit::Nat (@cristianbica gh-7)

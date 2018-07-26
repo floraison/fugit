@@ -1,7 +1,7 @@
 
 module Fugit
 
-  VERSION = '1.1.4'
+  VERSION = '1.1.5'
 end
 
 require 'time'
