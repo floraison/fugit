@@ -250,6 +250,36 @@ module Fugit
         end
     end
 
+    SLOTS = {
+      :seconds => [ 1, 60 ],
+      :minutes => [ 60, 3600 ],
+      :hours => [ 3600, 24 * 3600 ],
+      :weekdays => [ 24 * 3600, 7 * 24 * 3600 ],
+      :monthdays => [ 24 * 3600, 30 * 24 * 3600 ],
+      :months => [ 30 * 24 * 3600, 365 * 24 * 3600 ] }
+
+    def rough_frequency
+
+#p self.to_a
+      SLOTS.each do |k, (v0, _)|
+        a = instance_variable_get("@#{k}")
+        next unless a && a.length > 1
+        return (
+          (a + [ a.first + v0 ])
+            .each_cons(2)
+            .collect { |a0, a1| a1 - a0 }
+            .min) * v0
+      end
+
+      SLOTS.keys.reverse.each do |k|
+        v1 = SLOTS[k].last
+        a = instance_variable_get("@#{k}")
+        return v1 if a && a.length == 1
+      end
+
+      1
+    end
+
     class Frequency
 
       attr_reader :span, :delta_min, :delta_max, :occurrences

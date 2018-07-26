@@ -358,6 +358,40 @@ describe Fugit::Cron do
     end
   end
 
+  describe '#rough_frequency' do
+
+    # (seconds               0-59)
+      # minute               0-59
+        # hour               0-23
+          # day of month     1-31
+            # month          1-12 (or names, see below)
+              # day of week  0-7 (0 or 7 is Sun, or use names)
+    {
+
+      '* * * * *' => 60,
+      '* * * * * *' => 1,
+      '0 0 * * *' => 24 * 3600,
+      '10,15 0 * * *' => 5 * 60,
+      '0 0 * * sun' => 7 * 24 * 3600,
+      '0 0 1 1 *' => 365 * 24 * 3600,
+      '0 0 29 2 *' => 365 * 24 * 3600, # ! rough frequency !
+      '0 0 28 2,3 *' => 30 * 24 * 3600,
+      '0 0 28 2,4 *' => 2 * 30 * 24 * 3600,
+
+    }.each do |cron, freq|
+
+      it "gets #{cron.inspect} and outputs #{freq.inspect}" do
+
+        expect(
+          Fugit::Cron.parse(cron)
+            .rough_frequency
+        ).to eq(
+          freq
+        )
+      end
+    end
+  end
+
   describe '.parse' do
 
     it "returns the input immediately if it's a cron" do

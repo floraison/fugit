@@ -4,6 +4,8 @@
 
 ## fugit 1.1.5  not yet released
 
+* Add Fugit::Cron#rough_frequency (for https://github.com/jmettraux/rufus-scheduler/pull/276)
+
 
 ## fugit 1.1.4  released 2018-07-20
 
