@@ -260,12 +260,11 @@ module Fugit
 
     def rough_frequency
 
-#p self.to_a
-      SLOTS.each do |k, (v0, _)|
+      SLOTS.each do |k, (v0, v1)|
         a = instance_variable_get("@#{k}")
         next unless a && a.length > 1
         return (
-          (a + [ a.first + v0 ])
+          (a + [ a.first + v1 ])
             .each_cons(2)
             .collect { |a0, a1| a1 - a0 }
             .min) * v0
