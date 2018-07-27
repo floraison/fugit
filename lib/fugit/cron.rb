@@ -250,17 +250,19 @@ module Fugit
         end
     end
 
-    SLOTS = {
-      :seconds => [ 1, 60 ],
-      :minutes => [ 60, 3600 ],
-      :hours => [ 3600, 24 * 3600 ],
-      :weekdays => [ 24 * 3600, 7 * 24 * 3600 ],
-      :monthdays => [ 24 * 3600, 30 * 24 * 3600 ],
-      :months => [ 30 * 24 * 3600, 365 * 24 * 3600 ] }
+    SLOTS = [
+      [ :seconds, 1, 60 ],
+      [ :minutes, 60, 3600 ],
+      [ :hours, 3600, 24 * 3600 ],
+      [ :weekdays, 24 * 3600, 7 * 24 * 3600 ],
+      [ :monthdays, 24 * 3600, 30 * 24 * 3600 ],
+      [ :months, 30 * 24 * 3600, 365 * 24 * 3600 ] ]
+    RSLOTS =
+      SLOTS.reverse
 
     def rough_frequency
 
-      SLOTS.each do |k, (v0, v1)|
+      SLOTS.each do |k, v0, v1|
         a = instance_variable_get("@#{k}")
         next unless a && a.length > 1
         return (
@@ -270,8 +272,7 @@ module Fugit
             .min) * v0
       end
 
-      SLOTS.keys.reverse.each do |k|
-        v1 = SLOTS[k].last
+      RSLOTS.each do |k, _, v1|
         a = instance_variable_get("@#{k}")
         return v1 if a && a.length == 1
       end
