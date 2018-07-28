@@ -252,29 +252,62 @@ module Fugit
 
     SLOTS = [
       [ :seconds, 1, 60 ],
-      [ :minutes, 60, 3600 ],
-      [ :hours, 3600, 24 * 3600 ],
-      [ :weekdays, 24 * 3600, 7 * 24 * 3600 ],
-      [ :monthdays, 24 * 3600, 30 * 24 * 3600 ],
-      [ :months, 30 * 24 * 3600, 365 * 24 * 3600 ] ]
-    RSLOTS =
-      SLOTS.reverse
+      [ :minutes, 60, 60 ],
+      [ :hours, 3600, 24 ],
+      [ :days, 24 * 3600, 365 ] ]
+    #LENS = [
+    #  31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ]
+
+    def rough_days
+
+      return [ 0, 1 ] if @weekdays == nil && @monthdays == nil
+
+      months = (@months || (1..12).to_a)
+
+      monthdays = months
+        .product(@monthdays || [])
+        .collect { |m, d| (m - 1) * 30 + d } # rough
+
+      weekdays = (@weekdays || [])
+        .collect { |d, w|
+          w ?
+          (d + 1) * (w - 1) * 7 :
+          (0..3).collect { |ww| (d + 1) + ww * 7 } }
+        .flatten
+        .sort
+      weekdays = months
+        .product(weekdays)
+        .collect { |m, d| (m - 1) * 30 + d } # rough
+
+      monthdays + weekdays
+    end
 
     def rough_frequency
 
-      SLOTS.each do |k, v0, v1|
-        a = instance_variable_get("@#{k}")
-        next unless a && a.length > 1
-        return (
-          (a + [ a.first + v1 ])
-            .each_cons(2)
-            .collect { |a0, a1| a1 - a0 }
-            .min) * v0
+#p to_h
+      slots = SLOTS
+        .collect { |k, v0, v1|
+          a = (k == :days) ? rough_days : instance_variable_get("@#{k}")
+          [ k, v0, v1, a ] }
+#pp slots
+
+      slots.each do |k, v0, _, a|
+        next if a == [ 0 ]
+        break if a != nil
+        return v0 if a == nil
       end
 
-      RSLOTS.each do |k, _, v1|
-        a = instance_variable_get("@#{k}")
-        return v1 if a && a.length == 1
+      slots.each do |k, v0, v1, a|
+#p [ 1, k, v0, v1, a ]
+        next unless a && a.length > 1
+        return (a + [ a.first + v1 ])
+          .each_cons(2)
+          .collect { |a0, a1| a1 - a0 }
+          .min * v0
+      end
+
+      slots.reverse.each do |k, v0, v1, a|
+        return v0 * v1 if a && a.length == 1
       end
 
       1
@@ -311,6 +344,16 @@ module Fugit
     def to_a
 
       [ @seconds, @minutes, @hours, @monthdays, @months, @weekdays ]
+    end
+
+    def to_h
+
+      { seconds: @seconds,
+        minutes: @minutes,
+        hours: @hours,
+        monthdays: @monthdays,
+        months: @months,
+        weekdays: @weekdays }
     end
 
     def ==(o)

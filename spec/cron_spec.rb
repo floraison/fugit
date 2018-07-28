@@ -418,6 +418,7 @@ describe Fugit::Cron do
         f = freq.is_a?(String) ? Fugit.parse(freq).to_sec : freq
         rf = Fugit::Cron.parse(cron).rough_frequency
 
+p Fugit::Duration.parse(rf).deflate.to_plain_s
         expect(rf).to eq(f)
       end
     end
