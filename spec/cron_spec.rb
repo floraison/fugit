@@ -368,28 +368,57 @@ describe Fugit::Cron do
               # day of week  0-7 (0 or 7 is Sun, or use names)
     {
 
-      '* * * * *' => 60,
+      '* * * * *' => '1m',
       '* * * * * *' => 1,
-      '0 0 * * *' => 24 * 3600,
-      '10,15 0 * * *' => 5 * 60,
-      '0 0 * * sun' => 7 * 24 * 3600,
-      '0 0 1 1 *' => 365 * 24 * 3600,
-      '0 0 29 2 *' => 365 * 24 * 3600, # ! rough frequency !
-      '0 0 28 2,3 *' => 30 * 24 * 3600,
-      '0 0 28 2,4 *' => 2 * 30 * 24 * 3600,
+      '0 0 * * *' => '1d',
+      '10,15 0 * * *' => '5m',
+      '0 0 * * sun' => '7d',
+      '0 0 1 1 *' => '1Y',
+      '0 0 29 2 *' => '1Y', # ! rough frequency !
+      '0 0 28 2,3 *' => '1M',
+      '0 0 28 2,4 *' => '2M',
       '*/15 * * * * *' => 15,
-      '*/15 * * * *' => 15 * 60,
+      '*/15 * * * *' => '15m',
+
+      '5 0 * * *' => '1d',
+      '15 14 1 * *' => '1M',
+      '* * 29 * *' => '1m',
+      '* * L * *' => '1m',
+      '* * last * *' => '1m',
+      '* * -1 * *' => '1m',
+      '0 0 -4,-3 * *' => '1d',
+      '* * * * sun' => '1m',
+      '* * -2 * *' => '1m',
+      '* * * * mon' => '1m',
+      '* * * * * mon' => 1,
+      '* * * * mon,tue' => '1m',
+      '* * * * mon#2' => '1m',
+      '* * * * mon#-1' => '1m',
+      '* * * * tue#L' => '1m',
+      '* * * * tue#last' => '1m',
+      '* * * * mon#2,tue' => '1m',
+      '0 0 * * mon' => '1W',
+      '0 0 * * mon,tue' => '1d',
+      '0 0 * * mon#2' => '1M',
+      '0 0 * * mon#-1' => '1M',
+      '0 0 * * tue#L' => '1M',
+      '0 0 * * tue#last' => '1M',
+      '0 0 * * mon#2,tue' => '1d',
+      '00 24 * * *' => '1d',
+      '30 04 1,15 * 5' => 1,
+      '0 8 L * mon-thu' => '1M',
+      '0 9 -2 * *' => '1M',
+      '0 0 -5 * *' => '1M',
+      '0 8 L * *' => '1M',
 
     }.each do |cron, freq|
 
       it "gets #{cron.inspect} and outputs #{freq.inspect}" do
 
-        expect(
-          Fugit::Cron.parse(cron)
-            .rough_frequency
-        ).to eq(
-          freq
-        )
+        f = freq.is_a?(String) ? Fugit.parse(freq).to_sec : freq
+        rf = Fugit::Cron.parse(cron).rough_frequency
+
+        expect(rf).to eq(f)
       end
     end
   end
