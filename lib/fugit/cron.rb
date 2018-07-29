@@ -258,30 +258,6 @@ module Fugit
     #LENS = [
     #  31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ]
 
-    def rough_days
-
-      return [ 0, 1 ] if @weekdays == nil && @monthdays == nil
-
-      months = (@months || (1..12).to_a)
-
-      monthdays = months
-        .product(@monthdays || [])
-        .collect { |m, d| (m - 1) * 30 + d } # rough
-
-      weekdays = (@weekdays || [])
-        .collect { |d, w|
-          w ?
-          (d + 1) * (w - 1) * 7 :
-          (0..3).collect { |ww| (d + 1) + ww * 7 } }
-        .flatten
-        .sort
-      weekdays = months
-        .product(weekdays)
-        .collect { |m, d| (m - 1) * 30 + d } # rough
-
-      monthdays + weekdays
-    end
-
     def rough_frequency
 
 #p to_h
@@ -368,6 +344,31 @@ module Fugit
     end
 
     protected
+
+    def rough_days
+
+      return [ 0, 1 ] if @weekdays == nil && @monthdays == nil
+
+      months = (@months || (1..12).to_a)
+
+      monthdays = months
+        .product(@monthdays || [])
+        .collect { |m, d|
+          d = 31 + d if d < 0
+          (m - 1) * 30 + d } # rough
+
+      weekdays = (@weekdays || [])
+        .collect { |d, w|
+          w ?
+          d + (w - 1) * 7 :
+          (0..3).collect { |ww| d + ww * 7 } }
+        .flatten
+      weekdays = months
+        .product(weekdays)
+        .collect { |m, d| (m - 1) * 30 + d } # rough
+
+      (monthdays + weekdays).sort
+    end
 
     FREQUENCY_CACHE = {}
 

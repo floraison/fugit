@@ -405,8 +405,8 @@ describe Fugit::Cron do
       '0 0 * * tue#last' => '1M',
       '0 0 * * mon#2,tue' => '1d',
       '00 24 * * *' => '1d',
-      '30 04 1,15 * 5' => 1,
-      '0 8 L * mon-thu' => '1M',
+      '30 04 1,15 * 5' => '3d', # rough
+      '0 8 L * mon-thu' => '1d', # last day of month OR monday to thursday
       '0 9 -2 * *' => '1M',
       '0 0 -5 * *' => '1M',
       '0 8 L * *' => '1M',
@@ -418,7 +418,7 @@ describe Fugit::Cron do
         f = freq.is_a?(String) ? Fugit.parse(freq).to_sec : freq
         rf = Fugit::Cron.parse(cron).rough_frequency
 
-p Fugit::Duration.parse(rf).deflate.to_plain_s
+#p Fugit::Duration.parse(rf).deflate.to_plain_s
         expect(rf).to eq(f)
       end
     end
