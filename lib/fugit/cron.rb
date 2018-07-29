@@ -255,17 +255,13 @@ module Fugit
       [ :minutes, 60, 60 ],
       [ :hours, 3600, 24 ],
       [ :days, 24 * 3600, 365 ] ]
-    #LENS = [
-    #  31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ]
 
     def rough_frequency
 
-#p to_h
       slots = SLOTS
         .collect { |k, v0, v1|
           a = (k == :days) ? rough_days : instance_variable_get("@#{k}")
           [ k, v0, v1, a ] }
-#pp slots
 
       slots.each do |k, v0, _, a|
         next if a == [ 0 ]
@@ -274,7 +270,6 @@ module Fugit
       end
 
       slots.each do |k, v0, v1, a|
-#p [ 1, k, v0, v1, a ]
         next unless a && a.length > 1
         return (a + [ a.first + v1 ])
           .each_cons(2)
@@ -286,7 +281,7 @@ module Fugit
         return v0 * v1 if a && a.length == 1
       end
 
-      1
+      1 # second
     end
 
     class Frequency
@@ -347,7 +342,7 @@ module Fugit
 
     def rough_days
 
-      return [ 0, 1 ] if @weekdays == nil && @monthdays == nil
+      return nil if @weekdays == nil && @monthdays == nil
 
       months = (@months || (1..12).to_a)
 
