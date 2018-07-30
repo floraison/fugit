@@ -18,6 +18,10 @@ Gem::Specification.new do |s|
 Time tools for flor and the floraison project. Cron parsing and occurrence computing. Timestamps and more.
   }.strip
 
+  s.metadata = {
+    'changelog_uri' => s.homepage + '/blob/master/CHANGELOG.md'
+  }
+
   #s.files = `git ls-files`.split("\n")
   s.files = Dir[
     'README.{md,txt}',
