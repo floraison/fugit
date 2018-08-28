@@ -15,15 +15,25 @@ Fugit is a core dependency of [rufus-scheduler](https://github.com/jmettraux/ruf
 
 ### Sister projects
 
+The intersection of those two projects is where fugit is born:
+
 * [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) - a cron/at/in/every/interval in-process scheduler, in fact, it's the father project to this fugit project
 * [flor](https://github.com/floraison/flor) - a Ruby workflow engine, fugit provides the foundation for its time scheduling capabilities
 
-### Similar, somehow overlapping projects
+### Similar, sometimes overlapping projects
 
 * [chronic](https://github.com/mojombo/chronic) - a pure Ruby natural language date parser
 * [parse-cron](https://github.com/siebertm/parse-cron) - parses cron expressions and calculates the next occurrence after a given date
 * [ice_cube](https://github.com/seejohnrun/ice_cube) - Ruby date recurrence library
 * [ISO8601](https://github.com/arnau/ISO8601) - Ruby parser to work with ISO8601 dateTimes and durations
+* ...
+
+### Projects using fugit
+
+* [arask](https://github.com/Ebbe/arask) - "Automatic RAils taSKs" uses fugit to parse cron strings
+* [sideqik-cron](https://github.com/ondrejbartas/sidekiq-cron) - recent versions of Sideqik-Cron use fugit to parse cron strings
+* [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) -
+* [flor](https://github.com/floraison/flor) - used in the [cron](https://github.com/floraison/flor/blob/master/doc/procedures/cron.md) procedure
 * ...
 
 
