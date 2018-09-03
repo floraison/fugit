@@ -28,6 +28,28 @@ describe Fugit do
       expect(t.class).to eq(::EtOrbi::EoTime)
       expect(t.object_id).to eq(eot.object_id)
     end
+
+    context 'with timezones' do
+
+      [
+
+        [ '2018-09-04 06:41:34 +11', '2018-09-04 06:41:34 +11 +1100' ],
+        [ '2018-09-04 06:41:34 +1100', '2018-09-04 06:41:34 +1100 +1100' ],
+        [ '2018-09-04 06:41:34 +11:00', '2018-09-04 06:41:34 +11:00 +1100' ],
+        [ '2018-09-04 06:41:34 Etc/GMT-11', '2018-09-04 06:41:34 +11 +1100' ],
+        #[ '2018-09-04 06:41:34 UTC+11', nil ],
+
+      ].each do |string, plain|
+
+        it "parses #{string}" do
+
+          t = Fugit.parse_at(string)
+
+          expect(t.class).to eq(::EtOrbi::EoTime)
+          expect(Fugit.time_to_zone_s(t)).to eq(plain)
+        end
+      end
+    end
   end
 end
 
