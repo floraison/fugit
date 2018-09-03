@@ -541,7 +541,9 @@ describe Fugit::Cron do
 
         [
           [ '* * * * * America/Los_Angeles', 'America/Los_Angeles' ],
+          [ '* * * * * Etc/GMT-11', 'Etc/GMT-11' ],
           [ '* * * * * +09:00', '+09:00' ],
+          [ '* * * * * +0900', '+0900' ],
         ].each { |c, z|
 
           it "parses #{c}" do
