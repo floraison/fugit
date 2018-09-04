@@ -4,7 +4,8 @@
 
 ## fugit 1.1.6  not yet released
 
-* Enable `Etc/GMT-11` in cron and nat strings, gh-9
+* Ensure `Etc/GMT-11` and all Olson timezone names are recognized
+  in cron and nat strings, gh-9
 
 
 ## fugit 1.1.5  released 2018-07-30
