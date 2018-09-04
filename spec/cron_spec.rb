@@ -539,12 +539,15 @@ describe Fugit::Cron do
 
       context 'timezone' do
 
-        [
-          [ '* * * * * America/Los_Angeles', 'America/Los_Angeles' ],
-          [ '* * * * * Etc/GMT-11', 'Etc/GMT-11' ],
-          [ '* * * * * +09:00', '+09:00' ],
-          [ '* * * * * +0900', '+0900' ],
-        ].each { |c, z|
+        (
+          ::TZInfo::Timezone.all.collect { |tz|
+            [ "* * * * * #{tz.name}", tz.name ]
+          } +
+          [
+            [ '* * * * * +09:00', '+09:00' ],
+            [ '* * * * * +0900', '+0900' ],
+          ]
+        ).each do |c, z|
 
           it "parses #{c}" do
 
@@ -555,7 +558,7 @@ describe Fugit::Cron do
             expect(c.zone).to eq(z)
             expect(c.timezone).to eq(tz)
           end
-        }
+        end
 
         [
           '* * * * * America/SaoPaulo',

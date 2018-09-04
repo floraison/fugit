@@ -128,7 +128,7 @@ module Fugit
       def name_day(i); rex(:name_day, i, /#{WEEKDAYS.reverse.join('|')}/i); end
 
       def _tz_name(i)
-        rex(nil, i, /[A-Z][a-zA-Z0-9]+(\/[A-Z][a-zA-Z0-9\-_]+){0,2}/)
+        rex(nil, i, /[A-Z][a-zA-Z0-9+\-]+(\/[A-Z][a-zA-Z0-9+\-_]+){0,2}/)
       end
       def _tz_delta(i)
         rex(nil, i, /[-+]([01][0-9]|2[0-4]):?(00|15|30|45)/)
