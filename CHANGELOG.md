@@ -1,8 +1,8 @@
 
-# fugit CHANGELOG.md
+# CHANGELOG.md
 
 
-## fugit 1.1.6  not yet released
+## fugit 1.1.6  released 2018-09-05
 
 * Ensure `Etc/GMT-11` and all Olson timezone names are recognized
   in cron and nat strings, gh-9
