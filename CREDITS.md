@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Nils Mueller https://github.com/Tolsto missing Olson timezone names, gh-9
 * jakemack https://github.com/jakemack issue when going out of DST, gh-6
 * Cristian Bica https://github.com/cristianbica Nat improvements, gh-7
 * Utilum https://github.com/utilum silenced Ruby warnings
