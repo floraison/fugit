@@ -483,8 +483,10 @@ describe Fugit::Cron do
         [ '0 0 * * 1-5/2', '0 0 * * 1,3,5' ],
         [ '0 0 * * 3/2', '0 0 * * 3' ],
 
-        [ '* * 1 * *', '* * 1 * *' ],
-        [ '* * 01 * *', '* * 1 * *' ],
+        [ '* * 1 * *', '* * 1 * *' ],  # gh-10, double-check that 01 is a dom
+        [ '* * 01 * *', '* * 1 * *' ], #
+        [ '* * * 1 *', '* * * 1 *' ],  # and that 01 is a month
+        [ '* * * 01 *', '* * * 1 *' ], #
 
       ].each { |c, e|
         it("parses #{c}") { expect(Fugit::Cron.parse(c).to_cron_s).to eq(e) }
@@ -582,11 +584,15 @@ describe Fugit::Cron do
     context 'failure' do
 
       [
+        # min hou dom mon dow
 
         '* 25 * * *',
         '* * -32 * *',
-        '* * 0 * *',
-        '* * 00 * *',
+
+        '* * 0 * *',   # gh-10, 0 is not a valid day of month
+        '* * 00 * *',  #
+        '* * * 0 *',   # and 0 is not a valid month
+        '* * * 00 *',  #
 
       ].each do |cron|
 
@@ -601,8 +607,11 @@ describe Fugit::Cron do
   describe '.do_parse' do
 
     [
+      # min hou dom mon dow
+
       '* 25 * * *',
       '* * -32 * *'
+
     ].each do |cron|
 
       it "raises for #{cron}" do
