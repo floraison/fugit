@@ -4,6 +4,8 @@
 
 ## fugit 1.1.7  not yet released
 
+* Prevent 0 as day of month, gh-10
+
 
 ## fugit 1.1.6  released 2018-09-05
 

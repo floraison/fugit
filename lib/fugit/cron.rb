@@ -484,7 +484,7 @@ module Fugit
 
       def core_mos(i); rex(:mos, i, /[0-5]?\d/); end # min or sec
       def core_hou(i); rex(:hou, i, /(2[0-4]|[01]?[0-9])/); end
-      def core_dom(i); rex(:dom, i, /(-?(3[01]|[012]?[0-9])|last|l)/i); end
+      def core_dom(i); rex(:dom, i, /(-?(3[01]|[12][0-9]|0?[1-9])|last|l)/i); end
       def core_mon(i); rex(:mon, i, /(1[0-2]|0?[0-9]|#{MONTHS[1..-1].join('|')})/i); end
       def core_dow(i); rex(:dow, i, /([0-7]|#{WEEKDS.join('|')})/i); end
 

@@ -6,7 +6,7 @@
 * Cristian Bica https://github.com/cristianbica Nat improvements, gh-7
 * Utilum https://github.com/utilum silenced Ruby warnings
 * Tero Marttila https://github.com/SpComb added missing Cron#seconds
-* Harry Lascelles https://github.com/hlascelles timezone reminder
+* Harry Lascelles https://github.com/hlascelles timezone reminder and more
 * John Mettraux https://github.com/jmettraux author and maintainer
 
 

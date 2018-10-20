@@ -456,6 +456,8 @@ describe Fugit::Cron do
         [ '@midnight', '0 0 * * *' ],
         [ '@hourly', '0 * * * *' ],
 
+        # min hou dom mon dow
+
         [ '5 0 * * *', '5 0 * * *' ],
           # 5 minutes after midnight, every day
         [ '15 14 1 * *', '15 14 1 * *' ],
@@ -480,6 +482,9 @@ describe Fugit::Cron do
         [ '0 0 * * */2', '0 0 * * 0,2,4,6' ],
         [ '0 0 * * 1-5/2', '0 0 * * 1,3,5' ],
         [ '0 0 * * 3/2', '0 0 * * 3' ],
+
+        [ '* * 1 * *', '* * 1 * *' ],
+        [ '* * 01 * *', '* * 1 * *' ],
 
       ].each { |c, e|
         it("parses #{c}") { expect(Fugit::Cron.parse(c).to_cron_s).to eq(e) }
@@ -577,8 +582,12 @@ describe Fugit::Cron do
     context 'failure' do
 
       [
+
         '* 25 * * *',
-        '* * -32 * *'
+        '* * -32 * *',
+        '* * 0 * *',
+        '* * 00 * *',
+
       ].each do |cron|
 
         it "returns nil for #{cron}" do
