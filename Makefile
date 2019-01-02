@@ -34,11 +34,19 @@ spec:
 	bundle exec rspec
 test: spec
 
+
+## specific to project ##
+
+info:
+	uname -a
+	bundle exec ruby -v
+	bundle exec ruby -Ilib -r et-orbi -e "EtOrbi._make_info"
+
 tzones:
-	bundle exec ruby -r tzinfo -e "::TZInfo::Timezone.all.each { |tz| p tz.name }"
+	bundle exec ruby -r tzinfo -e "TZInfo::Timezone.all.each { |tz| p tz.name }"
 #tzonesd:
 #	bundle exec ruby -r tzinfo -r tzinfo-data -e "::TZInfo::Timezone.all.each { |tz| p tz.name }"
 
 
-.PHONY: count_lines gemspec_validate name cw build push spec
+.PHONY: count_lines gemspec_validate name cw build push spec info tzones
 
