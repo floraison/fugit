@@ -34,6 +34,11 @@ spec:
 	bundle exec rspec
 test: spec
 
+tzones:
+	bundle exec ruby -r tzinfo -e "::TZInfo::Timezone.all.each { |tz| p tz.name }"
+#tzonesd:
+#	bundle exec ruby -r tzinfo -r tzinfo-data -e "::TZInfo::Timezone.all.each { |tz| p tz.name }"
+
 
 .PHONY: count_lines gemspec_validate name cw build push spec
 
