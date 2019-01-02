@@ -1,6 +1,7 @@
 
 .vimrc
 .viminfo
+.vimgrep
 
 pkg/
 
