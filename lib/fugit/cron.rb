@@ -43,7 +43,7 @@ module Fugit
       def do_parse(s)
 
         parse(s) ||
-        fail(ArgumentError.new("not a cron string #{s.inspect}"))
+        fail(ArgumentError.new("invalid cron string #{s.inspect}"))
       end
     end
 

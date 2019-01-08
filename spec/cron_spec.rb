@@ -610,7 +610,12 @@ describe Fugit::Cron do
       # min hou dom mon dow
 
       '* 25 * * *',
-      '* * -32 * *'
+      '* * -32 * *',
+
+      '* * 0 * *',   # gh-10, 0 is not a valid day of month
+      '* * 00 * *',  #
+      '* * * 0 *',   # and 0 is not a valid month
+      '* * * 00 *',  #
 
     ].each do |cron|
 
@@ -618,7 +623,7 @@ describe Fugit::Cron do
         expect {
           Fugit::Cron.do_parse(cron)
         }.to raise_error(
-          ArgumentError, "not a cron string #{cron.inspect}"
+          ArgumentError, "invalid cron string #{cron.inspect}"
         )
       end
     end
