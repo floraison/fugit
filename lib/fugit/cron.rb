@@ -166,10 +166,14 @@ module Fugit
       hour_match?(t) && min_match?(t) && sec_match?(t)
     end
 
+    BREAKER_S = 41 * (365 + 1) * 24 * 3600
+      # 41 years and a few days... there wont'be a next or a previous time
+
     def next_time(from=::EtOrbi::EoTime.now)
 
       from = ::EtOrbi.make_time(from)
       sfrom = from.strftime('%F/%T')
+      ifrom = from.to_i
 
       t = TimeCursor.new(from.translate(@timezone))
         #
@@ -178,7 +182,13 @@ module Fugit
 
       loop do
 
-        (from.to_i == t.to_i) && (t.inc(1); next)
+        ti = t.to_i
+
+        fail RuntimeError.new(
+          "too many loops for #{@original.inspect} #next_time, breaking"
+        ) if (ti - ifrom) > BREAKER_S
+
+        (ifrom == ti) && (t.inc(1); next)
         month_match?(t) || (t.inc_month; next)
         day_match?(t) || (t.inc_day; next)
         hour_match?(t) || (t.inc_hour; next)
@@ -186,7 +196,7 @@ module Fugit
         sec_match?(t) || (t.inc_sec(@seconds); next)
 
         st = t.time.strftime('%F/%T')
-        (from, sfrom = t.time, st; next) if st == sfrom
+        (from, sfrom, ifrom = t.time, st, t.time.to_i; next) if st == sfrom
           #
           # when transitioning out of DST, this prevents #next_time from
           # yielding the same literal time twice in a row, see gh-6

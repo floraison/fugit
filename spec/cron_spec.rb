@@ -253,6 +253,21 @@ describe Fugit::Cron do
         expect(t.iso8601).to eq('2017-03-25T22:00:00+09:00')
       end
     end
+
+    it 'breaks if its loop takes too long' do
+
+      c = Fugit::Cron.parse('* * 1 * *')
+      c.instance_eval { @monthdays = [ 0 ] }
+        #
+        # forge an invalid cron
+
+      expect {
+        c.next_time
+      }.to raise_error(
+        RuntimeError,
+        "too many loops for \"* * 1 * *\" #next_time, breaking"
+      )
+    end
   end
 
   describe '#match?' do
@@ -323,6 +338,11 @@ describe Fugit::Cron do
         expect(c.match?(ept)).to eq(true) # quick check
       end
     end
+
+    it 'breaks if its loop takes too long'# do
+#
+#fail
+#    end
   end
 
   describe '#brute_frequency' do
