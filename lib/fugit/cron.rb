@@ -213,11 +213,19 @@ module Fugit
     def previous_time(from=::EtOrbi::EoTime.now)
 
       from = ::EtOrbi.make_time(from)
+      ifrom = from.to_i
+
       t = TimeCursor.new(from.translate(@timezone))
 
       loop do
-#p [ :l, Fugit.time_to_s(t.time) ]
-        (from.to_i == t.to_i) && (t.inc(-1); next)
+
+        ti = t.to_i
+
+        fail RuntimeError.new(
+          "too many loops for #{@original.inspect} #previous_time, breaking"
+        ) if (ifrom - ti) > BREAKER_S
+
+        (ifrom == ti) && (t.inc(-1); next)
         month_match?(t) || (t.dec_month; next)
         day_match?(t) || (t.dec_day; next)
         hour_match?(t) || (t.dec_hour; next)

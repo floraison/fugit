@@ -339,10 +339,20 @@ describe Fugit::Cron do
       end
     end
 
-    it 'breaks if its loop takes too long'# do
-#
-#fail
-#    end
+    it 'breaks if its loop takes too long' do
+
+      c = Fugit::Cron.parse('* * 1 * *')
+      c.instance_eval { @monthdays = [ 0 ] }
+        #
+        # forge an invalid cron
+
+      expect {
+        c.previous_time
+      }.to raise_error(
+        RuntimeError,
+        "too many loops for \"* * 1 * *\" #previous_time, breaking"
+      )
+    end
   end
 
   describe '#brute_frequency' do
