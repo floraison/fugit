@@ -186,7 +186,7 @@ module Fugit
 
         fail RuntimeError.new(
           "too many loops for #{@original.inspect} #next_time, breaking"
-        ) if (ti - ifrom) > BREAKER_S
+        ) if (ti - ifrom).abs > BREAKER_S
 
         (ifrom == ti) && (t.inc(1); next)
         month_match?(t) || (t.inc_month; next)
@@ -223,7 +223,7 @@ module Fugit
 
         fail RuntimeError.new(
           "too many loops for #{@original.inspect} #previous_time, breaking"
-        ) if (ifrom - ti) > BREAKER_S
+        ) if (ifrom - ti).abs > BREAKER_S
 
         (ifrom == ti) && (t.inc(-1); next)
         month_match?(t) || (t.dec_month; next)
@@ -255,6 +255,7 @@ module Fugit
           t = EtOrbi.make_time("#{year}-01-01") - 1
           t0 = nil
           t1 = nil
+
           loop do
             t1 = next_time(t)
             deltas << (t1 - t).to_i if t0

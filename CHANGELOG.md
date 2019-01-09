@@ -4,6 +4,7 @@
 
 ## fugit 1.1.7  not yet released
 
+* Add breaker to Cron #next_time / #previous_time, gh-13
 * Prevent 0 as a month in crons, gh-10
 * Prevent 0 as a day of month in crons, gh-10
 
