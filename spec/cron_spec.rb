@@ -268,6 +268,39 @@ describe Fugit::Cron do
         "too many loops for \"* * 1 * *\" #next_time, breaking"
       )
     end
+
+    context '(defective et-orbi)' do
+
+      before :each do
+        class Fugit::Cron::TimeCursor
+          alias original_inc inc
+        end
+      end
+      after :each do
+        class Fugit::Cron::TimeCursor
+          alias inc original_inc
+        end
+      end
+    end
+
+    it 'breaks if its loop takes too long' do
+
+      c = Fugit::Cron.parse('* * 1 * *')
+
+      class Fugit::Cron::TimeCursor
+        def inc(i)
+          @t = @t + 0
+          self
+        end
+      end
+
+      expect {
+        c.next_time
+      }.to raise_error(
+        RuntimeError,
+        "too many loops for \"* * 1 * *\" #next_time, breaking"
+      )
+    end
   end
 
   describe '#match?' do
