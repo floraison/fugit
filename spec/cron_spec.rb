@@ -273,33 +273,26 @@ describe Fugit::Cron do
 
       before :each do
         class Fugit::Cron::TimeCursor
-          alias original_inc inc
+          alias inc _bad_inc
         end
       end
       after :each do
         class Fugit::Cron::TimeCursor
-          alias inc original_inc
-        end
-      end
-    end
-
-    it 'breaks if its loop takes too long' do
-
-      c = Fugit::Cron.parse('* * 1 * *')
-
-      class Fugit::Cron::TimeCursor
-        def inc(i)
-          @t = @t + 0
-          self
+          alias inc _original_inc
         end
       end
 
-      expect {
-        c.next_time
-      }.to raise_error(
-        RuntimeError,
-        "too many loops for \"* * 1 * *\" #next_time, breaking"
-      )
+      it 'breaks if its loop takes too long' do
+
+        c = Fugit::Cron.parse('* * 1 * *')
+
+        expect {
+          c.next_time
+        }.to raise_error(
+          RuntimeError,
+          "loop stalled for \"* * 1 * *\" #next_time, breaking"
+        )
+      end
     end
   end
 

@@ -51,3 +51,15 @@ RSpec.configure do |c|
   c.include(Helpers)
 end
 
+
+  # A _bad_inc that doesn't progress, to test #next_time and
+  # #previous_time loop breakers...
+  #
+class Fugit::Cron::TimeCursor
+  def _bad_inc(i)
+    @t = @t + 0
+    self
+  end
+  alias _original_inc inc
+end
+

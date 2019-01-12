@@ -180,9 +180,19 @@ module Fugit
         # the translation occurs in the timezone of
         # this Fugit::Cron instance
 
+      ti = 0
+      stalling = false
+
       loop do
 
-        ti = t.to_i
+        ti1 = t.to_i
+
+        fail RuntimeError.new(
+          "loop stalled for #{@original.inspect} #next_time, breaking"
+        ) if stalling && ti == ti1
+
+        stalling = (ti == ti1)
+        ti = ti1
 
         fail RuntimeError.new(
           "too many loops for #{@original.inspect} #next_time, breaking"
