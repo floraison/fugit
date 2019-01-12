@@ -282,7 +282,7 @@ describe Fugit::Cron do
         end
       end
 
-      it 'breaks if its loop takes too long' do
+      it 'breaks if its loop stalls' do
 
         c = Fugit::Cron.parse('* * 1 * *')
 
@@ -290,7 +290,7 @@ describe Fugit::Cron do
           c.next_time
         }.to raise_error(
           RuntimeError,
-          "loop stalled for \"* * 1 * *\" #next_time, breaking"
+          'loop stalled for "* * 1 * *" #next_time, breaking'
         )
       end
     end
@@ -378,6 +378,32 @@ describe Fugit::Cron do
         RuntimeError,
         "too many loops for \"* * 1 * *\" #previous_time, breaking"
       )
+    end
+
+    context '(defective et-orbi)' do
+
+      before :each do
+        class Fugit::Cron::TimeCursor
+          alias inc _bad_inc
+        end
+      end
+      after :each do
+        class Fugit::Cron::TimeCursor
+          alias inc _original_inc
+        end
+      end
+
+      it 'breaks if its loop stalls' do
+
+        c = Fugit::Cron.parse('* * 1 * *')
+
+        expect {
+          c.previous_time
+        }.to raise_error(
+          RuntimeError,
+          'loop stalled for "* * 1 * *" #previous_time, breaking'
+        )
+      end
     end
   end
 

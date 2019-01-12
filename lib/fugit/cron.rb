@@ -223,13 +223,22 @@ module Fugit
     def previous_time(from=::EtOrbi::EoTime.now)
 
       from = ::EtOrbi.make_time(from)
+      ti = 0
       ifrom = from.to_i
 
       t = TimeCursor.new(from.translate(@timezone))
+      stalling = false
 
       loop do
 
-        ti = t.to_i
+        ti1 = t.to_i
+
+        fail RuntimeError.new(
+          "loop stalled for #{@original.inspect} #previous_time, breaking"
+        ) if stalling && ti == ti1
+
+        stalling = (ti == ti1)
+        ti = ti1
 
         fail RuntimeError.new(
           "too many loops for #{@original.inspect} #previous_time, breaking"
