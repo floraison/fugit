@@ -294,6 +294,42 @@ describe Fugit::Cron do
         )
       end
     end
+
+    context '(Chronic and ActiveSupport, gh-11)' do
+
+      before :each do
+
+        require_chronic
+
+        class ::Time
+          class << self
+            def zone; @zone; end
+          end
+        end
+      end
+
+      after :each do
+
+        unrequire_chronic
+
+        class ::Time
+          class << self
+            undef_method :zone
+          end
+        end
+      end
+
+      it "doesn't stall or loop ad infinitum" do
+
+        Time._zone = 'UTC'
+
+        cron = Fugit.do_parse_cron('0 0 1 1 *')
+
+        expect {
+          cron.next_time
+        }.not_to raise_error
+      end
+    end
   end
 
   describe '#match?' do

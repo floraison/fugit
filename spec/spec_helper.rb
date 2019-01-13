@@ -6,7 +6,7 @@
 #
 
 require 'pp'
-#require 'ostruct'
+require 'ostruct'
 
 require 'chronic'
 ::Khronic = ::Chronic
@@ -61,5 +61,16 @@ class Fugit::Cron::TimeCursor
     self
   end
   alias _original_inc inc
+end
+
+  # Simulating ActiveSupport Time.zone
+  #
+class Time
+  class << self
+    attr_accessor :_zone
+    def _zone=(name)
+      @zone = OpenStruct.new(tzinfo: ::TZInfo::Timezone.get(name))
+    end
+  end
 end
 
