@@ -88,7 +88,10 @@ describe Fugit::Cron do
 
     NEXT_TIMES.each do |cron, next_time, now, zone_name|
 
-      it "succeeds #{cron.inspect} -> #{next_time.inspect}" do
+      d = "succeeds #{cron.inspect} -> #{next_time.inspect}"
+      d += " in #{zone_name}" if zone_name
+
+      it(d) do
 
         in_zone(zone_name) do
 
