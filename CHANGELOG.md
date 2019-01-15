@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.1.7  not yet released
+## fugit 1.1.7  released 2019-01-15
 
 * Add breaker to Cron #next_time / #previous_time, gh-13
 * Prevent 0 as a month in crons, gh-10
