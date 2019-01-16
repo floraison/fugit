@@ -85,7 +85,7 @@ module Fugit
         y = @t.year
         m = @t.month + 1
         if m == 13; m = 1; y += 1; end
-        @t = ::EtOrbi.make(y, m)
+        @t = ::EtOrbi.make(y, m, @t.zone)
         self
       end
       def inc_day; inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec); end

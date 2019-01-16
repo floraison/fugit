@@ -249,11 +249,25 @@ describe Fugit::Cron do
       it 'computes in the cron zone but returns in the from zone' do
 
         c = Fugit::Cron.parse('* * * * * Europe/Rome')
-        f = EtOrbi.parse('2017-03-25 21:59 Asia/Tokyo')
+        f = EtOrbi.parse('2017-03-25 21:59 Asia/Tbilisi')
         t = c.next_time(f)
 
         expect(t.class).to eq(EtOrbi::EoTime)
-        expect(t.iso8601).to eq('2017-03-25T22:00:00+09:00')
+        expect(t.iso8601).to eq('2017-03-25T22:00:00+04:00')
+      end
+
+      it 'returns the right result' do
+
+        c = Fugit::Cron.parse('0 0 1 1 * Europe/Rome')
+        f = EtOrbi.parse('2017-03-25 21:59 Asia/Tbilisi')
+        t = c.next_time(f)
+
+        expect(t.class)
+          .to eq(EtOrbi::EoTime)
+        expect(t.iso8601)
+          .to eq('2018-01-01T03:00:00+04:00')
+        expect(t.translate('Europe/Rome').iso8601)
+          .to eq('2018-01-01T00:00:00+01:00')
       end
     end
 

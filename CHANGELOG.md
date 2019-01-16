@@ -4,6 +4,8 @@
 
 ## fugit 1.1.8  not yet released
 
+* Ensure Cron#next_time happens in cron's time zone, gh-12
+
 
 ## fugit 1.1.7  released 2019-01-15
 
