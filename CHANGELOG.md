@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.1.8  not yet released
+## fugit 1.1.8  released 2019-01-17
 
 * Ensure Cron#next_time happens in cron's time zone, gh-12
 
