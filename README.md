@@ -34,8 +34,8 @@ The intersection of those two projects is where fugit is born:
 * [sideqik-cron](https://github.com/ondrejbartas/sidekiq-cron) - recent versions of Sideqik-Cron use fugit to parse cron strings
 * [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) -
 * [flor](https://github.com/floraison/flor) - used in the [cron](https://github.com/floraison/flor/blob/master/doc/procedures/cron.md) procedure
+* [que-scheduler](https://github.com/hlascelles/que-scheduler) - a reliable job scheduler for [que](https://github.com/chanks/que)
 * ...
-
 
 ## `Fugit.parse(s)`
 
