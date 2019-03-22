@@ -1,7 +1,9 @@
 
+*.swp
 .vimrc
 .viminfo
 .vimgrep
+.vimspec
 
 pkg/
 
