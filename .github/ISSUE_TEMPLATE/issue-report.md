@@ -7,10 +7,12 @@ assignees: ''
 
 ---
 
-**Describe the issue**
+## Issue description
+
 A clear and concise description of what the issue is.
 
-**To Reproduce**
+## How to reproduce
+
 The simplest piece of code that reproduces the issue, for example:
 ```ruby
 require 'fugit'
@@ -19,11 +21,13 @@ p c.previous_time
 ```
 Or else, please describe carefully what to do to see a live example of the issue.
 
-**Expected behavior**
+## Expected behaviour
+
 A clear and concise description of what you expected to happen.
 
-**Context**
-Please paste here the output of the following commands:
+## Context
+
+Please replace the content of this section with the output of the following commands:
 ```
 uname -a
 bundle exec ruby -v
@@ -42,5 +46,6 @@ ruby 2.3.7p456 (2018-03-28 revision 63024) [x86_64-darwin17]
 ```
 )
 
-**Additional context**
+## Additional context
+
 Add any other context about the problem here.
