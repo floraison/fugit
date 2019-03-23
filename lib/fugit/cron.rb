@@ -109,7 +109,7 @@ module Fugit
 
       def dec_sec(seconds)
         target = seconds.reverse.find { |s| s < @t.sec } || seconds.last
-        inc(target - @t.sec)
+        inc(target - @t.sec - (@t.sec > target ? 0 : 60))
       end
     end
 
@@ -215,10 +215,9 @@ module Fugit
     def previous_time(from=::EtOrbi::EoTime.now)
 
       from = ::EtOrbi.make_time(from)
-      ifrom = from.to_i
 
       i = 0
-      t = TimeCursor.new(from.translate(@timezone))
+      t = TimeCursor.new((from - 1).translate(@timezone))
 
       loop do
 
@@ -227,7 +226,6 @@ module Fugit
           "please fill an issue at https://git.io/fjJCQ"
         ) if (i += 1) > MAX_ITERATION_COUNT
 
-        (ifrom == t.to_i) && (t.inc(-1); next)
         month_match?(t) || (t.dec_month; next)
         day_match?(t) || (t.dec_day; next)
         hour_match?(t) || (t.dec_hour; next)
