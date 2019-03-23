@@ -172,16 +172,14 @@ module Fugit
     def next_time(from=::EtOrbi::EoTime.now)
 
       from = ::EtOrbi.make_time(from)
-      sfrom = from.strftime('%F/%T')
+      sfrom = from.strftime('%F|%T')
       ifrom = from.to_i
 
+      i = 0
       t = TimeCursor.new(from.translate(@timezone))
         #
         # the translation occurs in the timezone of
         # this Fugit::Cron instance
-
-      i = 0
-      ti = 0
 
       loop do
 
@@ -197,7 +195,7 @@ module Fugit
         min_match?(t) || (t.inc_min; next)
         sec_match?(t) || (t.inc_sec(@seconds); next)
 
-        st = t.time.strftime('%F/%T')
+        st = t.time.strftime('%F|%T')
         (from, sfrom, ifrom = t.time, st, t.to_i; next) if st == sfrom
           #
           # when transitioning out of DST, this prevents #next_time from
