@@ -166,8 +166,8 @@ module Fugit
       hour_match?(t) && min_match?(t) && sec_match?(t)
     end
 
-    BREAKER_S = 41 * (365 + 1) * 24 * 3600
-      # 41 years and a few days... there wont'be a next or a previous time
+    MAX_ITERATION_COUNT = 1024
+      # see gh-15 and tst/iteration_count.rb
 
     def next_time(from=::EtOrbi::EoTime.now)
 
@@ -180,25 +180,17 @@ module Fugit
         # the translation occurs in the timezone of
         # this Fugit::Cron instance
 
+      i = 0
       ti = 0
-      stalling = false
 
       loop do
 
-        ti1 = t.to_i
-
         fail RuntimeError.new(
-          "loop stalled for #{@original.inspect} #next_time, breaking"
-        ) if stalling && ti == ti1
+          "too many loops for #{@original.inspect} #next_time, breaking, " +
+          "please fill an issue at https://git.io/fjJC9"
+        ) if (i += 1) > MAX_ITERATION_COUNT
 
-        stalling = (ti == ti1)
-        ti = ti1
-
-        fail RuntimeError.new(
-          "too many loops for #{@original.inspect} #next_time, breaking"
-        ) if (ti - ifrom).abs > BREAKER_S
-
-        (ifrom == ti) && (t.inc(1); next)
+        (ifrom == t.to_i) && (t.inc(1); next)
         month_match?(t) || (t.inc_month; next)
         day_match?(t) || (t.inc_day; next)
         hour_match?(t) || (t.inc_hour; next)
@@ -206,7 +198,7 @@ module Fugit
         sec_match?(t) || (t.inc_sec(@seconds); next)
 
         st = t.time.strftime('%F/%T')
-        (from, sfrom, ifrom = t.time, st, t.time.to_i; next) if st == sfrom
+        (from, sfrom, ifrom = t.time, st, t.to_i; next) if st == sfrom
           #
           # when transitioning out of DST, this prevents #next_time from
           # yielding the same literal time twice in a row, see gh-6
@@ -223,28 +215,19 @@ module Fugit
     def previous_time(from=::EtOrbi::EoTime.now)
 
       from = ::EtOrbi.make_time(from)
-      ti = 0
       ifrom = from.to_i
 
+      i = 0
       t = TimeCursor.new(from.translate(@timezone))
-      stalling = false
 
       loop do
 
-        ti1 = t.to_i
-
         fail RuntimeError.new(
-          "loop stalled for #{@original.inspect} #previous_time, breaking"
-        ) if stalling && ti == ti1
+          "too many loops for #{@original.inspect} #previous_time, breaking, " +
+          "please fill an issue at https://git.io/fjJCQ"
+        ) if (i += 1) > MAX_ITERATION_COUNT
 
-        stalling = (ti == ti1)
-        ti = ti1
-
-        fail RuntimeError.new(
-          "too many loops for #{@original.inspect} #previous_time, breaking"
-        ) if (ifrom - ti).abs > BREAKER_S
-
-        (ifrom == ti) && (t.inc(-1); next)
+        (ifrom == t.to_i) && (t.inc(-1); next)
         month_match?(t) || (t.dec_month; next)
         day_match?(t) || (t.dec_day; next)
         hour_match?(t) || (t.dec_hour; next)

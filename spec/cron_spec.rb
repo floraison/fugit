@@ -282,7 +282,8 @@ describe Fugit::Cron do
         c.next_time
       }.to raise_error(
         RuntimeError,
-        "too many loops for \"* * 1 * *\" #next_time, breaking"
+        "too many loops for \"* * 1 * *\" #next_time, breaking, " +
+        "please fill an issue at https://git.io/fjJC9"
       )
     end
 
@@ -307,7 +308,8 @@ describe Fugit::Cron do
           c.next_time
         }.to raise_error(
           RuntimeError,
-          'loop stalled for "* * 1 * *" #next_time, breaking'
+          "too many loops for \"* * 1 * *\" #next_time, breaking, " +
+          "please fill an issue at https://git.io/fjJC9"
         )
       end
     end
@@ -429,7 +431,8 @@ describe Fugit::Cron do
         c.previous_time
       }.to raise_error(
         RuntimeError,
-        "too many loops for \"* * 1 * *\" #previous_time, breaking"
+        "too many loops for \"* * 1 * *\" #previous_time, breaking, " +
+        "please fill an issue at https://git.io/fjJCQ"
       )
     end
 
@@ -454,7 +457,8 @@ describe Fugit::Cron do
           c.previous_time
         }.to raise_error(
           RuntimeError,
-          'loop stalled for "* * 1 * *" #previous_time, breaking'
+          "too many loops for \"* * 1 * *\" #previous_time, breaking, " +
+          "please fill an issue at https://git.io/fjJCQ"
         )
       end
     end
