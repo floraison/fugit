@@ -9,7 +9,7 @@ assignees: ''
 
 ## Issue description
 
-A clear and concise description of what the issue is.
+A clear and concise description of what the issue is. (There is an example of a carefully filled issue at https://github.com/floraison/fugit/issues/18)
 
 ## How to reproduce
 
