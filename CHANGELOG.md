@@ -2,6 +2,12 @@
 # CHANGELOG.md
 
 
+## fugit 1.1.9  not yet released
+
+* Simplify Cron #next_time / #previous_time breaker system, gh-15
+  Thanks @godfat and @conet
+
+
 ## fugit 1.1.8  released 2019-01-17
 
 * Ensure Cron#next_time happens in cron's time zone, gh-12
