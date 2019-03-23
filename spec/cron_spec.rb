@@ -439,10 +439,10 @@ describe Fugit::Cron do
     it 'does not go into an endless loop over time == previous_time (gh-15)' do
 
       c = Fugit.parse('10 * * * * *')
-      t = c.previous_time.to_f# + 0.123 (some float x so that 0.0 <= x < 1.0)
+      t = c.previous_time.to_f# + 0.123 #(some float x so that 0.0 <= x < 1.0)
 
       expect(
-        c.previous_time(Time.at(t - 1)).to_i
+        c.previous_time(Time.at(t)).to_i
       ).to eq(
         t.to_i - 60
       )
