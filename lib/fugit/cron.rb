@@ -64,7 +64,8 @@ module Fugit
 
     class TimeCursor
 
-      def initialize(t)
+      def initialize(cron, t)
+        @cron = cron
         @t = t.is_a?(TimeCursor) ? t.time : t
         @t.seconds = @t.seconds.to_i
       end
@@ -92,11 +93,11 @@ module Fugit
       def inc_hour; inc((60 - @t.min) * 60 - @t.sec); end
       def inc_min; inc(60 - @t.sec); end
 
-      def inc_sec(seconds)
-        if sec = seconds.find { |s| s > @t.sec }
+      def inc_sec
+        if sec = @cron.seconds.find { |s| s > @t.sec }
           inc(sec - @t.sec)
         else
-          inc(60 - @t.sec + seconds.first)
+          inc(60 - @t.sec + @cron.seconds.first)
         end
       end
 
@@ -107,8 +108,10 @@ module Fugit
       def dec_hour; dec(@t.min * 60 + @t.sec + 1); end
       def dec_min; dec(@t.sec + 1); end
 
-      def dec_sec(seconds)
-        target = seconds.reverse.find { |s| s < @t.sec } || seconds.last
+      def dec_sec
+        target =
+          @cron.seconds.reverse.find { |s| s < @t.sec } ||
+          @cron.seconds.last
         inc(target - @t.sec - (@t.sec > target ? 0 : 60))
       end
     end
@@ -140,7 +143,7 @@ module Fugit
 
       return true if @monthdays.nil?
 
-      last = (TimeCursor.new(nt).inc_month.time - 24 * 3600).day + 1
+      last = (TimeCursor.new(self, nt).inc_month.time - 24 * 3600).day + 1
 
       @monthdays
         .collect { |d| d < 1 ? last + d : d }
@@ -176,7 +179,7 @@ module Fugit
       ifrom = from.to_i
 
       i = 0
-      t = TimeCursor.new(from.translate(@timezone))
+      t = TimeCursor.new(self, from.translate(@timezone))
         #
         # the translation occurs in the timezone of
         # this Fugit::Cron instance
@@ -193,7 +196,7 @@ module Fugit
         day_match?(t) || (t.inc_day; next)
         hour_match?(t) || (t.inc_hour; next)
         min_match?(t) || (t.inc_min; next)
-        sec_match?(t) || (t.inc_sec(@seconds); next)
+        sec_match?(t) || (t.inc_sec; next)
 
         st = t.time.strftime('%F|%T')
         (from, sfrom, ifrom = t.time, st, t.to_i; next) if st == sfrom
@@ -215,7 +218,7 @@ module Fugit
       from = ::EtOrbi.make_time(from)
 
       i = 0
-      t = TimeCursor.new((from - 1).translate(@timezone))
+      t = TimeCursor.new(self, (from - 1).translate(@timezone))
 
       loop do
 
@@ -228,7 +231,7 @@ module Fugit
         day_match?(t) || (t.dec_day; next)
         hour_match?(t) || (t.dec_hour; next)
         min_match?(t) || (t.dec_min; next)
-        sec_match?(t) || (t.dec_sec(@seconds); next)
+        sec_match?(t) || (t.dec_sec; next)
         break
       end
 
