@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Cristian Oneț https://githbu.com/conet #previous_time vs 1/-1 endless loop #15
 * Wenhui Wang https://github.com/w11th #next_time vs Chronic+ActiveSupport #11
 * Lin-Jen Shin https://github.com/godfat #next_time untamed loop, #13
 * Nils Mueller https://github.com/Tolsto missing Olson timezone names, #9
@@ -17,5 +18,5 @@
 As fugit originates in rufus-scheduler, many thanks to all the
 rufus-scheduler contributors and people who gave feedback.
 
-https://github.com/jmettraux/rufus-scheduler/blob/master/CREDITS.txt
+https://github.com/jmettraux/rufus-scheduler/blob/master/CREDITS.md
 
