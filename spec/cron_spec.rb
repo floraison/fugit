@@ -82,6 +82,8 @@ describe Fugit::Cron do
       #
     [ '0 8 L * *',
       '2018-06-30 08:00:00', '2018-06-28 18:00:00', 'Europe/Berlin' ],
+
+    [ '0 9 29 feb *', '2016-02-29 09:00', '2016-01-23' ], # gh-18 (mirror #prev)
   ]
 
   describe '#next_time' do
@@ -395,6 +397,8 @@ describe Fugit::Cron do
 
     [ '0 0 * * mon#2,tue', '2017-01-09', '2017-01-09 12:00' ],
     [ '0 0 * * mon#2,tue', '2017-01-03', '2017-01-04' ],
+
+    [ '0 9 29 feb *', '2016-02-29 09:00', '2019-03-23' ], # gh-18
   ]
 
   describe '#previous_time' do

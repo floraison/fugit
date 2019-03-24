@@ -89,9 +89,16 @@ module Fugit
         @t = ::EtOrbi.make(y, m, @t.zone)
         self
       end
-      def inc_day; inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec); end
-      def inc_hour; inc((60 - @t.min) * 60 - @t.sec); end
-      def inc_min; inc(60 - @t.sec); end
+
+      def inc_day
+        inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec)
+      end
+      def inc_hour
+        inc((60 - @t.min) * 60 - @t.sec)
+      end
+      def inc_min
+        inc(60 - @t.sec)
+      end
 
       def inc_sec
         if sec = @cron.seconds.find { |s| s > @t.sec }
@@ -102,11 +109,23 @@ module Fugit
       end
 
       def dec_month
-        dec(@t.day * 24 * 3600 + @t.hour * 3600 + @t.min * 60 + @t.sec + 1)
+
+        #dec(@t.day * 24 * 3600 + @t.hour * 3600 + @t.min * 60 + @t.sec + 1)
+          #
+          # gh-18, so that '0 9 29 feb *' doesn't get skipped (over and over)
+          #
+        dec(@t.day * 24 * 3600 + 1)
       end
-      def dec_day; dec(@t.hour * 3600 + @t.min * 60 + @t.sec + 1); end
-      def dec_hour; dec(@t.min * 60 + @t.sec + 1); end
-      def dec_min; dec(@t.sec + 1); end
+
+      def dec_day
+        dec(@t.hour * 3600 + @t.min * 60 + @t.sec + 1)
+      end
+      def dec_hour
+        dec(@t.min * 60 + @t.sec + 1)
+      end
+      def dec_min
+        dec(@t.sec + 1)
+      end
 
       def dec_sec
         target =
@@ -169,8 +188,14 @@ module Fugit
       hour_match?(t) && min_match?(t) && sec_match?(t)
     end
 
-    MAX_ITERATION_COUNT = 1024
-      # see gh-15 and tst/iteration_count.rb
+    MAX_ITERATION_COUNT = 2048
+      #
+      # See gh-15 and tst/iteration_count.rb
+      #
+      # Initially set to 1024 after seeing the worst case for #next_time
+      # at 167 iterations, I placed it at 2048 after experimenting with
+      # gh-18 and noticing some > 1024 for some experiments. 2048 should
+      # be ok.
 
     def next_time(from=::EtOrbi::EoTime.now)
 
