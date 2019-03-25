@@ -2,8 +2,10 @@
 # CHANGELOG.md
 
 
-## fugit 1.1.9  not yet released
+## fugit 1.1.9  released 2019-03-26
 
+* Fix cron `"0 9 29 feb *"` endless loop, gh-18
+* Fix cron endless loop when #previous_time(t) and t matches, gh-15
 * Simplify Cron #next_time / #previous_time breaker system, gh-15
   Thanks @godfat and @conet
 
