@@ -527,19 +527,13 @@ module Fugit
 
       def slash(i); rex(:slash, i, /\/\d\d?/); end
 
-      def core_mos(i); rex(:mos, i, /[0-5]?\d/); end # min or sec
-      def core_hou(i); rex(:hou, i, /(2[0-4]|[01]?[0-9])/); end
-      def core_dom(i); rex(:dom, i, /(-?(3[01]|[12][0-9]|0?[1-9])|last|l)/i); end
-      def core_mon(i); rex(:mon, i, /(1[0-2]|0?[1-9]|#{MONTHS[1..-1].join('|')})/i); end
-      def core_dow(i); rex(:dow, i, /([0-7]|#{WEEKDS.join('|')})/i); end
+      def mos(i); rex(:mos, i, /[0-5]?\d/); end # min or sec
+      def hou(i); rex(:hou, i, /(2[0-4]|[01]?[0-9])/); end
+      def dom(i); rex(:dom, i, /(-?(3[01]|[12][0-9]|0?[1-9])|last|l)/i); end
+      def mon(i); rex(:mon, i, /(1[0-2]|0?[1-9]|#{MONTHS[1..-1].join('|')})/i); end
+      def dow(i); rex(:dow, i, /([0-7]|#{WEEKDS.join('|')})/i); end
 
       def dow_hash(i); rex(:hash, i, /#(-?[1-5]|last|l)/i); end
-
-      def mos(i); core_mos(i); end
-      def hou(i); core_hou(i); end
-      def dom(i); core_dom(i); end
-      def mon(i); core_mon(i); end
-      def dow(i); core_dow(i); end
 
       def _mos(i); seq(nil, i, :hyphen, :mos); end
       def _hou(i); seq(nil, i, :hyphen, :hou); end
@@ -568,7 +562,7 @@ module Fugit
       def sorws_mon(i); seq(:elt, i, :sor_mon, :slash, '?'); end
       def sorws_dow(i); seq(:elt, i, :sor_dow, :slash, '?'); end
 
-      def h_dow(i); seq(:elt, i, :core_dow, :dow_hash); end
+      def h_dow(i); seq(:elt, i, :dow, :dow_hash); end
 
       def _sorws_dow(i); alt(nil, i, :h_dow, :sorws_dow); end
 
