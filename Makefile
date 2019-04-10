@@ -11,6 +11,9 @@ count_lines:
 	find spec -name "*_spec.rb" | xargs cat | ruby -e "p STDIN.readlines.count { |l| l = l.strip; l[0, 1] != '#' && l != '' }"
 cl: count_lines
 
+scan:
+	scan lib/**/*.rb
+
 gemspec_validate:
 	@echo "---"
 	ruby -e "s = eval(File.read(Dir['*.gemspec'].first)); p s.validate"
@@ -48,5 +51,5 @@ tzones:
 #	bundle exec ruby -r tzinfo -r tzinfo-data -e "::TZInfo::Timezone.all.each { |tz| p tz.name }"
 
 
-.PHONY: count_lines gemspec_validate name cw build push spec info tzones
+.PHONY: count_lines scan gemspec_validate name cw build push spec info tzones
 
