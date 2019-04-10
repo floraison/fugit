@@ -11,8 +11,7 @@ module Fugit
       '@weekly' => '0 0 * * 0',
       '@daily' => '0 0 * * *',
       '@midnight' => '0 0 * * *',
-      '@hourly' => '0 * * * *',
-    }
+      '@hourly' => '0 * * * *' }
 
     attr_reader :original, :zone
     attr_reader :seconds, :minutes, :hours, :monthdays, :months, :weekdays, :timezone
@@ -49,17 +48,15 @@ module Fugit
 
     def to_cron_s
 
-      @cron_s ||= begin
-        [
-          @seconds == [ 0 ] ? nil : (@seconds || [ '*' ]).join(','),
-          (@minutes || [ '*' ]).join(','),
-          (@hours || [ '*' ]).join(','),
-          (@monthdays || [ '*' ]).join(','),
-          (@months || [ '*' ]).join(','),
-          (@weekdays || [ [ '*' ] ]).map { |d| d.compact.join('#') }.join(','),
-          @timezone ? @timezone.name : nil
-        ].compact.join(' ')
-      end
+      @cron_s ||= [
+        @seconds == [ 0 ] ? nil : (@seconds || [ '*' ]).join(','),
+        (@minutes || [ '*' ]).join(','),
+        (@hours || [ '*' ]).join(','),
+        (@monthdays || [ '*' ]).join(','),
+        (@months || [ '*' ]).join(','),
+        (@weekdays || [ [ '*' ] ]).map { |d| d.compact.join('#') }.join(','),
+        @timezone ? @timezone.name : nil
+          ].compact.join(' ')
     end
 
     class TimeCursor
