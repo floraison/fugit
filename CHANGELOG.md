@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.1.10 not yet released
+
+
 ## fugit 1.1.9  released 2019-03-26
 
 * Fix cron `"0 9 29 feb *"` endless loop, gh-18
