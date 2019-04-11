@@ -4,6 +4,8 @@
 
 ## fugit 1.1.10 not yet released
 
+* Simplify cron parser
+
 
 ## fugit 1.1.9  released 2019-03-26
 
