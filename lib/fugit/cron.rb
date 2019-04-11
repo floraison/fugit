@@ -484,11 +484,11 @@ module Fugit
 
       @weekdays = []
 
-      arr.each do |a, z, s, h| # a to z, slash and hash
-        if h
-          @weekdays << [ a, h ]
-        elsif s
-          ((a || 0)..(z || (a ? a : 6))).step(s < 1 ? 1 : s)
+      arr.each do |a, z, sl, ha, mo| # a to z, slash, hash, and mod
+        if ha || mo
+          @weekdays << [ a, ha || mo ]
+        elsif sl
+          ((a || 0)..(z || (a ? a : 6))).step(sl < 1 ? 1 : sl)
             .each { |i| @weekdays << [ i ] }
         elsif z
           (a..z).each { |i| @weekdays << [ i ] }
@@ -559,9 +559,12 @@ module Fugit
       def sorws_mon(i); seq(:elt, i, :sor_mon, :slash, '?'); end
       def sorws_dow(i); seq(:elt, i, :sor_dow, :slash, '?'); end
 
+      def mod(i); rex(:mod, i, /%\d+(\+\d+)?/); end
+
+      def mod_dow(i); seq(:elt, i, :dow, :mod); end
       def h_dow(i); seq(:elt, i, :dow, :dow_hash); end
 
-      def _sorws_dow(i); alt(nil, i, :h_dow, :sorws_dow); end
+      def _sorws_dow(i); alt(nil, i, :h_dow, :mod_dow, :sorws_dow); end
 
       def list_sec(i); jseq(:sec, i, :sorws_mos, :comma); end
       def list_min(i); jseq(:min, i, :sorws_mos, :comma); end
@@ -598,7 +601,7 @@ module Fugit
 
       # rewriting the parsed tree
 
-      def to_i(k, t)
+      def rewrite_bound(k, t)
 
         s = t.string.downcase
 
@@ -608,23 +611,38 @@ module Fugit
         s.to_i
       end
 
+      def rewrite_mod(k, t)
+
+        mod, plus = t.string
+          .split(/[%+]/).reject(&:empty?).collect(&:to_i)
+
+        [ mod, plus || 0 ]
+      end
+
       def rewrite_elt(k, t)
 
-        (a, z), others = t
-          .subgather(nil)
-          .partition { |tt| ![ :hash, :slash ].include?(tt.name) }
-        s = others.find { |tt| tt.name == :slash }
-        h = others.find { |tt| tt.name == :hash }
+        at, zt, slt, hat, mot = nil; t.subgather(nil).each do |tt|
+          case tt.name
+          when :slash then slt = tt
+          when :hash then hat = tt
+          when :mod then mot = tt
+          else if at; zt ||= tt; else; at = tt; end
+          end
+        end
 
-        h = h ? h.string[1..-1] : nil
-        h = -1 if h && h.upcase[0, 1] == 'L'
-        h = h.to_i if h
+        sl = slt ? slt.string[1..-1].to_i : nil
 
-        a = a ? to_i(k, a) : nil
-        z = z ? to_i(k, z) : nil
+        ha = hat ? hat.string[1..-1] : nil
+        ha = -1 if ha && ha.upcase[0, 1] == 'L'
+        ha = ha.to_i if ha
+
+        mo = mot ? rewrite_mod(k, mot) : nil
+
+        a = at ? rewrite_bound(k, at) : nil
+        z = zt ? rewrite_bound(k, zt) : nil
         a, z = z, a if a && z && a > z
 
-        [ a, z, s ? s.string[1..-1].to_i : nil, h ]
+        [ a, z, sl, ha, mo ]
       end
 
       def rewrite_entry(t)

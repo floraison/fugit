@@ -757,6 +757,17 @@ describe Fugit::Cron do
         end
       end
     end
+
+#    it 'parses day of week modulos' do
+#
+#      c = Fugit::Cron.parse('* * * * sun#L')
+#pp c
+#p c.to_h
+#      c = Fugit::Cron.parse('* * * * sun%2+1')
+#pp c
+#      c = Fugit::Cron.parse('* * * * sun%2')
+#pp c
+#    end
   end
 
   describe '.do_parse' do
