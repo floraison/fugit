@@ -70,7 +70,7 @@ module Fugit
       def time; @t; end
       def to_i; @t.to_i; end
 
-      %w[ year month day wday hour min sec wday_in_month ]
+      %w[ year month day wday hour min sec wday_in_month rweek rday ]
         .collect(&:to_sym).each { |k| define_method(k) { @t.send(k) } }
 
       def inc(i)
@@ -137,14 +137,7 @@ module Fugit
     def min_match?(nt); ( ! @minutes) || @minutes.include?(nt.min); end
     def sec_match?(nt); ( ! @seconds) || @seconds.include?(nt.sec); end
 
-    def weekday_match?(nt)
-
-      return true if @weekdays.nil?
-
-      wd, hsh = @weekdays.find { |d, _| d == nt.wday }
-
-      return false unless wd
-      return true if hsh.nil?
+    def weekday_hash_match?(nt, hsh)
 
       phsh, nhsh = nt.wday_in_month
 
@@ -152,6 +145,27 @@ module Fugit
         hsh == phsh # positive wday, from the beginning of the month
       else
         hsh == nhsh # negative wday, from the end of the month, -1 == last
+      end
+    end
+
+    def weekday_modulo_match?(nt, mod)
+
+      nt.rweek % mod[0] == mod[1]
+    end
+
+    def weekday_match?(nt)
+
+      return true if @weekdays.nil?
+
+      wd, hom = @weekdays.find { |d, _| d == nt.wday }
+
+      return false unless wd
+      return true if hom.nil?
+
+      if hom.is_a?(Array)
+        weekday_modulo_match?(nt, hom)
+      else
+        weekday_hash_match?(nt, hom)
       end
     end
 
