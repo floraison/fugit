@@ -758,16 +758,21 @@ describe Fugit::Cron do
       end
     end
 
-#    it 'parses day of week modulos' do
-#
-#      c = Fugit::Cron.parse('* * * * sun#L')
-#pp c
-#p c.to_h
-#      c = Fugit::Cron.parse('* * * * sun%2+1')
-#pp c
-#      c = Fugit::Cron.parse('* * * * sun%2')
-#pp c
-#    end
+    {
+
+      '* * * * sun#L' => [ [ 0, -1 ] ],
+      '* * * * sun%2' => [ [ 0, [ 2, 0 ] ] ],
+      '* * * * sun%2+1' => [ [ 0, [ 2, 1 ] ] ],
+
+    }.each do |cron, weekdays|
+
+      it "parses #{cron.inspect} weekdays to #{weekdays.inspect}" do
+
+        c = Fugit::Cron.parse(cron)
+
+        expect(c.weekdays).to eq(weekdays)
+      end
+    end
   end
 
   describe '.do_parse' do
