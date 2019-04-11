@@ -104,7 +104,7 @@ Example of cron strings understood by fugit:
 # and more...
 ```
 
-### the module extension
+### the modulo extension
 
 Fugit, since 1.1.10, also understands cron strings like "`9 0 * * sun%2`" which can be read as "every other Sunday at 9am".
 
