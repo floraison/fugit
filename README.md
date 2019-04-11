@@ -104,6 +104,31 @@ Example of cron strings understood by fugit:
 # and more...
 ```
 
+### the module extension
+
+Fugit, since 1.1.10, also understands cron strings like "`9 0 * * sun%2`" which can be read as "every other Sunday at 9am".
+
+For odd Sundays, one can write `9 0 * * sun%2+1`.
+
+It can be combined, as in `9 0 * * sun%2,tue%3+2`
+
+But what does it references to? It starts at 1 on 2019-01-01.
+
+```ruby
+require 'et-orbi' # >= 1.1.8
+
+# the reference
+p EtOrbi.parse('2019-01-01').wday       # => 2
+p EtOrbi.parse('2019-01-01').rweek      # => 1
+p EtOrbi.parse('2019-01-01').rweek % 2  # => 1
+
+# today (as of this coding...)
+p EtOrbi.parse('2019-04-11').wday       # => 4
+p EtOrbi.parse('2019-04-11').rweek      # => 15
+p EtOrbi.parse('2019-04-11').rweek % 2  # => 1
+```
+
+
 ## `Fugit::Duration`
 
 A class `Fugit::Duration` to parse duration strings (vanilla [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) ones and [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) ones).

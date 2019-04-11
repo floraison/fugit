@@ -4,6 +4,7 @@
 
 ## fugit 1.1.10 not yet released
 
+* Implement `"0 9 * * sun%2+1"`
 * Simplify cron parser
 
 
