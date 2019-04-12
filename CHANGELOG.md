@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.1.10 not yet released
+## fugit 1.1.10 released 2019-04-12
 
 * Implement `"0 9 * * sun%2+1"`
 * Simplify cron parser
