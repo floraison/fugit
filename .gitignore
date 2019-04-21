@@ -4,6 +4,7 @@
 .viminfo
 .vimgrep
 .vimspec
+.vimmarks
 
 pkg/
 
