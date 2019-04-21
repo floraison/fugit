@@ -567,25 +567,32 @@ module Fugit
       def sor_dow(i); alt(nil, i, :star, :r_dow); end
 
       # sorws: star or range with[out] slash
-      def sorws_mos(i); seq(:elt, i, :sor_mos, :slash, '?'); end
-      def sorws_hou(i); seq(:elt, i, :sor_hou, :slash, '?'); end
-      def sorws_dom(i); seq(:elt, i, :sor_dom, :slash, '?'); end
-      def sorws_mon(i); seq(:elt, i, :sor_mon, :slash, '?'); end
-      def sorws_dow(i); seq(:elt, i, :sor_dow, :slash, '?'); end
+      def sorws_mos(i); seq(nil, i, :sor_mos, :slash, '?'); end
+      def sorws_hou(i); seq(nil, i, :sor_hou, :slash, '?'); end
+      def sorws_dom(i); seq(nil, i, :sor_dom, :slash, '?'); end
+      def sorws_mon(i); seq(nil, i, :sor_mon, :slash, '?'); end
+      def sorws_dow(i); seq(nil, i, :sor_dow, :slash, '?'); end
+
+      # ssws: slash or sorws
+      def mos_elt(i); alt(:elt, i, :slash, :sorws_mos); end
+      def hou_elt(i); alt(:elt, i, :slash, :sorws_hou); end
+      def dom_elt(i); alt(:elt, i, :slash, :sorws_dom); end
+      def mon_elt(i); alt(:elt, i, :slash, :sorws_mon); end
+      def dow_elt(i); alt(:elt, i, :slash, :sorws_dow); end
 
       def mod(i); rex(:mod, i, /%\d+(\+\d+)?/); end
 
       def mod_dow(i); seq(:elt, i, :dow, :mod); end
       def h_dow(i); seq(:elt, i, :dow, :dow_hash); end
 
-      def _sorws_dow(i); alt(nil, i, :h_dow, :mod_dow, :sorws_dow); end
+      def dow_elt_(i); alt(nil, i, :h_dow, :mod_dow, :dow_elt); end
 
-      def list_sec(i); jseq(:sec, i, :sorws_mos, :comma); end
-      def list_min(i); jseq(:min, i, :sorws_mos, :comma); end
-      def list_hou(i); jseq(:hou, i, :sorws_hou, :comma); end
-      def list_dom(i); jseq(:dom, i, :sorws_dom, :comma); end
-      def list_mon(i); jseq(:mon, i, :sorws_mon, :comma); end
-      def list_dow(i); jseq(:dow, i, :_sorws_dow, :comma); end
+      def list_sec(i); jseq(:sec, i, :mos_elt, :comma); end
+      def list_min(i); jseq(:min, i, :mos_elt, :comma); end
+      def list_hou(i); jseq(:hou, i, :hou_elt, :comma); end
+      def list_dom(i); jseq(:dom, i, :dom_elt, :comma); end
+      def list_mon(i); jseq(:mon, i, :mon_elt, :comma); end
+      def list_dow(i); jseq(:dow, i, :dow_elt_, :comma); end
 
       def lsec_(i); seq(nil, i, :list_sec, :s); end
       def lmin_(i); seq(nil, i, :list_min, :s); end

@@ -4,6 +4,8 @@
 
 ## fugit 1.1.11 not yet released
 
+* Accept "/15 * * * *" et al, gh-19 and resque/resque-scheduler#649
+
 
 ## fugit 1.1.10 released 2019-04-12
 
