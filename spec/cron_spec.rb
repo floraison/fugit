@@ -296,6 +296,7 @@ describe Fugit::Cron do
       }.to raise_error(
         RuntimeError,
         "too many loops for \"* * 1 * *\" #next_time, breaking, " +
+        "cron expression most likely invalid (Feb 30th like?), " +
         "please fill an issue at https://git.io/fjJC9"
       )
     end
@@ -322,6 +323,7 @@ describe Fugit::Cron do
         }.to raise_error(
           RuntimeError,
           "too many loops for \"* * 1 * *\" #next_time, breaking, " +
+          "cron expression most likely invalid (Feb 30th like?), " +
           "please fill an issue at https://git.io/fjJC9"
         )
       end
@@ -447,6 +449,7 @@ describe Fugit::Cron do
       }.to raise_error(
         RuntimeError,
         "too many loops for \"* * 1 * *\" #previous_time, breaking, " +
+        "cron expression most likely invalid (Feb 30th like?), " +
         "please fill an issue at https://git.io/fjJCQ"
       )
     end
@@ -485,6 +488,7 @@ describe Fugit::Cron do
         }.to raise_error(
           RuntimeError,
           "too many loops for \"* * 1 * *\" #previous_time, breaking, " +
+          "cron expression most likely invalid (Feb 30th like?), " +
           "please fill an issue at https://git.io/fjJCQ"
         )
       end

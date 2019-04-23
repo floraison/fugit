@@ -224,6 +224,7 @@ module Fugit
 
         fail RuntimeError.new(
           "too many loops for #{@original.inspect} #next_time, breaking, " +
+          "cron expression most likely invalid (Feb 30th like?), " +
           "please fill an issue at https://git.io/fjJC9"
         ) if (i += 1) > MAX_ITERATION_COUNT
 
@@ -260,6 +261,7 @@ module Fugit
 
         fail RuntimeError.new(
           "too many loops for #{@original.inspect} #previous_time, breaking, " +
+          "cron expression most likely invalid (Feb 30th like?), " +
           "please fill an issue at https://git.io/fjJCQ"
         ) if (i += 1) > MAX_ITERATION_COUNT
 
