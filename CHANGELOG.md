@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.2.1 not yet released
+
+
 ## fugit 1.2.0 released 2019-04-22
 
 * Accept "/15 * * * *" et al, gh-19 and resque/resque-scheduler#649
