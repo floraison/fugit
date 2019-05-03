@@ -2,7 +2,9 @@
 # CHANGELOG.md
 
 
-## fugit 1.2.1 not yet released
+## fugit 1.2.1 released 2019-05-04
+
+* Return nil when parsing a cron with February 30 and friend, gh-21
 
 
 ## fugit 1.2.0 released 2019-04-22

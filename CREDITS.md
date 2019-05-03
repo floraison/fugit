@@ -1,12 +1,13 @@
 
 # fugit credits
 
-* Cristian Oneț https://githbu.com/conet #previous_time vs 1/-1 endless loop #15
-* Wenhui Wang https://github.com/w11th #next_time vs Chronic+ActiveSupport #11
-* Lin-Jen Shin https://github.com/godfat #next_time untamed loop, #13
-* Nils Mueller https://github.com/Tolsto missing Olson timezone names, #9
-* jakemack https://github.com/jakemack issue when going out of DST, #6
-* Cristian Bica https://github.com/cristianbica Nat improvements, #7
+* Fabio Pitino https://github.com/hspazio nil on February 30 gh-21
+* Cristian Oneț https://github.com/conet #previous_time vs 1/-1 endless loop gh-15
+* Wenhui Wang https://github.com/w11th #next_time vs Chronic+ActiveSupport gh-11
+* Lin-Jen Shin https://github.com/godfat #next_time untamed loop gh-13
+* Nils Mueller https://github.com/Tolsto missing Olson timezone names gh-9
+* jakemack https://github.com/jakemack issue when going out of DST gh-6
+* Cristian Bica https://github.com/cristianbica Nat improvements gh-7
 * Utilum https://github.com/utilum silenced Ruby warnings
 * Tero Marttila https://github.com/SpComb added missing Cron#seconds
 * Harry Lascelles https://github.com/hlascelles timezone reminder and more
