@@ -402,15 +402,20 @@ module Fugit
 
     protected
 
-    def monthdays_valid?
+    def compact_month_days
 
       return true if @months == nil || @monthdays == nil
 
-      @months.each { |m|
-        @monthdays.each { |d|
-          return true unless d > MAXDAYS[m] } }
+      ms, ds =
+        @months.inject([ [], [] ]) { |a, m|
+          @monthdays.each { |d|
+            next if d > MAXDAYS[m]
+            a[0] << m; a[1] << d }
+          a }
+      @months = ms.uniq
+      @monthdays = ds.uniq
 
-      false
+      @months.any? && @monthdays.any?
     end
 
     def rough_days
@@ -453,7 +458,7 @@ module Fugit
       determine_weekdays(h[:dow])
       determine_timezone(h[:tz])
 
-      return nil unless monthdays_valid?
+      return nil unless compact_month_days
 
       self
     end
