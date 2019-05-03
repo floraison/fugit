@@ -12,9 +12,13 @@ module Fugit
       '@daily' => '0 0 * * *',
       '@midnight' => '0 0 * * *',
       '@hourly' => '0 * * * *' }
+    MAXDAYS = [
+      nil, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ]
 
-    attr_reader :original, :zone
-    attr_reader :seconds, :minutes, :hours, :monthdays, :months, :weekdays, :timezone
+    attr_reader(
+      :original, :zone)
+    attr_reader(
+      :seconds, :minutes, :hours, :monthdays, :months, :weekdays, :timezone)
 
     class << self
 
@@ -398,6 +402,21 @@ module Fugit
 
     protected
 
+    def monthdays_valid?
+
+#p @months
+#p @monthdays
+      return true if @months == nil || @monthdays == nil
+
+      @months.each { |m|
+        return true if m.is_a?(String) # FIXME
+        @monthdays.each { |d|
+          return true if d.is_a?(String) # FIXME
+          return true unless d > MAXDAYS[m] } }
+
+      false
+    end
+
     def rough_days
 
       return nil if @weekdays == nil && @monthdays == nil
@@ -437,6 +456,8 @@ module Fugit
       determine_months(h[:mon])
       determine_weekdays(h[:dow])
       determine_timezone(h[:tz])
+
+      return nil unless monthdays_valid?
 
       self
     end

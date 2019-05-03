@@ -778,19 +778,56 @@ describe Fugit::Cron do
       end
     end
 
-    {
+    context 'impossible days' do
 
-      '* * * * sun#L' => [ [ 0, -1 ] ],
-      '* * * * sun%2' => [ [ 0, [ 2, 0 ] ] ],
-      '* * * * sun%2+1' => [ [ 0, [ 2, 1 ] ] ],
+      {
+        '* * 32 1 *' => nil,
 
-    }.each do |cron, weekdays|
+        '* * 30 2 *' => nil,
+        '* * 30,31 2 *' => nil,
+        '* * 31 4 *' => nil,
+        '* * 31 6 *' => nil,
+        '* * 31 9 *' => nil,
+        '* * 31 11 *' => nil,
 
-      it "parses #{cron.inspect} weekdays to #{weekdays.inspect}" do
+        '* * 30,31 2,3 *' => [ [ 2, 3 ], [ 30, 31 ] ],
 
-        c = Fugit::Cron.parse(cron)
+      }.each do |cron, modays|
 
-        expect(c.weekdays).to eq(weekdays)
+        if modays
+
+          it "parses #{cron.inspect} months/monthdays to #{modays.inspect}" do
+
+            c = Fugit::Cron.parse(cron)
+
+            expect([ c.months, c.monthdays ]).to eq(modays)
+          end
+
+        else
+
+          it "returns nil for #{cron.inspect}" do
+
+            expect(Fugit::Cron.parse(cron)).to eq(nil)
+          end
+        end
+      end
+    end
+
+    context 'weekdays' do
+
+      {
+        '* * * * sun#L' => [ [ 0, -1 ] ],
+        '* * * * sun%2' => [ [ 0, [ 2, 0 ] ] ],
+        '* * * * sun%2+1' => [ [ 0, [ 2, 1 ] ] ],
+
+      }.each do |cron, weekdays|
+
+        it "parses #{cron.inspect} weekdays to #{weekdays.inspect}" do
+
+          c = Fugit::Cron.parse(cron)
+
+          expect(c.weekdays).to eq(weekdays)
+        end
       end
     end
   end
