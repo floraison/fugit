@@ -32,20 +32,21 @@ module Fugit
 
       def parse_cron(a)
 
-        h = { min: nil, hou: [], dom: [ nil ], mon: [ nil ], dow: [ nil ] }
+        h = { min: nil, hou: [], dom: nil, mon: nil, dow: nil }
+        hkeys = h.keys
 
         a.each do |key, val|
           if key == :biz_day
-            h[:dow] = [ [ 1, 5 ] ]
+            (h[:dow] ||= []) << '1-5'
           elsif key == :simple_hour || key == :numeral_hour
-            (h[:hou] ||= []) << [ val ]
+            h[:hou] << val
           elsif key == :digital_hour
-            h[:hou] = [ val[0, 1] ]
-            h[:min] = [ val[1, 1] ]
+            h[:hou] = [ val[0] ]
+            h[:min] = [ val[1] ]
           elsif key == :name_day
-            (h[:dow] ||= []) << [ val ]
+            (h[:dow] ||= []) << val
           elsif key == :flag && val == 'pm' && h[:hou]
-            h[:hou][-1] =  [ h[:hou][-1].first + 12 ]
+            h[:hou][-1] = h[:hou][-1] + 12
           elsif key == :tz
             h[:tz] = val
           elsif key == :duration
@@ -53,9 +54,18 @@ module Fugit
           end
         end
         h[:min] ||= [ 0 ]
-        h[:dow].sort_by! { |d, _| d || 0 }
+        h[:hou].sort! if h[:hou]
+        h[:dow].sort! if h[:dow]
 
-        Fugit::Cron.allocate.send(:init, nil, h)
+        a = hkeys
+          .collect { |k|
+            v = h[k]
+            (v && v.any?) ? v.collect(&:to_s).join(',') : '*' }
+        a.insert(0, h[:sec]) if h[:sec]
+        a << h[:tz].first if h[:tz]
+        s = a.join(' ')
+
+        Fugit::Cron.parse(s)
       end
 
       def process_duration(h, interval, value)

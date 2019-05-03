@@ -404,14 +404,10 @@ module Fugit
 
     def monthdays_valid?
 
-#p @months
-#p @monthdays
       return true if @months == nil || @monthdays == nil
 
       @months.each { |m|
-        return true if m.is_a?(String) # FIXME
         @monthdays.each { |d|
-          return true if d.is_a?(String) # FIXME
           return true unless d > MAXDAYS[m] } }
 
       false
