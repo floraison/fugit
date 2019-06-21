@@ -11,7 +11,8 @@ rvm:
   - 2.5.1
   #- jruby-19mode # Travis broken September 2017
   #- jruby-20mode # Travis broken September 2017
-  - jruby-9.1.13.0
+  #- jruby-9.1.13.0
+  - jruby-9.2.5.0
 
 #matrix:
 #  include:
