@@ -87,6 +87,24 @@ describe Fugit do
       expect(Fugit.parse(true)).to eq(nil)
       expect(Fugit.parse('I have a pen, I have an apple, pen apple')).to eq(nil)
     end
+
+    [
+
+      'every 5 minutes',
+      'every 15 minutes',
+      'every 30 minutes',
+      'every 40 minutes',
+
+    ].each do |s|
+
+      it "uses #parse_nat for #{s.inspect}" do
+
+        o = Fugit.parse(s)
+        n = Fugit.parse_nat(s)
+
+        expect(o).to eq(n)
+      end
+    end
   end
 
   describe '.do_parse' do

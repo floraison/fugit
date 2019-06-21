@@ -21,8 +21,8 @@ module Fugit
 
       (opts[:cron] != false && parse_cron(s)) ||
       (opts[:duration] != false && parse_duration(s)) ||
-      (opts[:at] != false && parse_at(s)) ||
       (opts[:nat] != false && parse_nat(s)) ||
+      (opts[:at] != false && parse_at(s)) ||
       nil
     end
 

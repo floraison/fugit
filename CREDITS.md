@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Jan Stevens https://github.com/JanStevens Fugit.parse('every 15 minutes') gh-22
 * Fabio Pitino https://github.com/hspazio nil on February 30 gh-21
 * Cristian Oneț https://github.com/conet #previous_time vs 1/-1 endless loop gh-15
 * Wenhui Wang https://github.com/w11th #next_time vs Chronic+ActiveSupport gh-11
