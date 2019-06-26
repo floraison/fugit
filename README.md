@@ -54,6 +54,39 @@ Fugit.parse('2017-12-12 UTC').class      # ==> ::EtOrbi::EoTime
 Fugit.parse('every day at noon').class   # ==> ::Fugit::Cron
 ```
 
+If fugit cannot extract a cron, duration or point in time out of the string, it will return nil.
+```ruby
+Fugit.parse('nada')
+  # ==> nil
+```
+
+## `Fugit.do_parse(s)`
+
+`Fugit.do_parse(s)` is equivalent to `Fugit.parse(s)`, but instead of returning nil, it raises an error if the given string contains no time information.
+```
+Fugit.do_parse('nada')
+  # ==> /home/jmettraux/w/fugit/lib/fugit/parse.rb:32
+  #     :in `do_parse': found no time information in "nada" (ArgumentError)
+```
+
+## parse_cron, parse_in, parse_at, parse_duration, and parse_nat
+
+```ruby
+require 'fugit'
+
+Fugit.parse_cron('0 0 1 jan *').class       # ==> ::Fugit::Cron
+Fugit.parse_duration('12y12M').class        # ==> ::Fugit::Duration
+
+Fugit.parse_at('2017-12-12').class          # ==> ::EtOrbi::EoTime
+Fugit.parse_at('2017-12-12 UTC').class      # ==> ::EtOrbi::EoTime
+
+Fugit.parse_nat('every day at noon').class  # ==> ::Fugit::Cron
+```
+
+## do_parse_cron, do_parse_in, do_parse_at, do_parse_duration, and do_parse_nat
+
+As `Fugit.parse(s)` returns nil when it doesn't grok its input, and `Fugit.do_parse(s)` fails when it doesn't grok, each of the `parse_` methods has its partner `do_parse_` method.
+
 ## `Fugit::Cron`
 
 A class `Fugit::Cron` to parse cron strings and then `#next_time` and `#previous_time` to compute the next or the previous occurrence respectively.
