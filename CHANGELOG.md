@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.2.3 not yet released
+
+
 ## fugit 1.2.2 released 2019-06-21
 
 * Fix Fugit.parse vs "every 15 minutes", gh-22
