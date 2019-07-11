@@ -41,8 +41,8 @@ module Fugit
           elsif key == :simple_hour || key == :numeral_hour
             h[:hou] << val
           elsif key == :digital_hour
-            h[:hou] = [ val[0] ]
-            h[:min] = [ val[1] ]
+            (h[:hou] ||= []) << val[0].to_i
+            (h[:min] ||= []) << val[1].to_i
           elsif key == :name_day
             (h[:dow] ||= []) << val
           elsif key == :flag && val == 'pm' && h[:hou]
@@ -54,6 +54,7 @@ module Fugit
           end
         end
         h[:min] ||= [ 0 ]
+        h[:min].uniq!
         h[:hou].sort! if h[:hou]
         h[:dow].sort! if h[:dow]
 

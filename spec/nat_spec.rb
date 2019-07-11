@@ -42,8 +42,19 @@ describe Fugit::Nat do
       'every 1 month' => '0 0 1 * *',
       'every 1 second' => '* * * * * *',
 
-#      'every 1st of the month at midnight' => '',
-#      'at 5 after 4, everyday' => '',
+      #'every 1st of the month at midnight' => '',
+      #'at 5 after 4, everyday' => '',
+
+      'every day at 6pm and 8pm' => '0 18,20 * * *',
+      'every day at 6pm and 8pm UTC' => '0 18,20 * * * UTC',
+      'every day at 18:00 and 20:00' => '0 18,20 * * *',
+      'every day at 18:00 and 20:00 UTC' => '0 18,20 * * * UTC',
+        #
+        # gh-24
+
+      #'every day at 18:15 and 20:45' => '* * * * *',
+        #
+        # gh-24 returns an array of cron instances or a multicephal cron?
 
     }.each do |nat, cron|
 
