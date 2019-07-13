@@ -21,8 +21,6 @@ describe Fugit::Nat do
       'every day at 16:30' => '30 16 * * *',
       'every day at noon' => '0 12 * * *',
       'every day at midnight' => '0 0 * * *',
-      'every tuesday and monday at 5pm' => '0 17 * * 1,2',
-      'every wed or Monday at 5pm and 11' => '0 11,17 * * 1,3',
       'every day at 5 pm on America/Bogota' => '0 17 * * * America/Bogota',
       'every day at 5 pm in Asia/Tokyo' => '0 17 * * * Asia/Tokyo',
       'every day at 5 pm in Etc/GMT-11' => '0 17 * * * Etc/GMT-11',
@@ -55,6 +53,13 @@ describe Fugit::Nat do
       #'every day at 18:15 and 20:45' => '* * * * *',
         #
         # gh-24 returns an array of cron instances or a multicephal cron?
+
+      'every tuesday and monday at 5pm' => '0 17 * * 1,2',
+      'every wed or Monday at 5pm and 11' => '0 11,17 * * 1,3',
+      'every Mon,Tue,Wed,Thu,Fri at 18:00' => '0 18 * * 1,2,3,4,5',
+      'every Mon, Tue, and Wed at 18:15' => '15 18 * * 1,2,3',
+        #
+        # gh-25
 
     }.each do |nat, cron|
 
