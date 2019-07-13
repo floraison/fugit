@@ -58,6 +58,11 @@ describe Fugit::Nat do
       'every wed or Monday at 5pm and 11' => '0 11,17 * * 1,3',
       'every Mon,Tue,Wed,Thu,Fri at 18:00' => '0 18 * * 1,2,3,4,5',
       'every Mon, Tue, and Wed at 18:15' => '15 18 * * 1,2,3',
+      'every Mon to Thu at 18:20' => '20 18 * * mon-thu',
+      'every Mon to Thu, 18:20' => '20 18 * * mon-thu',
+      'every mon-thu at 18:20' => '20 18 * * mon-thu',
+      #'every Monday to Thursday at 18:20' => '20 18 * * mon-thu',
+      #'every 2-4 at 18:21' => '21 18 * * 2-4',
         #
         # gh-25
 

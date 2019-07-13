@@ -1,7 +1,7 @@
 
 # fugit credits
 
-* Shai Coleman https://github.com/shaicoleman "every day at 18:00 and 20:00" gh-24
+* Shai Coleman https://github.com/shaicoleman parse_nat enhancements, gh-24 and gh-25
 * Jan Stevens https://github.com/JanStevens Fugit.parse('every 15 minutes') gh-22
 * Fabio Pitino https://github.com/hspazio nil on February 30 gh-21
 * Cristian Oneț https://github.com/conet #previous_time vs 1/-1 endless loop gh-15

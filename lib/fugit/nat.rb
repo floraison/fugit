@@ -45,6 +45,8 @@ module Fugit
             (h[:min] ||= []) << val[1].to_i
           elsif key == :name_day
             (h[:dow] ||= []) << val
+          elsif key == :day_range
+            (h[:dow] ||= []) << val.collect(&:to_s).join('-')
           elsif key == :flag && val == 'pm' && h[:hou]
             h[:hou][-1] = h[:hou][-1] + 12
           elsif key == :tz
@@ -138,6 +140,12 @@ module Fugit
       def biz_day(i); rex(:biz_day, i, /(biz|business|week) *day/i); end
       def name_day(i); rex(:name_day, i, /#{WEEKDAYS.reverse.join('|')}/i); end
 
+      def range_sep(i); rex(nil, i, / *- *| +to +/); end
+
+      def day_range(i)
+        seq(:day_range, i, :name_day, :range_sep, :name_day)
+      end
+
       def _tz_name(i)
         rex(nil, i, /[A-Z][a-zA-Z0-9+\-]+(\/[A-Z][a-zA-Z0-9+\-_]+){0,2}/)
       end
@@ -160,6 +168,7 @@ module Fugit
 
       def datum(i)
         alt(nil, i,
+          :day_range,
           :plain_day, :biz_day, :name_day,
           :_tz,
           :flag,
@@ -200,6 +209,8 @@ module Fugit
               [ :digital_hour, NHOURS[v] ]
             when :name_day
               [ k, WEEKDAYS.index(v[0, 3]) ]
+            when :day_range
+              [ k, tt.subgather(nil).collect { |st| st.string.downcase } ]
             else
               [ k, v ]
             end }
