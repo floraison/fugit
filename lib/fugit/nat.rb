@@ -46,7 +46,7 @@ module Fugit
           elsif key == :name_day
             (h[:dow] ||= []) << val
           elsif key == :day_range
-            (h[:dow] ||= []) << val.collect(&:to_s).join('-')
+            (h[:dow] ||= []) << val.collect { |v| v.to_s[0, 3] }.join('-')
           elsif key == :flag && val == 'pm' && h[:hou]
             h[:hou][-1] = h[:hou][-1] + 12
           elsif key == :tz
@@ -68,6 +68,7 @@ module Fugit
         a << h[:tz].first if h[:tz]
         s = a.join(' ')
 
+#p s
         Fugit::Cron.parse(s)
       end
 
