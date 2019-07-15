@@ -62,6 +62,9 @@ describe Fugit::Nat do
       'every Mon to Thu, 18:20' => '20 18 * * mon-thu',
       'every mon-thu at 18:20' => '20 18 * * mon-thu',
       'every Monday to Thursday at 18:20' => '20 18 * * mon-thu',
+      'every Monday through Friday at 19:20' => '20 19 * * mon-fri',
+      'from Monday through Friday at 19:21' => '21 19 * * mon-fri',
+      'from Monday to Friday at 19:22' => '22 19 * * mon-fri',
         #
         # gh-25
 

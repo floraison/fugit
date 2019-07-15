@@ -17,11 +17,14 @@ module Fugit
 #p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
         a = Parser.parse(s)
 
-        if a && a.include?([ :flag, 'every' ])
-          parse_cron(a)
-        else
-          nil
-        end
+        return nil unless a
+
+        return parse_cron(a) \
+          if a.include?([ :flag, 'every' ])
+        return parse_cron(a) \
+          if a.include?([ :flag, 'from' ]) && a.find { |e| e[0] == :day_range }
+
+        nil
       end
 
       def do_parse(s)
@@ -141,7 +144,7 @@ module Fugit
       def biz_day(i); rex(:biz_day, i, /(biz|business|week) *day/i); end
       def name_day(i); rex(:name_day, i, /#{WEEKDAYS.reverse.join('|')}/i); end
 
-      def range_sep(i); rex(nil, i, / *- *| +to +/); end
+      def range_sep(i); rex(nil, i, / *- *| +(to|through) +/); end
 
       def day_range(i)
         seq(:day_range, i, :name_day, :range_sep, :name_day)
@@ -165,7 +168,7 @@ module Fugit
           /ix)
       end
 
-      def flag(i); rex(:flag, i, /(every|at|after|am|pm|on|in)/i); end
+      def flag(i); rex(:flag, i, /(every|from|at|after|am|pm|on|in)/i); end
 
       def datum(i)
         alt(nil, i,
