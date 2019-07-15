@@ -8,7 +8,7 @@ module Fugit
 
     class << self
 
-      def parse(s)
+      def parse(s, opts={})
 
         return s if s.is_a?(Fugit::Cron) || s.is_a?(Fugit::Duration)
 
@@ -19,21 +19,21 @@ module Fugit
 
         return nil unless a
 
-        return parse_cron(a) \
+        return parse_cron(a, opts) \
           if a.include?([ :flag, 'every' ])
-        return parse_cron(a) \
+        return parse_cron(a, opts) \
           if a.include?([ :flag, 'from' ]) && a.find { |e| e[0] == :day_range }
 
         nil
       end
 
-      def do_parse(s)
+      def do_parse(s, opts={})
 
-        parse(s) ||
+        parse(s, opts) ||
         fail(ArgumentError.new("could not parse a nat #{s.inspect}"))
       end
 
-      def parse_cron(a)
+      def parse_cron(a, opts={})
 
         h = { min: nil, hou: [], dom: nil, mon: nil, dow: nil }
         hkeys = h.keys
