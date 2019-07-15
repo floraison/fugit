@@ -75,6 +75,8 @@ module Fugit
         Fugit::Cron.parse(s)
       end
 
+      protected
+
       def process_duration(h, interval, value)
 
         send("process_duration_#{interval}", h, value)
