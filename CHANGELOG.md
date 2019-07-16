@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.2.4 not yet released
+
+
 ## fugit 1.2.3 released 2019-07-16
 
 * Allow for "from Monday to Friday at 19:22", gh-25
