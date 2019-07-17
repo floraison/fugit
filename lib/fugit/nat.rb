@@ -50,8 +50,6 @@ module Fugit
             (h[:dow] ||= []) << val
           elsif key == :day_range
             (h[:dow] ||= []) << val.collect { |v| v.to_s[0, 3] }.join('-')
-          elsif key == :flag && val == 'pm' && h[:hou]
-            h[:hou][-1] = h[:hou][-1] + 12
           elsif key == :tz
             h[:tz] = val
           elsif key == :duration
@@ -129,15 +127,28 @@ module Fugit
 
       # piece parsers bottom to top
 
+      def am_pm(i)
+        rex(:am_pm, i, / *(am|pm)/i)
+      end
+
       def digital_hour(i)
         rex(:digital_hour, i, /(2[0-4]|[01][0-9]):?[0-5]\d/)
       end
+
+      def _simple_hour(i)
+        rex(:sh, i, /(2[0-4]|[01]?[0-9])/)
+      end
       def simple_hour(i)
-        rex(:simple_hour, i, /(2[0-4]|[01]?[0-9])/)
+        seq(:simple_hour, i, :_simple_hour, :am_pm, '?')
+      end
+
+      def _numeral_hour(i)
+        rex(:nh, i, /(#{NUMS.join('|')})/i)
       end
       def numeral_hour(i)
-        rex(:numeral_hour, i, /(#{NUMS.join('|')})/i)
+        seq(:numeral_hour, i, :_numeral_hour, :am_pm, '?')
       end
+
       def name_hour(i)
         rex(:name_hour, i, /(#{NHOURS.keys.join('|')})/i)
       end
@@ -170,7 +181,7 @@ module Fugit
           /ix)
       end
 
-      def flag(i); rex(:flag, i, /(every|from|at|after|am|pm|on|in)/i); end
+      def flag(i); rex(:flag, i, /(every|from|at|after|on|in)/i); end
 
       def datum(i)
         alt(nil, i,
@@ -207,7 +218,10 @@ module Fugit
             when :numeral_hour
               [ k, NUMS.index(v) ]
             when :simple_hour
-              [ k, v.to_i ]
+              vs = tt.subgather(nil).collect { |ttt| ttt.string.downcase.strip }
+              v = vs[0].to_i
+              v += 12 if vs[1] == 'pm'
+              [ k, v ]
             when :digital_hour
               v = v.gsub(/:/, '')
               [ k, [ v[0, 2], v[2, 2] ] ]
