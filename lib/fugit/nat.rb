@@ -215,16 +215,6 @@ module Fugit
               [ k, [ tt.string.strip, EtOrbi.get_tzone(tt.string.strip) ] ]
             when :duration
               [ k, [ Fugit::Duration.parse(tt.string.strip) ] ]
-            when :numeral_hour
-              vs = tt.subgather(nil).collect { |ttt| ttt.string.downcase.strip }
-              v = NUMS.index(vs[0])
-              v += 12 if vs[1] == 'pm'
-              [ k, v ]
-            when :simple_hour
-              vs = tt.subgather(nil).collect { |ttt| ttt.string.downcase.strip }
-              v = vs[0].to_i
-              v += 12 if vs[1] == 'pm'
-              [ k, v ]
             when :digital_hour
               v = v.gsub(/:/, '')
               [ k, [ v[0, 2], v[2, 2] ] ]
@@ -234,6 +224,11 @@ module Fugit
               [ k, WEEKDAYS.index(v[0, 3]) ]
             when :day_range
               [ k, tt.subgather(nil).collect { |st| st.string.downcase } ]
+            when :numeral_hour, :simple_hour
+              vs = tt.subgather(nil).collect { |ttt| ttt.string.downcase.strip }
+              v = k == :simple_hour ? vs[0].to_i : NUMS.index(vs[0])
+              v += 12 if vs[1] == 'pm'
+              [ k, v ]
             else
               [ k, v ]
             end }
