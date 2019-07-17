@@ -18,6 +18,7 @@ describe Fugit::Nat do
 
         'every day at five' => '0 5 * * *',
         'every weekday at five' => '0 5 * * 1-5',
+        'every weekday at five pm' => '0 17 * * 1-5',
         'every day at 5 pm' => '0 17 * * *',
         'every tuesday at 5 pm' => '0 17 * * 2',
         'every wed at 5 pm' => '0 17 * * 3',

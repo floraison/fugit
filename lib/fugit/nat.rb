@@ -216,7 +216,10 @@ module Fugit
             when :duration
               [ k, [ Fugit::Duration.parse(tt.string.strip) ] ]
             when :numeral_hour
-              [ k, NUMS.index(v) ]
+              vs = tt.subgather(nil).collect { |ttt| ttt.string.downcase.strip }
+              v = NUMS.index(vs[0])
+              v += 12 if vs[1] == 'pm'
+              [ k, v ]
             when :simple_hour
               vs = tt.subgather(nil).collect { |ttt| ttt.string.downcase.strip }
               v = vs[0].to_i
