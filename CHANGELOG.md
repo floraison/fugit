@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.2.4 not yet released
+## fugit 1.3.0 not yet released
 
 
 ## fugit 1.2.3 released 2019-07-16
