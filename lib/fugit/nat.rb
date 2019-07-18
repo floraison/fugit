@@ -19,9 +19,9 @@ module Fugit
 
         return nil unless a
 
-        return parse_cron(a, opts) \
+        return parse_crons(s, a, opts) \
           if a.include?([ :flag, 'every' ])
-        return parse_cron(a, opts) \
+        return parse_crons(s, a, opts) \
           if a.include?([ :flag, 'from' ]) && a.find { |e| e[0] == :day_range }
 
         nil
@@ -33,7 +33,35 @@ module Fugit
         fail(ArgumentError.new("could not parse a nat #{s.inspect}"))
       end
 
-      def parse_cron(a, opts={})
+      protected
+
+      def parse_crons(s, a, opts)
+
+        dhs, aa =
+          a.partition { |e| e[0] == :digital_hour }
+        dms =
+          dhs.collect { |dh| dh[1][1] }.uniq
+
+        crons =
+          if dhs.empty? || dms.size == 1
+            [ parse_cron(a, opts) ]
+          else
+            dhs.collect { |dh| parse_cron([ dh ] + aa, opts) }
+          end
+
+        fail ArgumentError.new(
+          "multiple crons in #{s.inspect} " +
+          "(#{crons.collect(&:original).join(' | ')})"
+        ) if opts[:multi] == :fail && crons.size > 1
+
+        if opts[:multi]
+          crons
+        else
+          crons.first
+        end
+      end
+
+      def parse_cron(a, opts)
 
         h = { min: nil, hou: [], dom: nil, mon: nil, dow: nil }
         hkeys = h.keys
@@ -72,8 +100,6 @@ module Fugit
 #p s
         Fugit::Cron.parse(s)
       end
-
-      protected
 
       def process_duration(h, interval, value)
 

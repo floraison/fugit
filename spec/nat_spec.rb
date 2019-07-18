@@ -90,32 +90,39 @@ describe Fugit::Nat do
       { # mostly for gh-24 and `multi: true`
 
         [ 'every day at 18:15 and 20:45', {} ] =>
-          '* * * * *',
+          '15 18 * * *',
         [ 'every day at 18:15 and 20:45', { multi: true } ] =>
-          [ '* * * * *' ],
+          [ '15 18 * * *', '45 20 * * *' ],
         [ 'every day at 18:15 and 20:45', { multi: :fail } ] =>
-          [ ArgumentError, "fuck fuck fuck" ]
+          [ ArgumentError, /\Amultiple crons in / ]
 
       }.each do |(nat, opts), result|
 
-        if result.is_a?(Array) && result[0].is_a?(Exception)
+        if (
+          result.is_a?(Array) &&
+          result[0].is_a?(Class) &&
+          result[0].ancestors.include?(Exception)
+        ) then
 
-          it "fails for #{nat.inspect} (#{opts.inspect})"# do
-          #  expect { Fugit::Nat.parse(nat, opts) }.to raise_error(*result)
-          #end
+          it "fails for #{nat.inspect} (#{opts.inspect})" do
+
+            expect { Fugit::Nat.parse(nat, opts) }.to raise_error(*result)
+          end
 
         else
 
-          it "parses #{nat.inspect} (#{opts.inspect}) into #{result.inspect}"#do
-          #  r = Fugit::Nat.parse(nat, opts)
-          #  if opts[:multi]
-          #    expect(r.collect(&:class).uniq).to eq([ Fugit::Cron ])
-          #    expect(r.collect(&:original)).to eq(result)
-          #  else
-          #    expect(r.class).to eq(Fugit::Cron)
-          #    expect(r.original).to eq(result)
-          #  end
-          #end
+          it "parses #{nat.inspect} (#{opts.inspect}) into #{result.inspect}" do
+
+            r = Fugit::Nat.parse(nat, opts)
+
+            if opts[:multi]
+              expect(r.collect(&:class).uniq).to eq([ Fugit::Cron ])
+              expect(r.collect(&:original)).to eq(result)
+            else
+              expect(r.class).to eq(Fugit::Cron)
+              expect(r.original).to eq(result)
+            end
+          end
         end
       end
     end
