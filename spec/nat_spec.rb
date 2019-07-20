@@ -93,8 +93,10 @@ describe Fugit::Nat do
           '15 18 * * *',
         [ 'every day at 18:15 and 20:45', { multi: true } ] =>
           [ '15 18 * * *', '45 20 * * *' ],
+        [ 'every day at 18:15', { multi: true } ] =>
+          [ '15 18 * * *' ],
         [ 'every day at 18:15 and 20:45', { multi: :fail } ] =>
-          [ ArgumentError, /\Amultiple crons in / ]
+          [ ArgumentError, /\Amultiple crons in / ],
 
       }.each do |(nat, opts), result|
 
