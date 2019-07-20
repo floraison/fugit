@@ -250,6 +250,21 @@ Directly with `Fugit.parse(s)` is OK too:
 Fugit.parse('every day at five')  # ==> Fugit::Cron instance '0 5 * * *'
 ```
 
+### Ambiguous nats
+
+Not all strings result in a clean, single, cron expression.
+
+```ruby
+Fugit::Nat.parse('every day at 16:00 and 18:00', multi: true)
+  # ==> [ '0 16,18 * * *' ]
+Fugit::Nat.parse('every day at 16:15 and 18:30')
+  # ==> [ '15 16 * * *' ]
+Fugit::Nat.parse('every day at 16:15 and 18:30', multi: true)
+  # ==> [ '15 16 * * *', '30 18 * * *' ]
+Fugit::Nat.parse('every day at 16:15 and 18:30', multi: :fail)
+  # ==> ArgumentError: multiple crons in "every day at 16:15 and 18:30" (15 16 * * * | 30 18 * * *)
+```
+
 
 ## LICENSE
 
