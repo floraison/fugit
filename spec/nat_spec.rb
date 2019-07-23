@@ -85,6 +85,14 @@ describe Fugit::Nat do
       end
     end
 
+    it 'parses "every Fri-Sun at 18:00 UTC" (gh-27)' do
+
+      c = Fugit::Nat.parse('every Fri-Sun at 18:00 UTC')
+
+      expect(c.original).to eq('0 18 * * fri-sun UTC')
+      expect(c.weekdays).to eq([ [ 0 ], [ 5 ], [ 6 ] ])
+    end
+
     context 'multi:' do
 
       { # mostly for gh-24 and `multi: true`

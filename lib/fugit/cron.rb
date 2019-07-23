@@ -529,7 +529,8 @@ module Fugit
           ((a || 0)..(z || (a ? a : 6))).step(sl < 1 ? 1 : sl)
             .each { |i| @weekdays << [ i ] }
         elsif z
-          (a..z).each { |i| @weekdays << [ i ] }
+          z = z + 7 if a > z
+          (a..z).each { |i| @weekdays << [ (i > 6) ? i - 7 : i ] }
         elsif a
           @weekdays << [ a ]
         #else
@@ -538,6 +539,7 @@ module Fugit
 
       @weekdays.each { |wd| wd[0] = 0 if wd[0] == 7 } # turn sun7 into sun0
       @weekdays.uniq!
+      @weekdays.sort!
       @weekdays = nil if @weekdays.empty?
     end
 
@@ -685,7 +687,9 @@ module Fugit
 
         a = at ? rewrite_bound(k, at) : nil
         z = zt ? rewrite_bound(k, zt) : nil
-        a, z = z, a if a && z && a > z
+
+        #a, z = z, a if a && z && a > z
+          # handled downstream since gh-27
 
         [ a, z, sl, ha, mo ]
       end
