@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.3.1 not yet released
+
+
 ## fugit 1.3.0 released 2019-07-21
 
 * Introduce Fugit.parse_nat('every day at 18:00 and 19:15', multi: true)
