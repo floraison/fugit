@@ -634,6 +634,13 @@ describe Fugit::Cron do
           # at 1415 on the 1st of every month
         [ '0 22 * * 1-5', '0 22 * * 1,2,3,4,5' ],
           # at 2200 on weekdays
+        [ '0 22 * * 0', '0 22 * * 0' ],
+        [ '0 22 * * 7', '0 22 * * 0' ],
+          # at 2200 on sunday
+        [ '0 23 * * 7-1', '0 23 * * 0,1' ],
+          # at 2300 sunday to monday
+        [ '0 23 * * 6-1', '0 23 * * 0,1,6' ],
+          # at 2300 saturday to monday
         [ '23 0-23/2 * * *', '23 0,2,4,6,8,10,12,14,16,18,20,22 * * *' ],
           # 23 minutes after midnight, 0200, 0400, ...
         #[ '5 4 * * sun', :xxx ],
