@@ -475,9 +475,16 @@ module Fugit
       sla = 1 if sla == nil
       sta = min if sta == nil
       edn = max if edn == nil
-      sta, edn = edn, sta if sta > edn
 
-      (sta..edn).step(sla).to_a
+      if sta > -1 && edn > -1 && sta > edn
+        edn = edn + max
+      elsif sta > edn
+        sta, edn = edn, sta
+      end
+
+      (sta..edn)
+        .step(sla)
+        .collect { |e| e > max ? e - max : e }
     end
 
     def compact(key)

@@ -672,6 +672,11 @@ describe Fugit::Cron do
 
         [ '0 18 * * fri-sun UTC', '0 18 * * 0,5,6 UTC' ], # gh-27
 
+        [ '0 19 * 7-8 0', '0 19 * 7,8 0' ],
+        [ '0 19 * nov-dec 0', '0 19 * 11,12 0' ],
+        [ '0 19 * 11-2 0', '0 19 * 1,2,11,12 0' ],
+        [ '0 19 * nov-mar 0', '0 19 * 1,2,3,11,12 0' ],
+
       ].each { |c, e|
         it("parses #{c}") { expect(Fugit::Cron.parse(c).to_cron_s).to eq(e) }
       }
