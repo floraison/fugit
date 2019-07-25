@@ -675,7 +675,10 @@ describe Fugit::Cron do
         [ '0 19 * 7-8 0', '0 19 * 7,8 0' ],
         [ '0 19 * nov-dec 0', '0 19 * 11,12 0' ],
         [ '0 19 * 11-2 0', '0 19 * 1,2,11,12 0' ],
-        [ '0 19 * nov-mar 0', '0 19 * 1,2,3,11,12 0' ],
+        [ '0 19 * nov-mar 0', '0 19 * 1,2,3,11,12 0' ], # gh-27 on month
+
+        [ '10-15 7 * * *', '10,11,12,13,14,15 7 * * *' ],
+        [ '55-5 7 * * *', '0,1,2,3,4,5,55,56,57,58,59 7 * * *' ],
 
       ].each { |c, e|
         it("parses #{c}") { expect(Fugit::Cron.parse(c).to_cron_s).to eq(e) }
@@ -686,7 +689,7 @@ describe Fugit::Cron do
         [
           [ '* * -1 * *', '* * -1 * *' ],
           [ '* * -7--1 * *', '* * -7,-6,-5,-4,-3,-2,-1 * *' ],
-          [ '* * -1--7 * *', '* * -7,-6,-5,-4,-3,-2,-1 * *' ],
+          [ '* * -1--27 * *', '* * -30,-29,-28,-27,-1,0 * *' ],
           [ '* * -7--1/2 * *', '* * -7,-5,-3,-1 * *' ],
           [ '* * L * *', '* * -1 * *' ],
           [ '* * -7-L * *', '* * -7,-6,-5,-4,-3,-2,-1 * *' ],
@@ -955,6 +958,28 @@ describe Fugit::Cron do
       it "returns #{expected.inspect} for #{string}" do
 
         expect(Fugit::Cron.parse(string).seconds).to eq(expected)
+      end
+    end
+  end
+
+  describe '#range (protected)' do
+
+    {
+
+      { min: 1, max: 12, sta: 2, edn: 4, sla: 1 } => [ 2, 3, 4 ],
+      { min: 1, max: 12, sta: 2, edn: 4, sla: 2 } => [ 2, 4 ],
+      { min: 1, max: 12, sta: 11, edn: 2, sla: 1 } => [ 11, 12, 1, 2 ],
+      { min: 1, max: 12, sta: 11, edn: 2, sla: 2 } => [ 11, 1 ],
+      { min: 1, max: 31, sta: -5, edn: -1, sla: 1 } => [ -5, -4, -3, -2, -1 ],
+      { min: 1, max: 31, sta: -1, edn: -29, sla: 1 } => [ -1, 0, -30, -29 ],
+
+    }.each do |args, result|
+
+      it "returns #{result.inspect} for #{args.inspect}" do
+
+        as = [ :min, :max, :sta, :edn, :sla ].collect { |k| args[k] }
+
+        expect(Fugit::Cron.allocate.send(:range, *as)).to eq(result)
       end
     end
   end

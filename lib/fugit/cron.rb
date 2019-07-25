@@ -476,15 +476,44 @@ module Fugit
       sta = min if sta == nil
       edn = max if edn == nil
 
-      if sta > -1 && edn > -1 && sta > edn
-        edn = edn + max
-      elsif sta > edn
-        sta, edn = edn, sta
+      range(min, max, sta, edn, sla)
+    end
+
+    def range(min, max, sta, edn, sla)
+
+      fail ArgumentError.new(
+        'both start and end must be negative in ' +
+        { min: min, max: max, sta: sta, edn: edn, sla: sla }.inspect
+      ) if (sta < 0 && edn > 0) || (edn < 0 && sta > 0)
+
+#p({ min: min, max: max, sta: sta, edn: edn, sla: sla })
+      a = []
+
+      omin, omax = min, max
+      min, max = -max + 1, 0 if sta < 0
+#p({ min: min, max: max })
+
+      cur = sta
+
+      loop do
+
+#p({ cur: cur })
+        a << cur
+        break if cur == edn
+
+        cur += 1
+        cur = min if cur > max
+#p cur
+
+        fail RuntimeError.new(
+          "too many loops for " +
+          { min: omin, max: omax, sta: sta, edn: edn, sla: sla }.inspect +
+          " #range, breaking, " +
+          "please fill an issue at https://git.io/fjJC9"
+        ) if a.length > omax
       end
 
-      (sta..edn)
-        .step(sla)
-        .collect { |e| e > max ? e - max : e }
+      a.each_with_index.select { |e, i| i % sla == 0 }.collect(&:first)
     end
 
     def compact(key)
