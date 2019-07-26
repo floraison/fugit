@@ -490,7 +490,7 @@ module Fugit
       a = []
 
       omin, omax = min, max
-      min, max = -max + 1, 0 if sta < 0
+      min, max = -max, -1 if sta < 0
 #p({ min: min, max: max })
 
       cur = sta
