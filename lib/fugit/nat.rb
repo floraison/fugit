@@ -54,7 +54,7 @@ module Fugit
           "(#{crons.collect(&:original).join(' | ')})"
         ) if opts[:multi] == :fail && crons.size > 1
 
-        if opts[:multi]
+        if opts[:multi] == true || (opts[:multi] && opts[:multi] != :fail)
           crons
         else
           crons.first

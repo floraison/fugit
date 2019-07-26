@@ -105,6 +105,8 @@ describe Fugit::Nat do
           [ '15 18 * * *' ],
         [ 'every day at 18:15 and 20:45', { multi: :fail } ] =>
           [ ArgumentError, /\Amultiple crons in / ],
+        [ 'every 1 hour', { multi: :fail } ] => # gh-28
+          '0 * * * *',
 
       }.each do |(nat, opts), result|
 
@@ -125,7 +127,7 @@ describe Fugit::Nat do
 
             r = Fugit::Nat.parse(nat, opts)
 
-            if opts[:multi]
+            if opts[:multi] == true
               expect(r.collect(&:class).uniq).to eq([ Fugit::Cron ])
               expect(r.collect(&:original)).to eq(result)
             else
