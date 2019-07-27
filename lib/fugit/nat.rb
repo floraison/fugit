@@ -37,12 +37,16 @@ module Fugit
 
       def parse_crons(s, a, opts)
 
-        dhs, aa = a.partition { |e| e[0] == :digital_hour }
-        ms = dhs.collect { |dh| dh[1][1] }.uniq
-        hs = dhs.collect { |dh| dh[1][0] }.uniq
+        dhs, aa = a
+          .partition { |e| e[0] == :digital_hour }
+        ms = dhs
+          .inject({}) { |h, dh| (h[dh[1][0]] ||= []) << dh[1][1]; h }
+          .values
+          .uniq
 
         crons =
-          if ms.size <= 1 || hs.size <= 1
+          #if ms.size <= 1 || hs.size <= 1
+          if ms.size <= 1
             [ parse_cron(a, opts) ]
           else
             dhs.collect { |dh| parse_cron([ dh ] + aa, opts) }
