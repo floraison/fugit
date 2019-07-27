@@ -37,13 +37,12 @@ module Fugit
 
       def parse_crons(s, a, opts)
 
-        dhs, aa =
-          a.partition { |e| e[0] == :digital_hour }
-        dms =
-          dhs.collect { |dh| dh[1][1] }.uniq
+        dhs, aa = a.partition { |e| e[0] == :digital_hour }
+        ms = dhs.collect { |dh| dh[1][1] }.uniq
+        hs = dhs.collect { |dh| dh[1][0] }.uniq
 
         crons =
-          if dhs.empty? || dms.size == 1
+          if ms.size <= 1 || hs.size <= 1
             [ parse_cron(a, opts) ]
           else
             dhs.collect { |dh| parse_cron([ dh ] + aa, opts) }
@@ -84,9 +83,13 @@ module Fugit
             process_duration(h, *val[0].to_h.first)
           end
         end
+
         h[:min] ||= [ 0 ]
         h[:min].uniq!
-        h[:hou].sort! if h[:hou]
+
+        h[:hou].uniq!;
+        h[:hou].sort!
+
         h[:dow].sort! if h[:dow]
 
         a = hkeys
@@ -95,9 +98,9 @@ module Fugit
             (v && v.any?) ? v.collect(&:to_s).join(',') : '*' }
         a.insert(0, h[:sec]) if h[:sec]
         a << h[:tz].first if h[:tz]
+
         s = a.join(' ')
 
-#p s
         Fugit::Cron.parse(s)
       end
 

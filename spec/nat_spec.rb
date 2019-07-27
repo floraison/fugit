@@ -72,6 +72,12 @@ describe Fugit::Nat do
           #
           # gh-25
 
+        'every day at 18:00 and 18:15' => '0,15 18 * * *',
+        'every day at 18:00, 18:15' => '0,15 18 * * *',
+        #'every day at 18:00, 18:15, 20:00, and 20:15' => '0,15 18,20 * * *',
+          #
+          # gh-29
+
       }.each do |nat, cron|
 
         it "parses #{nat.inspect} into #{cron.inspect}" do
