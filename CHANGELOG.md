@@ -2,7 +2,12 @@
 # CHANGELOG.md
 
 
-## fugit 1.3.1 not yet released
+## fugit 1.3.1 released 2019-07-27
+
+* Fix nat parsing for 'every day at 18:00 and 18:15', gh-29
+*   and for 'every day at 18:00, 18:15, 20:00, and 20:15', gh-29
+* Ensure multi: :fail doesn't force into multi, gh-28
+* Fix nat parsing for 'every Fri-Sun at 18:00', gh-27
 
 
 ## fugit 1.3.0 released 2019-07-21
