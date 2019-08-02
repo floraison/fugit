@@ -63,7 +63,7 @@ Fugit.parse('nada')
 ## `Fugit.do_parse(s)`
 
 `Fugit.do_parse(s)` is equivalent to `Fugit.parse(s)`, but instead of returning nil, it raises an error if the given string contains no time information.
-```
+```ruby
 Fugit.do_parse('nada')
   # ==> /home/jmettraux/w/fugit/lib/fugit/parse.rb:32
   #     :in `do_parse': found no time information in "nada" (ArgumentError)
@@ -184,10 +184,12 @@ p d.to_long_s  # => "2 years, 2 months, 1 day, and 5 hours"
 d += 3600
 
 p d.to_plain_s  # => "2Y2M1D5h3600s"
+
+p Fugit::Duration.parse('1y2M1d4h').to_sec # => 36820800
 ```
 
 The `to_*_s` methods are also available as class methods:
-```
+```ruby
 p Fugit::Duration.to_plain_s('1y2M1d4h')
   # => "1Y2M1D4h"
 p Fugit::Duration.to_iso_s('1y2M1d4h')
