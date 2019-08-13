@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.3.2 not yet released
+
+
 ## fugit 1.3.1 released 2019-07-27
 
 * Fix nat parsing for 'every day at 18:00 and 18:15', gh-29
