@@ -27,7 +27,7 @@ Or else, please describe carefully what to do to see a live example of the issue
 ```
 ArgumentError: found no time information in "0-65 * * * *"
 	from /Users/jmettraux/w/fugit/lib/fugit/parse.rb:32:in `do_parse'
-    from ...
+	from ...
 	from /Users/jmettraux/.gem/ruby/2.3.7/gems/bundler-1.16.2/lib/bundler/vendor/thor/lib/thor/base.rb:466:in `start'
 	from /Users/jmettraux/.gem/ruby/2.3.7/gems/bundler-1.16.2/lib/bundler/cli.rb:18:in `start'
 	from /Users/jmettraux/.gem/ruby/2.3.7/gems/bundler-1.16.2/exe/bundle:30:in `block in <top (required)>'
