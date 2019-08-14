@@ -21,6 +21,23 @@ p c.previous_time
 ```
 Or else, please describe carefully what to do to see a live example of the issue.
 
+## Error and Error backtrace (if any)
+
+(This should look like:
+```
+ArgumentError: found no time information in "0-65 * * * *"
+	from /Users/jmettraux/w/fugit/lib/fugit/parse.rb:32:in `do_parse'
+    from ...
+	from /Users/jmettraux/.gem/ruby/2.3.7/gems/bundler-1.16.2/lib/bundler/vendor/thor/lib/thor/base.rb:466:in `start'
+	from /Users/jmettraux/.gem/ruby/2.3.7/gems/bundler-1.16.2/lib/bundler/cli.rb:18:in `start'
+	from /Users/jmettraux/.gem/ruby/2.3.7/gems/bundler-1.16.2/exe/bundle:30:in `block in <top (required)>'
+	from /Users/jmettraux/.gem/ruby/2.3.7/gems/bundler-1.16.2/lib/bundler/friendly_errors.rb:124:in `with_friendly_errors'
+	from /Users/jmettraux/.gem/ruby/2.3.7/gems/bundler-1.16.2/exe/bundle:22:in `<top (required)>'
+	from /Users/jmettraux/.gem/ruby/2.3.7/bin/bundle:22:in `load'
+	from /Users/jmettraux/.gem/ruby/2.3.7/bin/bundle:22:in `<main>'
+```
+)
+
 ## Expected behaviour
 
 A clear and concise description of what you expected to happen.
@@ -49,3 +66,4 @@ ruby 2.3.7p456 (2018-03-28 revision 63024) [x86_64-darwin17]
 ## Additional context
 
 Add any other context about the problem here.
+
