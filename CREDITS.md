@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Jessica Stokes https://github.com/ticky 0-24 issue with cron, gh-30
 * Shai Coleman https://github.com/shaicoleman parse_nat enhancements, gh-24, gh-25, and gh-28
 * Jan Stevens https://github.com/JanStevens Fugit.parse('every 15 minutes') gh-22
 * Fabio Pitino https://github.com/hspazio nil on February 30 gh-21

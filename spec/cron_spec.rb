@@ -47,7 +47,7 @@ describe Fugit::Cron do
     [ '0 0 * * mon#2,tue', '2017-01-09', '2017-01-06' ],
     [ '0 0 * * mon#2,tue', '2017-01-31', '2017-01-30' ],
 
-    [ '00 24 * * *', '2017-01-02', '2017-01-01 12:00' ],
+    [ '00 24 * * *', '2017-01-02 00:00:00', '2017-01-01 12:00' ],
 
     # Note: The day of a command's execution can be specified by two fields
     # -- day of month, and day of week.
@@ -692,8 +692,19 @@ describe Fugit::Cron do
         [ '10-15 0 23 * * *', '10,11,12,13,14,15 0 23 * * *' ],
         [ '58-2 0 23 * * *', '0,1,2,58,59 0 23 * * *' ],
 
+        [ '* 0-24 * * *', "* #{(0..23).to_a.collect(&:to_s).join(',')} * * *" ],
+        [ '* 22-24 * * *', '* 0,22,23 * * *' ],
+        [ '* * * 1-13 *', nil ], # month 13 isn't allowed at parsing
+          #
+          # gh-30
+
       ].each { |c, e|
-        it("parses #{c}") { expect(Fugit::Cron.parse(c).to_cron_s).to eq(e) }
+
+        it "parses #{c}" do
+
+          c = Fugit::Cron.parse(c)
+          expect(c ? c.to_cron_s : c).to eq(e)
+        end
       }
 
       context 'negative monthdays' do
@@ -984,6 +995,12 @@ describe Fugit::Cron do
       { min: 1, max: 12, sta: 11, edn: 2, sla: 2 } => [ 11, 1 ],
       { min: 1, max: 31, sta: -5, edn: -1, sla: 1 } => [ -5, -4, -3, -2, -1 ],
       { min: 1, max: 31, sta: -1, edn: -29, sla: 1 } => [ -1, -31, -30, -29 ],
+
+      { min: 0, max: 23, sta: 0, edn: 24, sla: 1 } => (0..23).to_a,
+      #{ min: 1, max: 12, sta: 0, edn: 12, sla: 1 } => ...
+      #{ min: 1, max: 12, sta: 1, edn: 13, sla: 1 } => ... # month 13 no parse
+        #
+        # gh-30
 
     }.each do |args, result|
 

@@ -497,23 +497,28 @@ module Fugit
 
       loop do
 
-#p({ cur: cur })
         a << cur
         break if cur == edn
 
         cur += 1
-        cur = min if cur > max
-#p cur
+        if cur > max
+          cur = min
+          edn = edn - max - 1 if edn > max
+        end
 
         fail RuntimeError.new(
           "too many loops for " +
           { min: omin, max: omax, sta: sta, edn: edn, sla: sla }.inspect +
           " #range, breaking, " +
           "please fill an issue at https://git.io/fjJC9"
-        ) if a.length > omax
+        ) if a.length > 2 * omax
+          # there is a #uniq afterwards, hence the 2* for 0-24 and friends
       end
 
-      a.each_with_index.select { |e, i| i % sla == 0 }.collect(&:first)
+      a.each_with_index
+        .select { |e, i| i % sla == 0 }
+        .collect(&:first)
+        .uniq
     end
 
     def compact(key)
