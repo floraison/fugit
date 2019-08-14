@@ -2,7 +2,9 @@
 # CHANGELOG.md
 
 
-## fugit 1.3.2 not yet released
+## fugit 1.3.2 released 2019-08-14
+
+* Allow for "* 0-24 * * *", gh-30
 
 
 ## fugit 1.3.1 released 2019-07-27
