@@ -197,7 +197,7 @@ module Fugit
 
     def match?(t)
 
-      t = Fugit.do_parse_at(t)
+      t = Fugit.do_parse_at(t).translate(@timezone)
 
       month_match?(t) && day_match?(t) &&
       hour_match?(t) && min_match?(t) && sec_match?(t)

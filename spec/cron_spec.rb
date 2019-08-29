@@ -378,6 +378,30 @@ describe Fugit::Cron do
         expect(c.match?(ent)).to be(true)
       end
     end
+
+    context '"0 0 * * * Europe/Berlin" (gh-31)' do # in Changi
+
+      before :each do
+
+        @cron = Fugit::Cron.parse('0 0 * * * Europe/Berlin')
+      end
+
+      it "doesn't match midnight in London" do
+
+        in_zone('Europe/London') do
+          expect(@cron.match?(Time.new(2019, 1, 1))
+            ).to eq(false)
+        end
+      end
+
+      it "matches midnight in Berlin" do
+
+        in_zone('Europe/London') do
+          expect(@cron.match?(Fugit.parse('2019-1-1 00:00:00 Europe/Berlin'))
+            ).to eq(true)
+        end
+      end
+    end
   end
 
   PREVIOUS_TIMES = [
