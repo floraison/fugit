@@ -2,7 +2,9 @@
 # CHANGELOG.md
 
 
-## fugit 1.3.3 not yet released
+## fugit 1.3.3 released 2019-08-29
+
+* Fix Cron#match?(t) with respect to the cron's timezone, gh-31
 
 
 ## fugit 1.3.2 released 2019-08-14
