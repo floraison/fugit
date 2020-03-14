@@ -27,7 +27,6 @@ The intersection of those two projects is where fugit is born:
 * [parse-cron](https://github.com/siebertm/parse-cron) - parses cron expressions and calculates the next occurrence after a given date
 * [ice_cube](https://github.com/seejohnrun/ice_cube) - Ruby date recurrence library
 * [ISO8601](https://github.com/arnau/ISO8601) - Ruby parser to work with ISO8601 dateTimes and durations
-* [serial_scheduler](https://github.com/grosser/serial_scheduler) - ruby task scheduler without threading
 * ...
 
 ### Projects using fugit
@@ -37,6 +36,7 @@ The intersection of those two projects is where fugit is born:
 * [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) -
 * [flor](https://github.com/floraison/flor) - used in the [cron](https://github.com/floraison/flor/blob/master/doc/procedures/cron.md) procedure
 * [que-scheduler](https://github.com/hlascelles/que-scheduler) - a reliable job scheduler for [que](https://github.com/chanks/que)
+* [serial_scheduler](https://github.com/grosser/serial_scheduler) - ruby task scheduler without threading
 * ...
 
 ## `Fugit.parse(s)`
