@@ -138,6 +138,49 @@ Example of cron strings understood by fugit:
 # and more...
 ```
 
+### the first Monday of the month
+
+Fugit tries to follow the `man 5 crontab` documentation.
+
+There is a surprising thing about this canon, all the columns are joined by ANDs, except for monthday and weekday which are joined together by OR if they are both set (they are not `*`).
+
+Many people (me included) [are suprised](https://superuser.com/questions/428807/run-a-cron-job-on-the-first-monday-of-every-month) when they try to specify "at 05:00 on the first Monday of the month" as `0 5 1-7 * 1` or `0 5 1-7 * mon` and the results are off.
+
+The man page says:
+
+> Note: The day of a command's execution can be specified by
+> two fields -- day of month, and day of week. If both fields
+> are restricted (ie, are not *), the command will be run when
+> either field matches the current time.
+> For example, ``30 4 1,15 * 5'' would cause a command to be run
+> at 4:30 am on the 1st and 15th of each month, plus every Friday.
+
+Fugit follows this specification.
+
+There is a solution though, please read on.
+
+### the hash extension
+
+Fugit understands `0 5 * * 1#1` or `0 5 * * mon#1` as "each first Monday of the month, at 05:00".
+
+```ruby
+'0 5 * * 1#1'    #
+'0 5 * * mon#1'  # the first Monday of the month at 05:00
+
+'0 6 * * 5#4,5#5'      #
+'0 6 * * fri#4,fri#5'  # the 4th and 5th Fridays of the month at 06:00
+
+'0 7 * * 5#-1'    #
+'0 7 * * fri#-1'  # the last Friday of the month at 07:00
+
+'0 7 * * 5#L'       #
+'0 7 * * fri#L'     #
+'0 7 * * 5#last'    #
+'0 7 * * fri#last'  # the last Friday of the month at 07:00
+
+'0 23 * * mon#2,tue'  # the 2nd Monday of the month and every Tuesday, at 23:00
+```
+
 ### the modulo extension
 
 Fugit, since 1.1.10, also understands cron strings like "`9 0 * * sun%2`" which can be read as "every other Sunday at 9am".
@@ -146,7 +189,7 @@ For odd Sundays, one can write `9 0 * * sun%2+1`.
 
 It can be combined, as in `9 0 * * sun%2,tue%3+2`
 
-But what does it references to? It starts at 1 on 2019-01-01.
+But what does it reference to? It starts at 1 on 2019-01-01.
 
 ```ruby
 require 'et-orbi' # >= 1.1.8
