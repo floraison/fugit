@@ -65,6 +65,8 @@ describe Fugit::Cron do
 
     #
     # gh-5  '0 8 L * * mon-thu', last day of month on Saturday
+    #
+    # gh-35  '59 6 1-7 * 2', monthdays 1-7 being ignored
 
     # Note: The day of a command's execution can be specified by two fields --
     # day of month, and day of week.  If both fields are restricted (ie, are
@@ -85,6 +87,16 @@ describe Fugit::Cron do
 
     [ '0 9 29 feb *', '2016-02-29 09:00', '2016-01-23' ], # gh-18 (mirror #prev)
 
+    [ '59 6 1-7 * 2',
+      '2020-03-17 06:59:00', # not '2020-04-07 06:59:00', tuesday 2 matches
+      '2020-03-15 07:29:00' ],
+    [ '59 6 1-7 * 2',
+      '2020-02-11 06:59:00', # not '2020-03-03 06:59:00', tuesday 2 matches
+      '2020-02-08 07:29:00' ],
+    [ '59 6 1-7 * 2',
+      '2020-03-01 06:59:00', # not '2020-03-03 06:59:00', monthday 1-7 matches
+      '2020-02-29 07:29:00' ],
+
     #
     # gh-1 '0 9 * * sun%2' and '* * * * sun%2+1'
     #      every other Sunday
@@ -95,28 +107,6 @@ describe Fugit::Cron do
       '2019-04-21 10:00:00', '2019-04-11 09:00:00', 'Europe/Berlin' ],
     [ '0 10 * * sun%2+1',
       '2019-04-14 10:00:00', '2019-04-11 09:00:00', 'Europe/Berlin' ],
-
-    #
-    # gh-35  '59 6 1-7 * 2', monthdays 1-7 being ignored
-    #
-    # From `man 5 crontab`
-    #
-    # Note: The day of a command's execution can be specified
-    # by two fields -- day of month, and day of week.
-    # If both fields are restricted (ie, are not *), the command will be
-    # run when either field matches the current time.
-    # For example, ``30 4 1,15 * 5'' would cause a command to be run
-    # at 4:30 am on the 1st and 15th of each month, plus every Friday.
-
-    [ '59 6 1-7 * 2',
-      '2020-03-17 06:59:00', # not '2020-04-07 06:59:00', tuesday 2 matches
-      '2020-03-15 07:29:00' ],
-    [ '59 6 1-7 * 2',
-      '2020-02-11 06:59:00', # not '2020-03-03 06:59:00', tuesday 2 matches
-      '2020-02-08 07:29:00' ],
-    [ '59 6 1-7 * 2',
-      '2020-03-01 06:59:00', # not '2020-03-03 06:59:00', monthday 1-7 matches
-      '2020-02-29 07:29:00' ],
   ]
 
   describe '#next_time' do
