@@ -95,6 +95,28 @@ describe Fugit::Cron do
       '2019-04-21 10:00:00', '2019-04-11 09:00:00', 'Europe/Berlin' ],
     [ '0 10 * * sun%2+1',
       '2019-04-14 10:00:00', '2019-04-11 09:00:00', 'Europe/Berlin' ],
+
+    #
+    # gh-35  '59 6 1-7 * 2', monthdays 1-7 being ignored
+    #
+    # From `man 5 crontab`
+    #
+    # Note: The day of a command's execution can be specified
+    # by two fields -- day of month, and day of week.
+    # If both fields are restricted (ie, are not *), the command will be
+    # run when either field matches the current time.
+    # For example, ``30 4 1,15 * 5'' would cause a command to be run
+    # at 4:30 am on the 1st and 15th of each month, plus every Friday.
+
+    [ '59 6 1-7 * 2',
+      '2020-03-17 06:59:00', # not '2020-04-07 06:59:00', tuesday 2 matches
+      '2020-03-15 07:29:00' ],
+    [ '59 6 1-7 * 2',
+      '2020-02-11 06:59:00', # not '2020-03-03 06:59:00', tuesday 2 matches
+      '2020-02-08 07:29:00' ],
+    [ '59 6 1-7 * 2',
+      '2020-03-01 06:59:00', # not '2020-03-03 06:59:00', monthday 1-7 matches
+      '2020-02-29 07:29:00' ],
   ]
 
   describe '#next_time' do
@@ -436,6 +458,24 @@ describe Fugit::Cron do
     [ '0 0 * * mon#2,tue', '2017-01-03', '2017-01-04' ],
 
     [ '0 9 29 feb *', '2016-02-29 09:00', '2019-03-23' ], # gh-18
+
+    [ '59 6 1-7 * 2', '2020-03-10 06:59:00', '2020-03-15 07:47' ],
+      # not '2020-03-03 06:59:00', tuesday 2 matches
+    [ '59 6 1-7 * 2', '2020-03-03 06:59:00', '2020-03-04 06:00' ],
+      # yes, either tuesday 2 and monthday 1-7 match
+    [ '59 6 1-7 * 2', '2020-02-25 06:59:00', '2020-03-01 06:00' ],
+      # not '2020-02-04 06:59:00', tuesday 2 matches
+      #
+      # gh-35
+      #
+      # From `man 5 crontab`
+      #
+      # Note: The day of a command's execution can be specified
+      # by two fields -- day of month, and day of week.
+      # If both fields are restricted (ie, are not *), the command will be
+      # run when either field matches the current time.
+      # For example, ``30 4 1,15 * 5'' would cause a command to be run
+      # at 4:30 am on the 1st and 15th of each month, plus every Friday.
   ]
 
   describe '#previous_time' do
@@ -721,6 +761,10 @@ describe Fugit::Cron do
         [ '* * * 1-13 *', nil ], # month 13 isn't allowed at parsing
           #
           # gh-30
+
+        [ '59 6 1-7 * 2', '59 6 1,2,3,4,5,6,7 * 2' ],
+          #
+          # gh-35
 
       ].each { |c, e|
 

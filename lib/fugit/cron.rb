@@ -188,6 +188,15 @@ module Fugit
 
       return weekday_match?(nt) || monthday_match?(nt) \
         if @weekdays && @monthdays
+          #
+          # From `man 5 crontab`
+          #
+          # Note: The day of a command's execution can be specified
+          # by two fields -- day of month, and day of week.
+          # If both fields are restricted (ie, are not *), the command will be
+          # run when either field matches the current time.
+          # For example, ``30 4 1,15 * 5'' would cause a command to be run
+          # at 4:30 am on the 1st and 15th of each month, plus every Friday.
 
       return false unless weekday_match?(nt)
       return false unless monthday_match?(nt)
