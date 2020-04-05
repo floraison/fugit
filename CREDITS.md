@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Dominik Sander https://github.com/dsander #rough_frequency 0, gh-36
 * Milovan Zogovic https://github.com/assembler Cron#match? vs TZ, gh-31
 * Jessica Stokes https://github.com/ticky 0-24 issue with cron, gh-30
 * Shai Coleman https://github.com/shaicoleman parse_nat enhancements, gh-24, gh-25, and gh-28
