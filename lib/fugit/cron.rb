@@ -347,6 +347,7 @@ module Fugit
         return (a + [ a.first + v1 ])
           .each_cons(2)
           .collect { |a0, a1| a1 - a0 }
+          .select { |d| d > 0 } # weed out zero deltas
           .min * v0
       end
 

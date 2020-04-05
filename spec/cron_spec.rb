@@ -635,6 +635,11 @@ describe Fugit::Cron do
       '0 0 -5 * *' => '1M',
       '0 8 L * *' => '1M',
 
+      '0 0 */2 * *' => '2d',
+      '0 0 */2 * * Europe/Berlin' => '2d',
+      '0 0 */3 * *' => '3d',
+      '0 0 * * */2' => '1d',
+
     }.each do |cron, freq|
 
       it "gets #{cron.inspect} and outputs #{freq.inspect}" do
