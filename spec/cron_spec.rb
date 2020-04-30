@@ -683,6 +683,7 @@ describe Fugit::Cron do
         [ '@weekly', '0 0 * * 0' ],
         [ '@daily', '0 0 * * *' ],
         [ '@midnight', '0 0 * * *' ],
+        [ '@noon', '0 12 * * *' ],
         [ '@hourly', '0 * * * *' ],
 
         # min hou dom mon dow
