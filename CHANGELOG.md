@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.4.0 not yet released
+
+
 ## fugit 1.3.4 released 2020-04-06
 
 * Prevent #rough_frequency returning 0, gh-36
