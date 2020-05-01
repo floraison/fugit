@@ -88,6 +88,8 @@ module Fugit
           end
         end
 
+        return nil if h[:fail]
+
         h[:min] ||= [ 0 ]
         h[:min].uniq!
 
@@ -113,11 +115,32 @@ module Fugit
         send("process_duration_#{interval}", h, value)
       end
 
+      def process_duration_yea(h, value)
+
+        if value != 1
+          h[:fail] = "cannot cron for \"every #{value} years\""
+        else
+          h[:hou] = [ 0 ]
+          h[:mon] = [ 1 ]
+          h[:dom] = [ 1 ]
+        end
+      end
+
       def process_duration_mon(h, value)
 
         h[:hou] = [ 0 ]
         h[:dom] = [ 1 ]
         h[:mon] = [ value == 1 ? '*' : "*/#{value}" ]
+      end
+
+      def process_duration_wee(h, value)
+
+        if value != 1
+          h[:fail] = "cannot cron for \"every #{value} week\", use a real cron"
+        else
+          h[:hou] = [ 0 ]
+          h[:dow] = [ 0 ] # Sunday
+        end
       end
 
       def process_duration_day(h, value)
@@ -210,7 +233,8 @@ module Fugit
           /
             \d+
             \s?
-            (mon(ths?)?|d(ays?)?|h(ours?)?|m(in(ute)?s?)?|s(ec(ond)?s?)?)
+            (y(ears?)?|mon(ths?)?|w(eeks?)?|d(ays?)?|
+              h(ours?)?|m(in(ute)?s?)?|s(ec(ond)?s?)?)
           /ix)
       end
 

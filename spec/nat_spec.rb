@@ -168,6 +168,12 @@ describe Fugit::Nat do
       expect(Fugit::Nat.parse(true)).to eq(nil)
       expect(Fugit::Nat.parse('nada')).to eq(nil)
     end
+
+    it 'rejects strings that cannot be turned into crons' do
+
+      expect(Fugit::Nat.parse('every 2 years')).to eq(nil)
+      expect(Fugit::Nat.parse('every 2 weeks')).to eq(nil)
+    end
   end
 
   describe '.do_parse' do
