@@ -78,6 +78,23 @@ describe Fugit::Nat do
           #
           # gh-29
 
+        'every second'   => '* * * * * *',
+        'every 1 second' => '* * * * * *',
+        'every minute'   => '* * * * *',
+        'every 1 minute' => '* * * * *',
+        'every hour'   => '0 * * * *',
+        'every 1 hour' => '0 * * * *',
+        'every day'   => '0 0 * * *',
+        'every 1 day' => '0 0 * * *',
+        'every week'   => '0 0 * * 0',
+        'every 1 week' => '0 0 * * 0',
+        'every month'   => '0 0 1 * *',
+        'every 1 month' => '0 0 1 * *',
+        'every year'   => '0 0 1 1 *',
+        'every 1 year' => '0 0 1 1 *',
+          #
+          # gh-37
+
       }.each do |nat, cron|
 
         it "parses #{nat.inspect} into #{cron.inspect}" do
