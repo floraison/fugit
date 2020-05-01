@@ -40,9 +40,10 @@ describe Fugit::Nat do
         'every 15 sec' => '*/15 * * * * *',
         'every 15 seconds' => '*/15 * * * * *',
         'every 1 h' => '0 * * * *',
-        'every 1 hour' => '0 * * * *',
-        'every 1 month' => '0 0 1 * *',
-        'every 1 second' => '* * * * * *',
+        #'every 1 hour' => '0 * * * *',
+        #'every 1 month' => '0 0 1 * *',
+        #'every 1 second' => '* * * * * *',
+          # those 3 are moved below for gh-37
 
         #'every 1st of the month at midnight' => '',
         #'at 5 after 4, everyday' => '',
