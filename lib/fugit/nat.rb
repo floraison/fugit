@@ -15,6 +15,7 @@ module Fugit
         return nil unless s.is_a?(String)
 
 #p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
+#(p s; Raabro.pp(Parser.parse(s, debug: 1), colours: true)) rescue nil
         a = Parser.parse(s)
 
         return nil unless a
@@ -66,27 +67,34 @@ module Fugit
 
       def parse_cron(a, opts)
 
+#puts "a:     " + a.inspect
+#puts "opts:  " + opts.inspect
         h = { min: nil, hou: [], dom: nil, mon: nil, dow: nil }
         hkeys = h.keys
 
         a.each do |key, val|
-          if key == :biz_day
+          case key
+          when :biz_day
             (h[:dow] ||= []) << '1-5'
-          elsif key == :simple_hour || key == :numeral_hour
+          when :simple_hour, :numeral_hour
             h[:hou] << val
-          elsif key == :digital_hour
+          when :digital_hour
             (h[:hou] ||= []) << val[0].to_i
             (h[:min] ||= []) << val[1].to_i
-          elsif key == :name_day
+          when :name_day
             (h[:dow] ||= []) << val
-          elsif key == :day_range
+          when :day_range
             (h[:dow] ||= []) << val.collect { |v| v.to_s[0, 3] }.join('-')
-          elsif key == :tz
+          when :tz
             h[:tz] = val
-          elsif key == :duration
+          when :duration
             process_duration(h, *val[0].to_h.first)
+          when :lone_sec
+            h[:min] = [ '*' ]
+            h[:sec] = [ '*' ]
           end
         end
+#p h
 
         return nil if h[:fail]
 
@@ -183,6 +191,10 @@ module Fugit
 
       # piece parsers bottom to top
 
+      def lone_sec(i)
+        rex(:lone_sec, i, /sec(ond)?/i)
+      end
+
       def am_pm(i)
         rex(:am_pm, i, / *(am|pm)/i)
       end
@@ -247,7 +259,8 @@ module Fugit
           :_tz,
           :flag,
           :duration,
-          :name_hour, :numeral_hour, :digital_hour, :simple_hour)
+          :name_hour, :numeral_hour, :digital_hour, :simple_hour,
+          :lone_sec)
       end
 
       def sugar(i); rex(nil, i, /(and|or|[, \t]+)/i); end
