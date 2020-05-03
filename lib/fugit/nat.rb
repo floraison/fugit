@@ -67,17 +67,19 @@ module Fugit
 
       def parse_cron(a, opts)
 
-#puts "a:     " + a.inspect
-#puts "opts:  " + opts.inspect
-        h = { min: nil, hou: [], dom: nil, mon: nil, dow: nil }
+        h = { min: nil, hou: nil, dom: nil, mon: nil, dow: nil }
         hkeys = h.keys
+
+        is, es = a.partition { |e| e[0] == :interval }
+        a = es + is
+          # intervals are fallback
 
         a.each do |key, val|
           case key
           when :biz_day
             (h[:dow] ||= []) << '1-5'
           when :simple_hour, :numeral_hour
-            h[:hou] << val
+            (h[:hou] ||= []) << val
           when :digital_hour
             (h[:hou] ||= []) << val[0].to_i
             (h[:min] ||= []) << val[1].to_i
@@ -89,21 +91,15 @@ module Fugit
             h[:tz] = val
           when :duration
             process_duration(h, *val[0].to_h.first)
-          when :lone_sec
-            h[:min] = [ '*' ]
-            h[:sec] = [ '*' ]
+          when :interval
+            process_interval(h, val)
           end
         end
-#p h
 
         return nil if h[:fail]
 
-        h[:min] ||= [ 0 ]
-        h[:min].uniq!
-
-        h[:hou].uniq!;
-        h[:hou].sort!
-
+        h[:min] = (h[:min] || [ 0 ]).uniq
+        h[:hou] = (h[:hou] || []).uniq.sort
         h[:dow].sort! if h[:dow]
 
         a = hkeys
@@ -116,6 +112,46 @@ module Fugit
         s = a.join(' ')
 
         Fugit::Cron.parse(s)
+      end
+
+      def process_interval(h, value)
+
+        case value
+        when 'sec', 'second'
+          h[:min] = [ '*' ]
+          h[:sec] = [ '*' ]
+        when 'min', 'minute'
+          h[:min] = [ '*' ]
+        when 'hour'
+          unless h[:min] || h[:hou]
+            h[:min] = [ 0 ]
+            h[:hou] = [ '*' ]
+          end
+        when 'day'
+          unless h[:min] || h[:hou]
+            h[:min] = [ 0 ]
+            h[:hou] = [ 0 ]
+          end
+        when 'week'
+          unless h[:min] || h[:hou] || h[:dow]
+            h[:min] = [ 0 ]
+            h[:hou] = [ 0 ]
+            h[:dow] = [ 0 ]
+          end
+        when 'month'
+          unless h[:min] || h[:hou] || h[:dom]
+            h[:min] = [ 0 ]
+            h[:hou] = [ 0 ]
+            h[:dom] = [ 1 ]
+          end
+        when 'year'
+          unless h[:min] || h[:hou] || h[:dom] || h[:mon]
+            h[:min] = [ 0 ]
+            h[:hou] = [ 0 ]
+            h[:dom] = [ 1 ]
+            h[:mon] = [ 1 ]
+          end
+        end
       end
 
       def process_duration(h, interval, value)
@@ -191,8 +227,10 @@ module Fugit
 
       # piece parsers bottom to top
 
-      def lone_sec(i)
-        rex(:lone_sec, i, /sec(ond)?/i)
+      def interval(i)
+        rex(
+          :interval, i,
+          /(year|month|week|day|hour|min(ute)?|sec(ond)?)(?![a-z])/i)
       end
 
       def am_pm(i)
@@ -221,7 +259,6 @@ module Fugit
         rex(:name_hour, i, /(#{NHOURS.keys.join('|')})/i)
       end
 
-      def plain_day(i); rex(:plain_day, i, /day/i); end
       def biz_day(i); rex(:biz_day, i, /(biz|business|week) *day/i); end
       def name_day(i); rex(:name_day, i, /#{WEEKDAYS.reverse.join('|')}/i); end
 
@@ -254,13 +291,12 @@ module Fugit
 
       def datum(i)
         alt(nil, i,
-          :day_range,
-          :plain_day, :biz_day, :name_day,
+          :interval,
+          :day_range, :biz_day, :name_day,
           :_tz,
           :flag,
           :duration,
-          :name_hour, :numeral_hour, :digital_hour, :simple_hour,
-          :lone_sec)
+          :name_hour, :numeral_hour, :digital_hour, :simple_hour)
       end
 
       def sugar(i); rex(nil, i, /(and|or|[, \t]+)/i); end
