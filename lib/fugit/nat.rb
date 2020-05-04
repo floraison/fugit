@@ -162,28 +162,24 @@ module Fugit
 
       def process_interval1(h, interval, value)
 
+        if value != 1 && [ :yea, :wee ].include?(interval)
+          int = interval == :year ? 'years' : 'weeks'
+          h[:fail] = "cannot cron for \"every #{value} #{int}\""
+          return
+        end
+
         case interval
         when :yea
-          if value != 1
-            h[:fail] =
-              "cannot cron for \"every #{value} years\""
-          else
-            h[:hou] = [ 0 ]
-            h[:mon] = [ 1 ]
-            h[:dom] = [ 1 ]
-          end
+          h[:hou] = [ 0 ]
+          h[:mon] = [ 1 ]
+          h[:dom] = [ 1 ]
         when :mon
           h[:hou] = [ 0 ]
           h[:dom] = [ 1 ]
           h[:mon] = [ value == 1 ? '*' : "*/#{value}" ]
         when :wee
-          if value != 1
-            h[:fail] =
-              "cannot cron for \"every #{value} week\", use a real cron"
-          else
-            h[:hou] = [ 0 ]
-            h[:dow] = [ 0 ] # Sunday
-          end
+          h[:hou] = [ 0 ]
+          h[:dow] = [ 0 ] # Sunday
         when :day
           h[:hou] = [ 0 ]
           h[:dom] = [ value == 1 ? '*' : "*/#{value}" ]
