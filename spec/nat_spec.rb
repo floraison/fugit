@@ -95,6 +95,16 @@ describe Fugit::Nat do
         'every 1 year' => '0 0 1 1 *',
           #
           # gh-37
+          #
+        'every minute at second 10' => '10 * * * * *',
+        'every hour at min 11' => '11 * * * *',
+        'every day at 18:22' => '22 18 * * *',
+        'every week on monday 18:23' => '23 18 * * 1',
+        'every monday 18:24' => '24 18 * * 1',
+        'every month at 19:10' => '10 19 1 * *',
+        'every year at 20:10' => '10 20 1 1 *',
+
+        # minute hour day-of-month month day-of-week
 
       }.each do |nat, cron|
 

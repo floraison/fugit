@@ -38,20 +38,16 @@ module Fugit
 
       def parse_crons(s, a, opts)
 
-        dhs, aa = a
-          .partition { |e| e[0] == :digital_hour }
-        ms = dhs
-          .inject({}) { |h, dh| (h[dh[1][0]] ||= []) << dh[1][1]; h }
+        hms, aa = a
+          .partition { |e| e[0] == :point && e[1][0] == :hour }
+        ms = hms
+          .inject({}) { |h, e| (h[e[1][1]] ||= []) << e[1][2]; h }
           .values
           .uniq
-
         crons =
-          #if ms.size <= 1 || hs.size <= 1
-          if ms.size <= 1
-            [ parse_cron(a, opts) ]
-          else
-            dhs.collect { |dh| parse_cron([ dh ] + aa, opts) }
-          end
+          ms.size > 1 ?
+          hms.collect { |e| parse_cron([ e ] + aa, opts) } :
+          [ parse_cron(a, opts) ]
 
         fail ArgumentError.new(
           "multiple crons in #{s.inspect} " +
@@ -78,17 +74,14 @@ module Fugit
           case key
           when :biz_day
             (h[:dow] ||= []) << '1-5'
-          when :simple_hour, :numeral_hour
-            (h[:hou] ||= []) << val
-          when :digital_hour
-            (h[:hou] ||= []) << val[0].to_i
-            (h[:min] ||= []) << val[1].to_i
           when :name_day
             (h[:dow] ||= []) << val
           when :day_range
             (h[:dow] ||= []) << val.collect { |v| v.to_s[0, 3] }.join('-')
           when :tz
             h[:tz] = val
+          when :point
+            process_point(h, *val)
           when :interval1
             process_interval1(h, *val[0].to_h.first)
           when :interval0
@@ -112,6 +105,19 @@ module Fugit
         s = a.join(' ')
 
         Fugit::Cron.parse(s)
+      end
+
+      def process_point(h, key, *value)
+
+        case key
+        when :hour
+          v0, v1 = value
+          v0 = v0.to_i if v0.is_a?(String) && v0.match(/^\d+$/)
+          (h[:hou] ||= []) << v0
+          (h[:min] ||= []) << v1.to_i if v1
+        when :sec, :min
+          (h[key] ||= []) << value[0]
+        end
       end
 
       def process_interval0(h, value)
@@ -139,18 +145,18 @@ module Fugit
             h[:dow] = [ 0 ]
           end
         when 'month'
-          unless h[:min] || h[:hou] || h[:dom]
+          unless h[:min] || h[:hou]
             h[:min] = [ 0 ]
             h[:hou] = [ 0 ]
-            h[:dom] = [ 1 ]
           end
+          (h[:dom] ||= []) << 1
         when 'year'
-          unless h[:min] || h[:hou] || h[:dom] || h[:mon]
+          unless h[:min] || h[:hou]
             h[:min] = [ 0 ]
             h[:hou] = [ 0 ]
-            h[:dom] = [ 1 ]
-            h[:mon] = [ 1 ]
           end
+          (h[:dom] ||= []) << 1
+          (h[:mon] ||= []) << 1
         end
       end
 
@@ -210,8 +216,7 @@ module Fugit
       # piece parsers bottom to top
 
       def interval0(i)
-        rex(
-          :interval0, i,
+        rex(:interval0, i,
           /(year|month|week|day|hour|min(ute)?|sec(ond)?)(?![a-z])/i)
       end
 
@@ -259,26 +264,35 @@ module Fugit
       def _tz(i); alt(:tz, i, :_tz_delta, :_tz_name); end
 
       def interval1(i)
-        rex(
-          :interval1, i,
+        rex(:interval1, i,
           /
             \d+
             \s?
-            (y(ears?)?|mon(ths?)?|w(eeks?)?|d(ays?)?|
+            (y(ears?)?|months?|w(eeks?)?|d(ays?)?|
               h(ours?)?|m(in(ute)?s?)?|s(ec(ond)?s?)?)
           /ix)
+      end
+
+      def min_or_sec(i)
+        rex(:min_or_sec, i, /(min(ute)?|sec(ond)?)\s+\d+/i)
+      end
+
+      def point(i)
+        alt(:point, i,
+          :min_or_sec,
+          :name_hour, :numeral_hour, :digital_hour, :simple_hour)
       end
 
       def flag(i); rex(:flag, i, /(every|from|at|after|on|in)/i); end
 
       def datum(i)
         alt(nil, i,
-          :interval0,
-          :day_range, :biz_day, :name_day,
-          :_tz,
           :flag,
           :interval1,
-          :name_hour, :numeral_hour, :digital_hour, :simple_hour)
+          :point,
+          :interval0,
+          :day_range, :biz_day, :name_day,
+          :_tz)
       end
 
       def sugar(i); rex(nil, i, /(and|or|[, \t]+)/i); end
@@ -288,38 +302,62 @@ module Fugit
 
       # rewrite parsed tree
 
+      def _rewrite(t)
+        [ t.name, t.string.downcase ]
+      end
+      alias rewrite_flag _rewrite
+      alias rewrite_interval0 _rewrite
+      alias rewrite_biz_day _rewrite
+
+      def rewrite_name_day(t)
+        [ :name_day, WEEKDAYS.index(t.string.downcase[0, 3]) ]
+      end
+
+      def rewrite_day_range(t)
+        [ :day_range, t.subgather(nil).collect { |st| st.string.downcase } ]
+      end
+
+      def rewrite_name_hour(t)
+        [ :hour, *NHOURS[t.string.strip.downcase] ]
+      end
+      def rewrite_numeral_hour(t)
+        vs = t.subgather(nil).collect { |st| st.string.downcase.strip }
+        v = NUMS.index(vs[0])
+        v += 12 if vs[1] == 'pm'
+        [ :hour, v, 0 ]
+      end
+      def rewrite_simple_hour(t)
+        vs = t.subgather(nil).collect { |st| st.string.downcase.strip }
+        v = vs[0].to_i
+        v += 12 if vs[1] == 'pm'
+        [ :hour, v, 0 ]
+      end
+      def rewrite_digital_hour(t)
+        v = t.string.gsub(/:/, '')
+        [ :hour, v[0, 2], v[2, 2] ]
+      end
+
+      def rewrite_min_or_sec(t)
+        unit, num = t.string.split(/\s+/)
+        [ unit[0, 3].to_sym, num.to_i ]
+      end
+
+      def rewrite_point(t)
+        [ :point, rewrite(t.sublookup) ]
+      end
+
+      def rewrite_tz(t)
+        [ :tz,  [ t.string.strip, EtOrbi.get_tzone(t.string.strip) ] ]
+      end
+
+      def rewrite_interval1(t)
+        [ t.name, [ Fugit::Duration.parse(t.string.strip) ] ]
+      end
+
       def rewrite_nat(t)
 
 #Raabro.pp(t, colours: true)
-        t
-          .subgather(nil)
-          .collect { |tt|
-
-            k = tt.name
-            v = tt.string.downcase
-
-            case k
-            when :tz
-              [ k, [ tt.string.strip, EtOrbi.get_tzone(tt.string.strip) ] ]
-            when :interval1
-              [ k, [ Fugit::Duration.parse(tt.string.strip) ] ]
-            when :digital_hour
-              v = v.gsub(/:/, '')
-              [ k, [ v[0, 2], v[2, 2] ] ]
-            when :name_hour
-              [ :digital_hour, NHOURS[v] ]
-            when :name_day
-              [ k, WEEKDAYS.index(v[0, 3]) ]
-            when :day_range
-              [ k, tt.subgather(nil).collect { |st| st.string.downcase } ]
-            when :numeral_hour, :simple_hour
-              vs = tt.subgather(nil).collect { |ttt| ttt.string.downcase.strip }
-              v = k == :simple_hour ? vs[0].to_i : NUMS.index(vs[0])
-              v += 12 if vs[1] == 'pm'
-              [ k, v ]
-            else
-              [ k, v ]
-            end }
+        t.subgather(nil).collect { |tt| rewrite(tt) }
       end
     end
   end
