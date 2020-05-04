@@ -70,9 +70,9 @@ module Fugit
         h = { min: nil, hou: nil, dom: nil, mon: nil, dow: nil }
         hkeys = h.keys
 
-        is, es = a.partition { |e| e[0] == :interval }
-        a = es + is
-          # intervals are fallback
+        i0s, es = a.partition { |e| e[0] == :interval0 }
+        a = es + i0s
+          # interval0s are fallback
 
         a.each do |key, val|
           case key
@@ -89,10 +89,10 @@ module Fugit
             (h[:dow] ||= []) << val.collect { |v| v.to_s[0, 3] }.join('-')
           when :tz
             h[:tz] = val
-          when :duration
-            process_duration(h, *val[0].to_h.first)
-          when :interval
-            process_interval(h, val)
+          when :interval1
+            process_interval1(h, *val[0].to_h.first)
+          when :interval0
+            process_interval0(h, val)
           end
         end
 
@@ -114,7 +114,7 @@ module Fugit
         Fugit::Cron.parse(s)
       end
 
-      def process_interval(h, value)
+      def process_interval0(h, value)
 
         case value
         when 'sec', 'second'
@@ -154,7 +154,7 @@ module Fugit
         end
       end
 
-      def process_duration(h, interval, value)
+      def process_interval1(h, interval, value)
 
         case interval
         when :yea
@@ -209,9 +209,9 @@ module Fugit
 
       # piece parsers bottom to top
 
-      def interval(i)
+      def interval0(i)
         rex(
-          :interval, i,
+          :interval0, i,
           /(year|month|week|day|hour|min(ute)?|sec(ond)?)(?![a-z])/i)
       end
 
@@ -258,9 +258,9 @@ module Fugit
       end
       def _tz(i); alt(:tz, i, :_tz_delta, :_tz_name); end
 
-      def duration(i)
+      def interval1(i)
         rex(
-          :duration, i,
+          :interval1, i,
           /
             \d+
             \s?
@@ -273,11 +273,11 @@ module Fugit
 
       def datum(i)
         alt(nil, i,
-          :interval,
+          :interval0,
           :day_range, :biz_day, :name_day,
           :_tz,
           :flag,
-          :duration,
+          :interval1,
           :name_hour, :numeral_hour, :digital_hour, :simple_hour)
       end
 
@@ -301,7 +301,7 @@ module Fugit
             case k
             when :tz
               [ k, [ tt.string.strip, EtOrbi.get_tzone(tt.string.strip) ] ]
-            when :duration
+            when :interval1
               [ k, [ Fugit::Duration.parse(tt.string.strip) ] ]
             when :digital_hour
               v = v.gsub(/:/, '')
