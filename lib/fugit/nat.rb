@@ -156,59 +156,41 @@ module Fugit
 
       def process_duration(h, interval, value)
 
-        send("process_duration_#{interval}", h, value)
-      end
-
-      def process_duration_yea(h, value)
-
-        if value != 1
-          h[:fail] = "cannot cron for \"every #{value} years\""
-        else
+        case interval
+        when :yea
+          if value != 1
+            h[:fail] =
+              "cannot cron for \"every #{value} years\""
+          else
+            h[:hou] = [ 0 ]
+            h[:mon] = [ 1 ]
+            h[:dom] = [ 1 ]
+          end
+        when :mon
           h[:hou] = [ 0 ]
-          h[:mon] = [ 1 ]
           h[:dom] = [ 1 ]
-        end
-      end
-
-      def process_duration_mon(h, value)
-
-        h[:hou] = [ 0 ]
-        h[:dom] = [ 1 ]
-        h[:mon] = [ value == 1 ? '*' : "*/#{value}" ]
-      end
-
-      def process_duration_wee(h, value)
-
-        if value != 1
-          h[:fail] = "cannot cron for \"every #{value} week\", use a real cron"
-        else
+          h[:mon] = [ value == 1 ? '*' : "*/#{value}" ]
+        when :wee
+          if value != 1
+            h[:fail] =
+              "cannot cron for \"every #{value} week\", use a real cron"
+          else
+            h[:hou] = [ 0 ]
+            h[:dow] = [ 0 ] # Sunday
+          end
+        when :day
           h[:hou] = [ 0 ]
-          h[:dow] = [ 0 ] # Sunday
+          h[:dom] = [ value == 1 ? '*' : "*/#{value}" ]
+        when :hou
+          h[:hou] = [ value == 1 ? '*' : "*/#{value}" ]
+        when :min
+          h[:hou] = [ '*' ]
+          h[:min] = [ value == 1 ? '*' : "*/#{value}" ]
+        when :sec
+          h[:hou] = [ '*' ]
+          h[:min] = [ '*' ]
+          h[:sec] = [ value == 1 ? '*' : "*/#{value}" ]
         end
-      end
-
-      def process_duration_day(h, value)
-
-        h[:hou] = [ 0 ]
-        h[:dom] = [ value == 1 ? '*' : "*/#{value}" ]
-      end
-
-      def process_duration_hou(h, value)
-
-        h[:hou] = [ value == 1 ? '*' : "*/#{value}" ]
-      end
-
-      def process_duration_min(h, value)
-
-        h[:hou] = [ '*' ]
-        h[:min] = [ value == 1 ? '*' : "*/#{value}" ]
-      end
-
-      def process_duration_sec(h, value)
-
-        h[:hou] = [ '*' ]
-        h[:min] = [ '*' ]
-        h[:sec] = [ value == 1 ? '*' : "*/#{value}" ]
       end
     end
 
