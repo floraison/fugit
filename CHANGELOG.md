@@ -2,7 +2,10 @@
 # CHANGELOG.md
 
 
-## fugit 1.3.5 not yet released
+## fugit 1.3.5 released 2020-05-07
+
+* Implement cron @noon, gh-37
+* Normalize "every x", gh-37
 
 
 ## fugit 1.3.4 released 2020-04-06
