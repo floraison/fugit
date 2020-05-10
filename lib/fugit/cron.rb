@@ -757,7 +757,7 @@ module Fugit
 
       def rewrite_tz(t)
 
-        s = t.string.strip
+        s = t.strim
         z = EtOrbi.get_tzone(s)
 
         [ s, z ]

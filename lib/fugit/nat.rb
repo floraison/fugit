@@ -314,16 +314,16 @@ module Fugit
       end
 
       def rewrite_name_hour(t)
-        [ :hour, *NHOURS[t.string.strip.downcase] ]
+        [ :hour, *NHOURS[t.strim.downcase] ]
       end
       def rewrite_numeral_hour(t)
-        vs = t.subgather(nil).collect { |st| st.string.downcase.strip }
+        vs = t.subgather(nil).collect { |st| st.strim.downcase }
         v = NUMS.index(vs[0])
         v += 12 if vs[1] == 'pm'
         [ :hour, v, 0 ]
       end
       def rewrite_simple_hour(t)
-        vs = t.subgather(nil).collect { |st| st.string.downcase.strip }
+        vs = t.subgather(nil).collect { |st| st.strim.downcase }
         v = vs[0].to_i
         v += 12 if vs[1] == 'pm'
         [ :hour, v, 0 ]
@@ -343,11 +343,11 @@ module Fugit
       end
 
       def rewrite_tz(t)
-        [ :tz,  [ t.string.strip, EtOrbi.get_tzone(t.string.strip) ] ]
+        [ :tz,  [ t.strim, EtOrbi.get_tzone(t.strim) ] ]
       end
 
       def rewrite_interval1(t)
-        [ t.name, [ Fugit::Duration.parse(t.string.strip) ] ]
+        [ t.name, [ Fugit::Duration.parse(t.strim) ] ]
       end
 
       def rewrite_nat(t)

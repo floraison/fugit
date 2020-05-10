@@ -40,7 +40,7 @@ Time tools for flor and the floraison project. Cron parsing and occurrence compu
   #s.add_runtime_dependency 'tzinfo'
     # this dependency appears in 'et-orbi'
 
-  s.add_runtime_dependency 'raabro', '~> 1.1'
+  s.add_runtime_dependency 'raabro', '~> 1.3'
   s.add_runtime_dependency 'et-orbi', '~> 1.1', '>= 1.1.8'
 
   s.add_development_dependency 'rspec', '~> 3.8'
