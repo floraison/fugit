@@ -63,13 +63,13 @@ describe Fugit::Nat do
         'every wed or Monday at 5pm and 11' => '0 11,17 * * 1,3',
         'every Mon,Tue,Wed,Thu,Fri at 18:00' => '0 18 * * 1,2,3,4,5',
         'every Mon, Tue, and Wed at 18:15' => '15 18 * * 1,2,3',
-        'every Mon to Thu at 18:20' => '20 18 * * mon-thu',
-        'every Mon to Thu, 18:20' => '20 18 * * mon-thu',
-        'every mon-thu at 18:20' => '20 18 * * mon-thu',
-        'every Monday to Thursday at 18:20' => '20 18 * * mon-thu',
-        'every Monday through Friday at 19:20' => '20 19 * * mon-fri',
-        'from Monday through Friday at 19:21' => '21 19 * * mon-fri',
-        'from Monday to Friday at 19:22' => '22 19 * * mon-fri',
+        'every Mon to Thu at 18:20' => '20 18 * * 1-4',
+        'every Mon to Thu, 18:20' => '20 18 * * 1-4',
+        'every mon-thu at 18:20' => '20 18 * * 1-4',
+        'every Monday to Thursday at 18:20' => '20 18 * * 1-4',
+        'every Monday through Friday at 19:20' => '20 19 * * 1-5',
+        'from Monday through Friday at 19:21' => '21 19 * * 1-5',
+        'from Monday to Friday at 19:22' => '22 19 * * 1-5',
           #
           # gh-25
 
@@ -104,6 +104,8 @@ describe Fugit::Nat do
         'every month at 19:10' => '10 19 1 * *',
         'every year at 20:10' => '10 20 1 1 *',
 
+        'every day at zero dark thirty' => '30 0 * * *',
+
         # minute hour day-of-month month day-of-week
 
       }.each do |nat, cron|
@@ -123,7 +125,7 @@ describe Fugit::Nat do
 
       c = Fugit::Nat.parse('every Fri-Sun at 18:00 UTC')
 
-      expect(c.original).to eq('0 18 * * fri-sun UTC')
+      expect(c.original).to eq('0 18 * * 5-0 UTC')
       expect(c.weekdays).to eq([ [ 0 ], [ 5 ], [ 6 ] ])
     end
 
