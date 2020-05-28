@@ -245,6 +245,16 @@ Fugit.parse(1000).deflate.to_plain_s # => "16m40s"
 Fugit.parse(3600).deflate.to_plain_s # => "1h"
 ```
 
+There is also an `#inflate` method
+
+```ruby
+Fugit::Duration.parse('1h30m12').inflate.to_plain_s # => "5412s"
+Fugit.parse('1h30m12').inflate.to_plain_s # => "5412s"
+
+Fugit.parse('1h30m12').to_sec # => 5412
+Fugit.parse('1h30m12').to_sec.to_s + 's' # => "5412s"
+```
+
 The `to_*_s` methods are also available as class methods:
 ```ruby
 p Fugit::Duration.to_plain_s('1y2M1d4h')
