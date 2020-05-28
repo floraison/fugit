@@ -232,6 +232,19 @@ p d.to_plain_s  # => "2Y2M1D5h3600s"
 p Fugit::Duration.parse('1y2M1d4h').to_sec # => 36820800
 ```
 
+There is a `#deflate` method
+
+```ruby
+Fugit::Duration.parse(1000).to_plain_s # => "1000s"
+Fugit::Duration.parse(3600).to_plain_s # => "3600s"
+Fugit::Duration.parse(1000).deflate.to_plain_s # => "16m40s"
+Fugit::Duration.parse(3600).deflate.to_plain_s # => "1h"
+
+# or event shorter
+Fugit.parse(1000).deflate.to_plain_s # => "16m40s"
+Fugit.parse(3600).deflate.to_plain_s # => "1h"
+```
+
 The `to_*_s` methods are also available as class methods:
 ```ruby
 p Fugit::Duration.to_plain_s('1y2M1d4h')
