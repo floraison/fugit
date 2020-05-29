@@ -50,9 +50,9 @@ p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
             # parse_x_elt calls have the right sequence
 
         hms = h[:hms]
-        h[:sec] = hms[3..-1][0] if hms && hms.size > 2
 
         hours = (hms || [])
+          .uniq
           .inject({}) { |r, hm| (r[hm[1]] ||= []) << hm[0]; r }
           .inject({}) { |r, (m, hs)| (r[hs.sort] ||= []) << m; r }
           .to_a
@@ -114,7 +114,7 @@ p s.join(' ')
         when 'm', 'min', 'mins', 'minute', 'minutes'
           (h[:hms] ||= []) << [ '*', eone(e) ]
         when 'h', 'hour', 'hours'
-          (h[:hms] ||= []) << [ eone(e), 0 ]
+          h[:hms] ||= [ [ eone(e), 0 ] ]
         when 'd', 'day', 'days'
           h[:hms] ||= [ [ 0, 0 ] ]
         when 'w', 'week', 'weeks'
@@ -144,6 +144,9 @@ p s.join(' ')
       def parse_at_elt(e, opts, h)
 
         (h[:hms] ||= []).concat(e[1])
+
+        e = h[:hms].last
+        h[:sec] = e.pop if e.size > 2
       end
 
       def parse_tz_elt(e, opts, h)
@@ -336,7 +339,7 @@ p s.join(' ')
       end
 
       def dname(i)
-        rex(:dname, i, /(s(ec(onds?)?|mxxx))\s+/)
+        rex(:dname, i, /(s(ec(onds?)?)?|m(in(utes?)?)?)\s+/)
       end
       def named_digit(i)
         seq(:named_digit, i, :dname, :integer)
@@ -501,6 +504,7 @@ p s.join(' ')
 
         case n = t.sublookup(:dname).strim
         when /^s/ then [ '*', '*', i ]
+        when /^m/ then [ '*', i ]
         end
       end
 
