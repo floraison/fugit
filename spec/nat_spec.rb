@@ -45,7 +45,16 @@ describe Fugit::Nat do
         #'every 1 second' => '* * * * * *',
           # those 3 are moved below for gh-37
 
-        #'every 1st of the month at midnight' => '',
+        'every 1st of the month at midnight' => '0 0 1 * *',
+        'every first of the month at midnight' => '0 0 1 * *',
+        'Every 2nd of the month at 10:00' => '0 10 2 * *',
+        'Every second of the month at 10:00' => '0 10 2 * *',
+        'every month on day 2 at 10:00' => '0 10 2 * *',
+        'every month on days 1,15 at 10:00' => '0 10 1,15 * *',
+        'every 15th of the month' => '0 0 15 * *', # gh-38 title
+          #
+          # gh-38
+
         #'at 5 after 4, everyday' => '',
 
         'every day at 6pm and 8pm' => '0 18,20 * * *',

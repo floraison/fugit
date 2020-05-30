@@ -52,7 +52,9 @@ module Fugit
           .inject({}) { |r, (m, hs)| (r[hs.sort] ||= []) << m; r }
           .to_a
           .sort_by { |hs, ms| -hs.size }
-        hours << [ [ '*' ], [ '*' ] ] if hours.empty?
+        if hours.empty?
+          hours << (h[:dom] ? [ [ '0' ], [ '0' ] ] : [ [ '*' ], [ '*' ] ])
+        end
 
         crons = hours
           .collect { |hm| assemble_cron(h.merge(hms: hm)) }
@@ -115,14 +117,19 @@ module Fugit
         end
       end
 
-      def parse_day_list_elt(e, opts, h)
+      def parse_dow_list_elt(e, opts, h)
 
         h[:dow] = e[1..-1].collect(&:to_s).sort.join(',')
       end
 
-      def parse_day_range_elt(e, opts, h)
+      def parse_dow_range_elt(e, opts, h)
 
         h[:dow] = e[1] == e[2] ? e[1] : "#{e[1]}-#{e[2]}"
+      end
+
+      def parse_day_of_month_elt(e, opts, h)
+
+        h[:dom] = e[1..-1].join(',')
       end
 
       def parse_at_elt(e, opts, h)
@@ -168,25 +175,39 @@ module Fugit
         'fourty' => 40, 'fourty-five' => 45,
         'fifty' => 50, 'fifty-five' => 55 }
 
+      oh = {
+        '1st' => 1, '2nd' => 2, '3rd' => 3, '21st' => 21, '22nd' => 22,
+        '23rd' => 23, '31st' => 31 }
+      %w[ 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 24 25 26 27 28 29 30 ]
+        .each { |i| oh["#{i}th"] = i.to_i }
+      %w[
+        first second third fourth fifth sixth seventh eighth ninth tenth
+        eleventh twelfth thirteenth fourteenth fifteenth sixteenth seventeenth
+        eighteenth nineteenth twentieth twenty-first twenty-second twenty-third
+        twenty-fourth twenty-fifth twenty-fifth twenty-sixth twenty-seventh
+        twenty-eighth twenty-ninth thirtieth thirty-first ]
+          .each_with_index { |e, i| oh[e] = i + 1 }
+      ORDINALS = oh
+
       # piece parsers bottom to top
 
-      def _from(i); rex(nil, i, /\s*from\s+/); end
-      def _every(i); rex(nil, i, /\s*(every)\s+/); end
-      def _at(i); rex(nil, i, /\s*at\s+/); end
-      def _in(i); rex(nil, i, /\s*(in|on)\s+/); end
-      def _to(i); rex(nil, i, /\s*to\s+/); end
-      def _dash(i); rex(nil, i, /-\s*/); end
-      def _and(i); rex(nil, i, /\s*and\s+/); end
-      def _on(i); rex(nil, i, /\s*on\s+/); end
+      def _from(i); rex(nil, i, /\s*from\s+/i); end
+      def _every(i); rex(nil, i, /\s*(every)\s+/i); end
+      def _at(i); rex(nil, i, /\s*at\s+/i); end
+      def _in(i); rex(nil, i, /\s*(in|on)\s+/i); end
+      def _to(i); rex(nil, i, /\s*to\s+/i); end
+      def _dash(i); rex(nil, i, /-\s*/i); end
+      def _and(i); rex(nil, i, /\s*and\s+/i); end
+      def _on(i); rex(nil, i, /\s*on\s+/i); end
 
       def _and_or_comma(i)
-        rex(nil, i, /\s*(,?\s*and\s|,?\s*or\s|,)\s*/)
+        rex(nil, i, /\s*(,?\s*and\s|,?\s*or\s|,)\s*/i)
       end
       def _at_comma(i)
-        rex(nil, i, /\s*(at\s|,|)\s*/)
+        rex(nil, i, /\s*(at\s|,|)\s*/i)
       end
       def _to_through(i)
-        rex(nil, i, /\s*(to|through)\s+/)
+        rex(nil, i, /\s*(to|through)\s+/i)
       end
 
       def integer(i); rex(:int, i, /\d+\s*/); end
@@ -208,7 +229,7 @@ rex(:xxx, i, 'TODO')
       end
 
       def dname(i)
-        rex(:dname, i, /(s(ec(onds?)?)?|m(in(utes?)?)?)\s+/)
+        rex(:dname, i, /(s(ec(onds?)?)?|m(in(utes?)?)?)\s+/i)
       end
       def named_digit(i)
         seq(:named_digit, i, :dname, :integer)
@@ -276,28 +297,59 @@ rex(:xxx, i, 'TODO')
         seq(:ninterval, i, :integer, :_intervals)
       end
 
-      def day_class(i)
-        rex(:day_class, i, /(weekday)(\s+|$)/)
+      def ordinal(i)
+        rex(:ordinal, i, /\s*(#{ORDINALS.keys.join('|')})\s*/)
       end
 
-      def day(i)
-        seq(:day, i, :weekday)
+      def _mod(i); rex(nil, i, /\s*month\s+on\s+days?\s+/i); end
+      def _oftm(i); rex(nil, i, /\s*(day\s)?\s*of\s+the\s+month\s*/i); end
+
+      def dom(i)
+        rex(:int, i, /([12][0-9]|3[01]|[0-9])/)
       end
-      def and_or_day(i)
-        seq(nil, i, :_and_or_comma, :day)
+      def and_or_dom(i)
+        seq(nil, i, :_and_or_comma, :dom)
       end
-      def day_list(i)
-        seq(:day_list, i, :day, :and_or_day, '*')
+      def dom_list(i)
+        seq(:dom_list, i, :dom, :and_or_dom, '*')
       end
 
-      def to_day_range(i)
-        seq(:day_range, i, :weekday, :_to_through, :weekday)
+      def dom_mod(i) # every month on day
+        seq(:dom, i, :_mod, :dom_list)
       end
-      def dash_day_range(i)
-        seq(:day_range, i, :weekday, :_dash, :weekday)
+      def dom_noftm(i) # every nth of month
+        seq(:dom, i, :ordinal, :_oftm)
       end
-      def day_range(i)
-        alt(nil, i, :to_day_range, :dash_day_range)
+      def day_of_month(i)
+        alt(nil, i, :dom_noftm, :dom_mod)
+      end
+
+      def dow_class(i)
+        rex(:dow_class, i, /(weekday)(\s+|$)/i)
+      end
+
+      def dow(i)
+        seq(:dow, i, :weekday)
+      end
+      def and_or_dow(i)
+        seq(nil, i, :_and_or_comma, :dow)
+      end
+      def dow_list(i)
+        seq(:dow_list, i, :dow, :and_or_dow, '*')
+      end
+
+      def to_dow_range(i)
+        seq(:dow_range, i, :weekday, :_to_through, :weekday)
+      end
+      def dash_dow_range(i)
+        seq(:dow_range, i, :weekday, :_dash, :weekday)
+      end
+      def dow_range(i)
+        alt(nil, i, :to_dow_range, :dash_dow_range)
+      end
+
+      def day_of_week(i)
+        alt(nil, i, :dow_range, :dow_list, :dow_class)
       end
 
       def interval(i)
@@ -305,10 +357,10 @@ rex(:xxx, i, 'TODO')
       end
 
       def every_object(i)
-        alt(nil, i, :interval, :day_range, :day_list, :day_class)
+        alt(nil, i, :day_of_month, :interval, :day_of_week)
       end
       def from_object(i)
-        alt(nil, i, :interval, :to_day_range)
+        alt(nil, i, :interval, :to_dow_range)
       end
 
       def tz(i)
@@ -370,6 +422,8 @@ rex(:xxx, i, 'TODO')
         rewrite(t.sublookup(nil))
       end
 
+      def rewrite_int(t); t.string.to_i; end
+
       def rewrite_tzone(t)
 
         [ :tz, t.strim ]
@@ -423,23 +477,30 @@ rex(:xxx, i, 'TODO')
         WEEKDAYS.index(t.strim.downcase[0, 3])
       end
 
-      alias rewrite_day _rewrite_child
+      def rewrite_ordinal(t); ORDINALS[t.strim]; end
 
-      def rewrite_day_list(t)
+      def rewrite_dom(t)
 
-        [ :day_list, *_rewrite_children(t) ]
+#Raabro.pp(t, colours: true)
+        [ :day_of_month,
+          *_rewrite_children(t).flatten.select { |e| e.is_a?(Integer) } ]
       end
 
-      def rewrite_day_class(t)
+      alias rewrite_dow _rewrite_child
 
-        [ :day_range, 1, 5 ] # only "weekday" for now
+      def rewrite_dom_list(t); [ :dom_list, *_rewrite_children(t) ]; end
+      def rewrite_dow_list(t); [ :dow_list, *_rewrite_children(t) ]; end
+
+      def rewrite_dow_class(t)
+
+        [ :dow_range, 1, 5 ] # only "weekday" for now
       end
 
-      def rewrite_day_range(t)
+      def rewrite_dow_range(t)
 
         tts = t.subgather(nil)
 
-        [ :day_range, rewrite(tts[0]), rewrite(tts[1]) ]
+        [ :dow_range, rewrite(tts[0]), rewrite(tts[1]) ]
       end
 
       alias rewrite_on _rewrite_multiple
