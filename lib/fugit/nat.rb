@@ -165,8 +165,16 @@ p s.join(' ')
       WEEKDAYS =
         Fugit::Cron::Parser::WEEKDS + Fugit::Cron::Parser::WEEKDAYS
 
-      NHOURS =
-        { 'noon' => [ 12, 0 ], 'midnight' => [ 0, 0 ] }
+      NHOURS = {
+        'noon' => [ 12, 0 ],
+        'midnight' => [ 0, 0 ], 'oh' => [ 0, 0 ] }
+      NMINUTES = {
+        "o'clock" => 0, 'five' => 5,
+        'ten' => 10, 'fifteen' => 15,
+        'twenty' => 20, 'twenty-five' => 25,
+        'thirty' => 30, 'thirty-five' => 35,
+        'fourty' => 40, 'fourty-five' => 45,
+        'fifty' => 50, 'fifty-five' => 55 }
 
       # piece parsers bottom to top
 
@@ -183,7 +191,7 @@ p s.join(' ')
         rex(nil, i, /\s*(,?\s*and\s|,?\s*or\s|,)\s*/)
       end
       def _at_comma(i)
-        rex(nil, i, /\s*(at\s|,)\s*/)
+        rex(nil, i, /\s*(at\s|,|)\s*/)
       end
       def _to_through(i)
         rex(nil, i, /\s*(to|through)\s+/)
@@ -204,7 +212,7 @@ p s.join(' ')
       end
 
       def and_named_digits(i)
-        rex(:xxx, i, 'TODO')
+rex(:xxx, i, 'TODO')
       end
 
       def dname(i)
@@ -218,14 +226,17 @@ p s.join(' ')
       end
 
       def am_pm(i)
-        rex(:am_pm, i, /\s*(am|pm)/i)
+        rex(:am_pm, i, /\s*(am|pm|dark)\s*/i)
       end
 
+      def nminute(i)
+        rex(:nminute, i, /(#{NMINUTES.keys.join('|')})\s*/i)
+      end
       def nhour(i)
-        rex(:nhour, i, /(#{NUMS.join('|')})/i)
+        rex(:nhour, i, /(#{NUMS.join('|')})\s*/i)
       end
       def numeral_hour(i)
-        seq(:numeral_hour, i, :nhour, :am_pm, '?')
+        seq(:numeral_hour, i, :nhour, :am_pm, '?', :nminute, '?')
       end
 
       def named_hour(i)
@@ -401,7 +412,8 @@ p s.join(' ')
         vs = t.subgather(nil).collect { |st| st.strim.downcase }
         v = NUMS.index(vs[0])
         v += 12 if vs[1] == 'pm'
-        [ v, 0 ]
+        m = NMINUTES[vs[2]] || 0
+        [ v, m ]
       end
       def rewrite_simple_hour(t)
         vs = t.subgather(nil).collect { |st| st.strim.downcase }
