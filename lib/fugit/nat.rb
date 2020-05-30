@@ -14,8 +14,8 @@ module Fugit
 
         return nil unless s.is_a?(String)
 
-p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
-(p s; Raabro.pp(Parser.parse(s, debug: 1), colours: true)) rescue nil
+#p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
+#(p s; Raabro.pp(Parser.parse(s, debug: 1), colours: true)) rescue nil
         parse_crons(s, Parser.parse(s), opts)
       end
 
@@ -38,7 +38,6 @@ p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
             # the reverse ensure that in "every day at five", the
             # "at five" is placed before the "every day" so that
             # parse_x_elt calls have the right sequence
-p [ :h, h ]
 
         hms = h[:hms]
 
@@ -50,50 +49,33 @@ p [ :h, h ]
           .sort_by { |hs, ms| -hs.size }
         hours << [ [ '*' ], [ '*' ] ] if hours.empty?
 
-        hours
+        crons = hours
           .collect { |hm| assemble_cron(h.merge(hms: hm)) }
-          .first # FIXME
+
+        fail ArgumentError.new(
+          "multiple crons in #{s.inspect} " +
+          "(#{crons.collect(&:original).join(' | ')})"
+        ) if opts[:multi] == :fail && crons.size > 1
+
+        if opts[:multi] == true || (opts[:multi] && opts[:multi] != :fail)
+          crons
+        else
+          crons.first
+        end
       end
 
       def assemble_cron(h)
 
-        puts "h: " + h.inspect
-
+#puts "ac: " + h.inspect
         s = []
         s << h[:sec] if h[:sec]
         s << h[:hms][1].join(',')
         s << h[:hms][0].join(',')
         s << (h[:dom] || '*') << (h[:mon] || '*') << (h[:dow] || '*')
         s << h[:tz] if h[:tz]
-p s.join(' ')
 
         Fugit::Cron.parse(s.join(' '))
       end
-
-#      def parse_crons(s, a, opts)
-#
-#        hms, aa = a
-#          .partition { |e| e[0] == :point && e[1][0] == :hour }
-#        ms = hms
-#          .inject({}) { |h, e| (h[e[1][1]] ||= []) << e[1][2]; h }
-#          .values
-#          .uniq
-#        crons =
-#          ms.size > 1 ?
-#          hms.collect { |e| parse_cron([ e ] + aa, opts) } :
-#          [ parse_cron(a, opts) ]
-#
-#        fail ArgumentError.new(
-#          "multiple crons in #{s.inspect} " +
-#          "(#{crons.collect(&:original).join(' | ')})"
-#        ) if opts[:multi] == :fail && crons.size > 1
-#
-#        if opts[:multi] == true || (opts[:multi] && opts[:multi] != :fail)
-#          crons
-#        else
-#          crons.first
-#        end
-#      end
 
       def eone(e); e1 = e[1]; e1 == 1 ? '*' : "*/#{e1}"; end
 
@@ -459,7 +441,7 @@ rex(:xxx, i, 'TODO')
       def rewrite_nat(t)
 
         t.subgather(nil).collect { |tt| rewrite(tt) }
-.tap { |x| pp x }
+#.tap { |x| pp x }
       end
     end
   end
