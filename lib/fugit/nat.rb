@@ -39,6 +39,11 @@ module Fugit
             # "at five" is placed before the "every day" so that
             # parse_x_elt calls have the right sequence
 
+        if f = h[:_fail]
+          #fail ArgumentError.new(f)
+          return nil
+        end
+
         hms = h[:hms]
 
         hours = (hms || [])
@@ -81,6 +86,8 @@ module Fugit
 
       def parse_interval_elt(e, opts, h)
 
+        e1 = e[1]
+
         case e[2]
         when 's', 'sec', 'second', 'seconds'
           h[:sec] = eone(e)
@@ -92,13 +99,16 @@ module Fugit
         when 'd', 'day', 'days'
           h[:hms] ||= [ [ 0, 0 ] ]
         when 'w', 'week', 'weeks'
+          h[:_fail] = "cannot have crons for \"every #{e1} weeks\"" if e1 > 1
           h[:hms] ||= [ [ 0, 0 ] ]
           h[:dow] ||= 0
         when 'M', 'month', 'months'
+          h[:_fail] = "cannot have crons for \"every #{e1} months\"" if e1 > 12
           h[:hms] ||= [ [ 0, 0 ] ]
           h[:dom] = 1
           h[:mon] = eone(e)
         when 'Y', 'y', 'year', 'years'
+          h[:_fail] = "cannot have crons for \"every #{e1} years\"" if e1 > 1
           h[:hms] ||= [ [ 0, 0 ] ]
           h[:dom] = 1
           h[:mon] = 1
