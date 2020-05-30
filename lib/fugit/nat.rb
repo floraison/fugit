@@ -17,16 +17,6 @@ module Fugit
 p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
 (p s; Raabro.pp(Parser.parse(s, debug: 1), colours: true)) rescue nil
         parse_crons(s, Parser.parse(s), opts)
-#        a = Parser.parse(s)
-#
-#        return nil unless a
-#
-#        return parse_crons(s, a, opts) \
-#          if a.include?([ :flag, 'every' ])
-#        return parse_crons(s, a, opts) \
-#          if a.include?([ :flag, 'from' ]) && a.find { |e| e[0] == :day_range }
-#
-#        nil
       end
 
       def do_parse(s, opts={})
@@ -48,6 +38,7 @@ p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
             # the reverse ensure that in "every day at five", the
             # "at five" is placed before the "every day" so that
             # parse_x_elt calls have the right sequence
+p [ :h, h ]
 
         hms = h[:hms]
 
@@ -112,14 +103,15 @@ p s.join(' ')
         when 's', 'sec', 'second', 'seconds'
           h[:sec] = eone(e)
         when 'm', 'min', 'mins', 'minute', 'minutes'
-          (h[:hms] ||= []) << [ '*', eone(e) ]
+          #(h[:hms] ||= []) << [ '*', eone(e) ]
+          h[:hms] ||= [ [ '*', eone(e) ] ]
         when 'h', 'hour', 'hours'
           h[:hms] ||= [ [ eone(e), 0 ] ]
         when 'd', 'day', 'days'
           h[:hms] ||= [ [ 0, 0 ] ]
         when 'w', 'week', 'weeks'
           h[:hms] ||= [ [ 0, 0 ] ]
-          h[:dow] = 0
+          h[:dow] ||= 0
         when 'M', 'month', 'months'
           h[:hms] ||= [ [ 0, 0 ] ]
           h[:dom] = 1
@@ -145,148 +137,24 @@ p s.join(' ')
 
         (h[:hms] ||= []).concat(e[1])
 
-        e = h[:hms].last
-        h[:sec] = e.pop if e.size > 2
+        l = h[:hms].last
+        h[:sec] = l.pop if l.size > 2
+      end
+
+      def parse_on_elt(e, opts, h)
+
+        e1 = e[1]
+        h[:dow] = e1[0]
+        h[:hms] = [ e1[1] ]
+
+        l = h[:hms].last
+        h[:sec] = l.pop if l.size > 2
       end
 
       def parse_tz_elt(e, opts, h)
 
         h[:tz] = e[1]
       end
-
-#      def parse_cron(a, opts)
-#
-#        h = { min: nil, hou: nil, dom: nil, mon: nil, dow: nil }
-#        hkeys = h.keys
-#
-#        i0s, es = a.partition { |e| e[0] == :interval0 }
-#        a = es + i0s
-#          # interval0s are fallback
-#
-#        a.each do |key, val|
-#          case key
-#          when :biz_day
-#            (h[:dow] ||= []) << '1-5'
-#          when :name_day
-#            (h[:dow] ||= []) << val
-#          when :day_range
-#            (h[:dow] ||= []) << val.collect { |v| v.to_s[0, 3] }.join('-')
-#          when :tz
-#            h[:tz] = val
-#          when :point
-#            process_point(h, *val)
-#          when :interval1
-#            process_interval1(h, *val[0].to_h.first)
-#          when :interval0
-#            process_interval0(h, val)
-#          end
-#        end
-#
-#        return nil if h[:fail]
-#
-#        h[:min] = (h[:min] || [ 0 ]).uniq
-#        h[:hou] = (h[:hou] || []).uniq.sort
-#        h[:dow].sort! if h[:dow]
-#
-#        a = hkeys
-#          .collect { |k|
-#            v = h[k]
-#            (v && v.any?) ? v.collect(&:to_s).join(',') : '*' }
-#        a.insert(0, h[:sec]) if h[:sec]
-#        a << h[:tz].first if h[:tz]
-#
-#        s = a.join(' ')
-#
-#        Fugit::Cron.parse(s)
-#      end
-#
-#      def process_point(h, key, *value)
-#
-#        case key
-#        when :hour
-#          v0, v1 = value
-#          v0 = v0.to_i if v0.is_a?(String) && v0.match(/^\d+$/)
-#          (h[:hou] ||= []) << v0
-#          (h[:min] ||= []) << v1.to_i if v1
-#        when :sec, :min
-#          (h[key] ||= []) << value[0]
-#        end
-#      end
-#
-#      def process_interval0(h, value)
-#
-#        case value
-#        when 'sec', 'second'
-#          h[:min] = [ '*' ]
-#          h[:sec] = [ '*' ]
-#        when 'min', 'minute'
-#          h[:min] = [ '*' ]
-#        when 'hour'
-#          unless h[:min] || h[:hou]
-#            h[:min] = [ 0 ]
-#            h[:hou] = [ '*' ]
-#          end
-#        when 'day'
-#          unless h[:min] || h[:hou]
-#            h[:min] = [ 0 ]
-#            h[:hou] = [ 0 ]
-#          end
-#        when 'week'
-#          unless h[:min] || h[:hou] || h[:dow]
-#            h[:min] = [ 0 ]
-#            h[:hou] = [ 0 ]
-#            h[:dow] = [ 0 ]
-#          end
-#        when 'month'
-#          unless h[:min] || h[:hou]
-#            h[:min] = [ 0 ]
-#            h[:hou] = [ 0 ]
-#          end
-#          (h[:dom] ||= []) << 1
-#        when 'year'
-#          unless h[:min] || h[:hou]
-#            h[:min] = [ 0 ]
-#            h[:hou] = [ 0 ]
-#          end
-#          (h[:dom] ||= []) << 1
-#          (h[:mon] ||= []) << 1
-#        end
-#      end
-#
-#      def process_interval1(h, interval, value)
-#
-#        if value != 1 && [ :yea, :wee ].include?(interval)
-#          int = interval == :year ? 'years' : 'weeks'
-#          h[:fail] = "cannot cron for \"every #{value} #{int}\""
-#          return
-#        end
-#
-#        case interval
-#        when :yea
-#          h[:hou] = [ 0 ]
-#          h[:mon] = [ 1 ]
-#          h[:dom] = [ 1 ]
-#        when :mon
-#          h[:hou] = [ 0 ]
-#          h[:dom] = [ 1 ]
-#          h[:mon] = [ value == 1 ? '*' : "*/#{value}" ]
-#        when :wee
-#          h[:hou] = [ 0 ]
-#          h[:dow] = [ 0 ] # Sunday
-#        when :day
-#          h[:hou] = [ 0 ]
-#          h[:dom] = [ value == 1 ? '*' : "*/#{value}" ]
-#        when :hou
-#          h[:hou] = [ value == 1 ? '*' : "*/#{value}" ]
-#        when :min
-#          h[:hou] = [ '*' ]
-#          h[:min] = [ value == 1 ? '*' : "*/#{value}" ]
-#        when :sec
-#          h[:hou] = [ '*' ]
-#          h[:min] = [ '*' ]
-#          h[:sec] = [ value == 1 ? '*' : "*/#{value}" ]
-#        end
-#      end
     end
 
     module Parser include Raabro
@@ -309,6 +177,7 @@ p s.join(' ')
       def _to(i); rex(nil, i, /\s*to\s+/); end
       def _dash(i); rex(nil, i, /-\s*/); end
       def _and(i); rex(nil, i, /\s*and\s+/); end
+      def _on(i); rex(nil, i, /\s*on\s+/); end
 
       def _and_or_comma(i)
         rex(nil, i, /\s*(,?\s*and\s|,?\s*or\s|,)\s*/)
@@ -381,7 +250,7 @@ p s.join(' ')
       end
 
       def weekday(i)
-        rex(:weekday, i, /#{WEEKDAYS.reverse.join('|')}\s+/i)
+        rex(:weekday, i, /(#{WEEKDAYS.reverse.join('|')})\s*/i)
       end
 
       def and_at(i)
@@ -442,6 +311,9 @@ p s.join(' ')
       def tz(i)
         seq(nil, i, :_in, '?', :tzone)
       end
+      def on(i)
+        seq(:on, i, :_on, :weekday, :at_point, :and_at, '*')
+      end
       def at(i)
         seq(:at, i, :_at_comma, :at_point, :and_at, '*')
       end
@@ -458,15 +330,26 @@ p s.join(' ')
       def at_every(i)
         seq(nil, i, :at, :every, :tz, '?')
       end
+
       def from_at(i)
         seq(nil, i, :from, :at, '?', :tz, '?')
       end
+
+      def every_(i)
+        seq(nil, i, :every, :tz, '?')
+      end
+      def every_on(i)
+        seq(nil, i, :every, :on, :tz, '?')
+      end
       def every_at(i)
-        seq(nil, i, :every, :at, '?', :tz, '?')
+        seq(nil, i, :every, :at, :tz, '?')
       end
 
       def nat(i)
-        alt(:nat, i, :every_at, :from_at, :at_every, :at_from)
+        alt(:nat, i,
+          :every_at, :every_on, :every_,
+          :from_at,
+          :at_every, :at_from)
       end
 
       # rewrite parsed tree
@@ -474,10 +357,13 @@ p s.join(' ')
       #def _rewrite_single(t)
       #  [ t.name, rewrite(t.sublookup(nil)) ]
       #end
-      def _rewrite_multiple(t)
-        [ t.name, t.subgather(nil).collect { |tt| rewrite(tt) } ]
+      def _rewrite_children(t)
+        t.subgather(nil).collect { |tt| rewrite(tt) }
       end
-      def _rewrite_sub(t)
+      def _rewrite_multiple(t)
+        [ t.name, _rewrite_children(t) ]
+      end
+      def _rewrite_child(t)
         rewrite(t.sublookup(nil))
       end
 
@@ -533,11 +419,11 @@ p s.join(' ')
         WEEKDAYS.index(t.strim.downcase[0, 3])
       end
 
-      alias rewrite_day _rewrite_sub
+      alias rewrite_day _rewrite_child
 
       def rewrite_day_list(t)
 
-        [ :day_list, *t.subgather(nil).collect { |tt| rewrite(tt) } ]
+        [ :day_list, *_rewrite_children(t) ]
       end
 
       def rewrite_day_class(t)
@@ -552,11 +438,11 @@ p s.join(' ')
         [ :day_range, rewrite(tts[0]), rewrite(tts[1]) ]
       end
 
-      #def _rewrite_single(t); [ t.name, rewrite(t.sublookup(nil)) ]; end
+      alias rewrite_on _rewrite_multiple
       alias rewrite_at _rewrite_multiple
 
-      alias rewrite_from _rewrite_sub
-      alias rewrite_every _rewrite_sub
+      alias rewrite_from _rewrite_child
+      alias rewrite_every _rewrite_child
 
       def rewrite_nat(t)
 
