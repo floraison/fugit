@@ -99,6 +99,7 @@ module Fugit
         when 'h', 'hour', 'hours'
           h[:hms] ||= [ [ eone(e), 0 ] ]
         when 'd', 'day', 'days'
+          h[:dom] = "*/#{e1}" if e1 > 1
           h[:hms] ||= [ [ 0, 0 ] ]
         when 'w', 'week', 'weeks'
           h[:_fail] = "cannot have crons for \"every #{e1} weeks\"" if e1 > 1

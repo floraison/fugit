@@ -119,6 +119,8 @@ describe Fugit::Nat do
         'every day at noon' => '0 12 * * *',
         'every day at midnight' => '0 0 * * *',
 
+        'every 2 days at 17:00' => '0 17 */2 * *',
+
         # minute hour day-of-month month day-of-week
 
       }.each do |nat, cron|
