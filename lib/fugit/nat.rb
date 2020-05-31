@@ -14,7 +14,7 @@ module Fugit
 
         return nil unless s.is_a?(String)
 
-#p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
+p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
 #(p s; Raabro.pp(Parser.parse(s, debug: 1), colours: true)) rescue nil
         parse_crons(s, Parser.parse(s), opts)
       end
@@ -125,6 +125,7 @@ module Fugit
 
       def parse_dow_range_elt(e, opts, h)
 
+        h[:hms] ||= [ [ 0, 0 ] ]
         h[:dow] = e[1] == e[2] ? e[1] : "#{e[1]}-#{e[2]}"
       end
 
