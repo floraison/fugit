@@ -14,7 +14,7 @@ module Fugit
 
         return nil unless s.is_a?(String)
 
-p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
+#p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
 #(p s; Raabro.pp(Parser.parse(s, debug: 1), colours: true)) rescue nil
         parse_crons(s, Parser.parse(s), opts)
       end
@@ -29,6 +29,7 @@ p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
 
       def parse_crons(s, a, opts)
 
+#p a
         return nil unless a
 
         h = a
@@ -38,6 +39,7 @@ p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
             # the reverse ensure that in "every day at five", the
             # "at five" is placed before the "every day" so that
             # parse_x_elt calls have the right sequence
+#p h
 
         if f = h[:_fail]
           #fail ArgumentError.new(f)
@@ -120,6 +122,7 @@ p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
 
       def parse_dow_list_elt(e, opts, h)
 
+        h[:hms] ||= [ [ 0, 0 ] ]
         h[:dow] = e[1..-1].collect(&:to_s).sort.join(',')
       end
 
