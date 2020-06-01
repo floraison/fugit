@@ -2,7 +2,10 @@
 # CHANGELOG.md
 
 
-## fugit 1.3.6 not yet released
+## fugit 1.3.6 released 2020-06-01
+
+* Introduce new nat syntaxed, gh-38
+* Rework nat parser
 
 
 ## fugit 1.3.5 released 2020-05-07
