@@ -70,6 +70,7 @@ describe Fugit::Nat do
           #
           # gh-24 see below
 
+        'every friday and thursday' => '0 0 * * 4,5',
         'every tuesday and monday at 5pm' => '0 17 * * 1,2',
         'every wed or Monday at 5pm and 11' => '0 11,17 * * 1,3',
         'every Mon,Tue,Wed,Thu,Fri at 18:00' => '0 18 * * 1,2,3,4,5',
@@ -121,7 +122,9 @@ describe Fugit::Nat do
         'every day at noon' => '0 12 * * *',
         'every day at midnight' => '0 0 * * *',
 
+        'every 2 days' => '0 0 */2 * *',
         'every 2 days at 17:00' => '0 17 */2 * *',
+        'every 2 months' => '0 0 1 */2 *',
 
         # minute hour day-of-month month day-of-week
 
