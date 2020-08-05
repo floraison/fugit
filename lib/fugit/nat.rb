@@ -96,10 +96,14 @@ module Fugit
         when 's', 'sec', 'second', 'seconds'
           h[:sec] = eone(e)
         when 'm', 'min', 'mins', 'minute', 'minutes'
-          #(h[:hms] ||= []) << [ '*', eone(e) ]
           h[:hms] ||= [ [ '*', eone(e) ] ]
         when 'h', 'hour', 'hours'
-          h[:hms] ||= [ [ eone(e), 0 ] ]
+          hms = h[:hms]
+          if hms && hms.size == 1 && hms.first.first == '*'
+            hms.first[0] = eone(e)
+          elsif ! hms
+            h[:hms] = [ [ eone(e), 0 ] ]
+          end
         when 'd', 'day', 'days'
           h[:dom] = "*/#{e1}" if e1 > 1
           h[:hms] ||= [ [ 0, 0 ] ]
