@@ -272,8 +272,12 @@ rex(:xxx, i, 'TODO')
         seq(:simple_hour, i, :shour, :am_pm, '?')
       end
 
+      def dig_hour_b(i); rex(nil, i, /(2[0-4]|[01][0-9]|[0-9]):[0-5]\d/); end
+      def dig_hour_a(i); rex(nil, i, /(2[0-4]|[01][0-9])[0-5]\d/); end
+      def dig_hour(i); alt(nil, i, :dig_hour_a, :dig_hour_b); end
+        #
       def digital_hour(i)
-        rex(:digital_hour, i, /(2[0-4]|[01][0-9]):?[0-5]\d/)
+        seq(:digital_hour, i, :dig_hour, :am_pm, '?')
       end
 
       def at_point(i)
@@ -477,8 +481,10 @@ rex(:xxx, i, 'TODO')
         [ v, 0 ]
       end
       def rewrite_digital_hour(t)
-        m = t.string.match(/(\d\d?):?(\d\d)/)
-        [ m[1].to_i, m[2].to_i ]
+        m = t.string.match(/(\d\d?):?(\d\d)(\s+pm)?/i)
+        hou = m[1].to_i; hou += 12 if m[3] && hou < 12
+        min = m[2].to_i
+        [ hou, min ]
       end
 
       def rewrite_weekday(t)

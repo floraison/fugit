@@ -71,6 +71,17 @@ describe Fugit::Nat do
           #
           # gh-24
 
+        'every day at 8:30' => '30 8 * * *',
+        'every day at 08:30' => '30 8 * * *',
+        'every day at 8:30 am' => '30 8 * * *',
+        'every day at 08:30 am' => '30 8 * * *',
+        'every day at 8:30 AM' => '30 8 * * *',
+        'every day at 8:30 pm' => '30 20 * * *',
+        'every day at 08:30 pm' => '30 20 * * *',
+        'every day at 08:30 PM' => '30 20 * * *',
+          #
+          # gh-42
+
         #'every day at 18:15 and 20:45' => '* * * * *',
           #
           # gh-24 see below
