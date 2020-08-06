@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.3.8 not yet released
+
+
 ## fugit 1.3.7 released 2020-08-05
 
 * Parse 'every 12 hours at minute 50', gh-41
