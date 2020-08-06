@@ -1,7 +1,7 @@
 
 # fugit credits
 
-* Jérôme Dalbert https://github.com/jeromedalbert every 12h at min 50, gh-41
+* Jérôme Dalbert https://github.com/jeromedalbert gh-41, gh-42
 * Danny Ben Shitrit https://github.com/DannyBen nat variants, gh-38
 * Dominik Sander https://github.com/dsander #rough_frequency 0, gh-36
 * Milovan Zogovic https://github.com/assembler Cron#match? vs TZ, gh-31

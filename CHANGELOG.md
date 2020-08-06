@@ -2,7 +2,9 @@
 # CHANGELOG.md
 
 
-## fugit 1.3.8 not yet released
+## fugit 1.3.8 released 2020-08-06
+
+* Parse 'every day at 8:30' and ' at 8:30 pm', gh-42
 
 
 ## fugit 1.3.7 released 2020-08-05
