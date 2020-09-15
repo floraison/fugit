@@ -48,6 +48,7 @@ Please replace the content of this section with the output of the following comm
 ```
 uname -a
 bundle exec ruby -v
+bundle exec ruby -e "p [ :env_tz, ENV['TZ'] ]"
 bundle exec ruby -r et-orbi -e "EtOrbi._make_info"
 ```
 
