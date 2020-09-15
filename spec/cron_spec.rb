@@ -762,6 +762,10 @@ describe Fugit::Cron do
           #
           # gh-35
 
+        [ '0 8-19/4 * * *', '0 8,12,16 * * *' ],
+          #
+          # gh-43
+
       ].each { |c, e|
 
         it "parses #{c}" do
