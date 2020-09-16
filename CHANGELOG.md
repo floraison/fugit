@@ -2,7 +2,9 @@
 # CHANGELOG.md
 
 
-## fugit 1.3.9 not yet released
+## fugit 1.3.9 released 2020-09-17
+
+* Prevent "New York skip", gh-43, thanks @honglooker
 
 
 ## fugit 1.3.8 released 2020-08-06

@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Honglooker https://github.com/honglooker gh-43, New York cron skip
 * Jérôme Dalbert https://github.com/jeromedalbert gh-41, gh-42
 * Danny Ben Shitrit https://github.com/DannyBen nat variants, gh-38
 * Dominik Sander https://github.com/dsander #rough_frequency 0, gh-36
