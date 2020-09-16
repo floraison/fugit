@@ -236,6 +236,8 @@ module Fugit
         # the translation occurs in the timezone of
         # this Fugit::Cron instance
 
+      zfrom = t.time.strftime('%z|%Z')
+
       loop do
 
         fail RuntimeError.new(
@@ -251,8 +253,14 @@ module Fugit
         min_match?(t) || (t.inc_min; next)
         sec_match?(t) || (t.inc_sec; next)
 
-        st = t.time.strftime('%F|%T')
-        (from, sfrom, ifrom = t.time, st, t.to_i; next) if st == sfrom
+        tt = t.time
+        st = tt.strftime('%F|%T')
+        zt = tt.strftime('%z|%Z')
+          #
+        if st == sfrom && zt != zfrom
+          from, sfrom, zfrom, ifrom = tt, st, zt, t.to_i
+          next
+        end
           #
           # when transitioning out of DST, this prevents #next_time from
           # yielding the same literal time twice in a row, see gh-6

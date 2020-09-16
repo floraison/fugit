@@ -33,6 +33,21 @@ module Helpers
     ENV['TZ'] = prev_tz
   end
 
+  def in_active_zone(zone_name, &block)
+
+    prev_tz = ENV['TZ']
+    ENV['TZ'] = nil # else it takes over
+
+    Time._zone = zone_name
+
+    block.call
+
+  ensure
+
+    Time._zone = nil
+    ENV['TZ'] = prev_tz
+  end
+
   def require_chronic
 
     Object.const_set(:Chronic, Khronic)
@@ -67,9 +82,14 @@ end
   #
 class Time
   class << self
-    attr_accessor :_zone
+    attr_reader :zone
     def _zone=(name)
-      @zone = OpenStruct.new(tzinfo: ::TZInfo::Timezone.get(name))
+      @zone =
+        if name
+          OpenStruct.new(tzinfo: ::TZInfo::Timezone.get(name))
+        else
+          nil
+        end
     end
   end
 end

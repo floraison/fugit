@@ -376,6 +376,60 @@ describe Fugit::Cron do
         }.not_to raise_error
       end
     end
+
+    context 'New York skip (gh-43)' do
+
+      it "doesn't skip" do
+
+        cron = Fugit.parse('0 8-19/4 * * *')
+
+        st = Time.parse('2020-09-11 12:00:00')
+
+        nt = cron.next_time(st)
+#p nt
+#p nt.to_s
+#p nt.to_local_time
+#p nt.utc.to_s
+
+        expect(nt.to_s).to match(/ 16:00:00 /)
+      end
+
+      it "doesn't skip (TZ UTC)" do
+
+        in_zone('UTC') do
+
+          cron = Fugit.parse('0 8-19/4 * * *')
+
+          st = Time.parse('2020-09-11 12:00:00')
+
+          nt = cron.next_time(st)
+#p nt
+#p nt.to_s
+#p nt.to_local_time
+#p nt.utc.to_s
+
+          expect(nt.utc.to_s).to match(/ 16:00:00 /)
+        end
+      end
+
+      it "doesn't skip (ActiveSupport TZ America/New_York)" do
+
+        in_active_zone('America/New_York') do
+
+          cron = Fugit.parse('0 8-19/4 * * *')
+
+          st = Time.parse('2020-09-11 12:00:00')
+
+          nt = cron.next_time(st)
+#p nt
+#p nt.to_s
+#p nt.to_local_time
+#p nt.utc.to_s
+
+          expect(nt.utc.to_s).to match(/ 16:00:00 /)
+        end
+      end
+    end
   end
 
   describe '#match?' do
