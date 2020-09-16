@@ -346,34 +346,23 @@ describe Fugit::Cron do
       before :each do
 
         require_chronic
-
-        class ::Time
-          class << self
-            def zone; @zone; end
-          end
-        end
       end
 
       after :each do
 
         unrequire_chronic
-
-        class ::Time
-          class << self
-            undef_method :zone
-          end
-        end
       end
 
       it "doesn't stall or loop ad infinitum" do
 
-        Time._zone = 'UTC'
+        in_active_support_zone('UTC') do
 
-        cron = Fugit.do_parse_cron('0 0 1 1 *')
+          cron = Fugit.do_parse_cron('0 0 1 1 *')
 
-        expect {
-          cron.next_time
-        }.not_to raise_error
+          expect {
+            cron.next_time
+          }.not_to raise_error
+        end
       end
     end
 
@@ -414,11 +403,14 @@ describe Fugit::Cron do
 
       it "doesn't skip (ActiveSupport TZ America/New_York)" do
 
-        in_active_zone('America/New_York') do
+        in_active_support_zone('America/New_York') do
+#EtOrbi._make_info
+#p EtOrbi.determine_local_tzone
 
           cron = Fugit.parse('0 8-19/4 * * *')
 
-          st = Time.parse('2020-09-11 12:00:00')
+          st = Time.parse('2020-09-11 12:00:00 UTC')
+#p st
 
           nt = cron.next_time(st)
 #p nt

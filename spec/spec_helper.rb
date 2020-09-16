@@ -33,18 +33,29 @@ module Helpers
     ENV['TZ'] = prev_tz
   end
 
-  def in_active_zone(zone_name, &block)
+  def in_active_support_zone(zone_name, &block)
 
     prev_tz = ENV['TZ']
     ENV['TZ'] = nil # else it takes over
 
     Time._zone = zone_name
+    Time.module_eval do
+      class << self
+        def zone; @zone; end
+      end
+    end
 
     block.call
 
   ensure
 
     Time._zone = nil
+    Time.module_eval do
+      class << self
+        undef_method :zone
+      end
+    end
+
     ENV['TZ'] = prev_tz
   end
 
@@ -78,12 +89,20 @@ class Fugit::Cron::TimeCursor
   alias _original_inc inc
 end
 
+
   # Simulating ActiveSupport Time.zone
   #
 class Time
+
   class << self
-    attr_reader :zone
+
+    # .zone itself is defined/undefined in the #in_active_support_zone
+    # spec helper defined above
+
+    attr_reader :_zone
+
     def _zone=(name)
+
       @zone =
         if name
           OpenStruct.new(tzinfo: ::TZInfo::Timezone.get(name))
