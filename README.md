@@ -321,18 +321,34 @@ Fugit.parse('every day at five')  # ==> Fugit::Cron instance '0 5 * * *'
 
 ### Ambiguous nats
 
-Not all strings result in a clean, single, cron expression.
+Not all strings result in a clean, single, cron expression. The `multi: false|true|:fail` argument to `Fugit::Nat.parse` could help.
 
 ```ruby
+Fugit::Nat.parse('every day at 16:00 and 18:00')
+  .to_cron_s
+    # ==> '0 16,18 * * *' (a single Fugit::Cron instances)
 Fugit::Nat.parse('every day at 16:00 and 18:00', multi: true)
-  # ==> [ '0 16,18 * * *' ]
+  .collect(&:to_cron_s)
+    # ==> [ '0 16,18 * * *' ] (array of Fugit::Cron instances, here only one)
+
 Fugit::Nat.parse('every day at 16:15 and 18:30')
-  # ==> [ '15 16 * * *' ]
+  .to_cron_s
+    # ==> '15 16 * * *' (a single of Fugit::Cron instances)
 Fugit::Nat.parse('every day at 16:15 and 18:30', multi: true)
-  # ==> [ '15 16 * * *', '30 18 * * *' ]
+  .collect(&:to_cron_s)
+    # ==> [ '15 16 * * *', '30 18 * * *' ] (two Fugit::Cron instances)
+
 Fugit::Nat.parse('every day at 16:15 and 18:30', multi: :fail)
   # ==> ArgumentError: multiple crons in "every day at 16:15 and 18:30" (15 16 * * * | 30 18 * * *)
+Fugit::Nat.parse('every day at 16:15 nada 18:30', multi: true)
+  # ==> nil
 ```
+
+`multi: true` indicates to `Fugit::Nat` that an array of `Fugit::Cron` instances is expected as a result.
+
+`multi: :fail` tells `Fugit::Nat.parse` to fail if the result is more than 1 `Fugit::Cron` instances.
+
+`multi: false` is the default behaviour, return a single `Fugit::Cron` instance or nil when it cannot parse.
 
 
 ## LICENSE
