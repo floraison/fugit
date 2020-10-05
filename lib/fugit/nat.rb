@@ -16,18 +16,11 @@ module Fugit
 
 #p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
 #(p s; Raabro.pp(Parser.parse(s, debug: 1), colours: true)) rescue nil
-        slots = Parser.parse(s)
 
-        return nil unless slots
-
-        #parse_crons(
-        #  s, slots,
-        #  opts[:multi] == true || (opts[:multi] && opts[:multi] != :fail))
-
-        if opts[:multi] == true || (opts[:multi] && opts[:multi] != :fail)
-          slots.to_crons
+        if slots = Parser.parse(s)
+          slots.to_crons(opts.merge(_s: s))
         else
-          slots.to_cron
+          nil
         end
       end
 
@@ -340,6 +333,7 @@ INTERVAL_REX = /[ \t]*(#{INTERVALS.join('|')})/
       end
 
       def _rewrite_subs(t, key=nil)
+#Raabro.pp(t, colours: true)
         t.subgather(key).collect { |ct| rewrite(ct) }
       end
       def _rewrite_sub(t, key=nil)
@@ -374,7 +368,7 @@ INTERVAL_REX = /[ \t]*(#{INTERVALS.join('|')})/
         case pt
         when 'm' then slot(:m, pts)
         when 's' then slot(:second, pts)
-else fail("argh")
+else slot(pt.to_sym, pts)
         end
       end
 
@@ -507,6 +501,7 @@ else fail("argh")
         @_data0 = conflate(@_data0, slot.data0, slot.weak?)
         @_data1 = conflate(@_data1, slot.data1, slot.weak?)
       end
+      def a; [ data0, data1 ]; end
       protected
       def conflate(da, db, weakb)
         return db if da.nil? || weak?
@@ -515,12 +510,6 @@ else fail("argh")
       end
     end
 
-    # minute          * or 0–59
-    # hour            * or 0–23
-    # day-of-month    * or 1–31
-    # month           * or 1–12 or a name
-    # day-of-week     * or 0–7 or a name
-
     class SlotGroup
 
       def initialize(slots)
@@ -528,7 +517,9 @@ else fail("argh")
 #p slots
         @slots =
           slots.inject({}) { |h, s|
-            if hs = h[s.key]
+            if s.key == :hm
+              (h[:hm] ||= []) << s
+            elsif hs = h[s.key]
               hs.append(s)
             else
               h[s.key] = s
@@ -536,26 +527,35 @@ else fail("argh")
             h }
 
         if mi = @slots.delete(:m)
-          if hm = @slots[:hm]
-            hm._data1 = mi._data0
+          if hms = @slots[:hm]
+            hms[0]._data1 = mi._data0
           else
             @slots[:hm] = make_slot(:hm, '*', mi._data0)
           end
         end
 
         if @slots[:monthday] || @slots[:weekday]
-          @slots[:hm] ||= make_slot(:hm, 0, 0)
+          @slots[:hm] ||= [ make_slot(:hm, 0, 0) ]
         elsif @slots[:month]
-          @slots[:hm] ||= make_slot(:hm, 0, 0)
+          @slots[:hm] ||= [ make_slot(:hm, 0, 0) ]
           @slots[:monthday] ||= make_slot(:monthday, 1)
         end
       end
 
-      def to_crons
-        determine_hms.collect { |hm| parse_cron(hm) }
-      end
-      def to_cron
-        parse_cron(determine_hms.first)
+      def to_crons(opts)
+
+        multi = opts.has_key?(:multi) ? opts[:multi] : false
+
+        hms = determine_hms
+
+        if multi == :fail && hms.count > 1
+          fail(ArgumentError.new(
+            "multiple crons in #{opts[:_s].inspect} - #{@slots.inspect}"))
+        elsif multi == true
+          hms.collect { |hm| parse_cron(hm) }
+        else
+          parse_cron(hms.first)
+        end
       end
 
       protected
@@ -565,30 +565,45 @@ else fail("argh")
         Fugit::Nat::Slot.new(key, data0, data1)
       end
 
-      def determine_hms(count=-1)
+      def determine_hms
 
-# FIXME for multi:
-        [ @slots[:hm] || Slot.new(:hm, '*', '*') ]
+#-        hours = (hms || [])
+#-          .uniq
+#-          .inject({}) { |r, hm| (r[hm[1]] ||= []) << hm[0]; r }
+#-          .inject({}) { |r, (m, hs)| (r[hs.sort] ||= []) << m; r }
+#-          .to_a
+#-          .sort_by { |hs, ms| -hs.size }
+#-        if hours.empty?
+#-          hours << (h[:dom] ? [ [ '0' ], [ '0' ] ] : [ [ '*' ], [ '*' ] ])
+#-        end
+        return [ [ [ '*' ], [ '*' ] ] ] unless @slots[:hm]
+
+        @slots[:hm].collect(&:a)
+          .inject({}) { |r, hm|
+            hm[1].each { |m| (r[m] ||= []).concat(hm[0]) }
+            r }
+          .inject({}) { |r, (m, hs)|
+            (r[hs.sort] ||= []) << m
+            r }
+          .to_a
       end
 
       def parse_cron(hm)
 
         a = [
           slot(:second, '0'),
-          hm.data1,
-          hm.data0,
+          hm[1],
+          hm[0],
           slot(:monthday, '*'),
           slot(:month, '*'),
           slot(:weekday, '*') ]
         tz = @slots[:tz]
         a << tz.data0 if tz
         a.shift if a.first == [ '0' ]
-#p a
 
         s = a
           .collect { |e| e.uniq.sort.collect(&:to_s).join(',') }
           .join(' ')
-#p s
 
         Fugit::Cron.parse(s)
       end
