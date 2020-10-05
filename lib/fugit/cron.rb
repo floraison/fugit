@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 module Fugit
 
@@ -12,9 +13,9 @@ module Fugit
       '@daily' => '0 0 * * *',
       '@midnight' => '0 0 * * *',
       '@noon' => '0 12 * * *',
-      '@hourly' => '0 * * * *' }
+      '@hourly' => '0 * * * *' }.freeze
     MAXDAYS = [
-      nil, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ]
+      nil, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ].freeze
 
     attr_reader(
       :original, :zone)
@@ -336,7 +337,7 @@ module Fugit
       [ :seconds, 1, 60 ],
       [ :minutes, 60, 60 ],
       [ :hours, 3600, 24 ],
-      [ :days, 24 * 3600, 365 ] ]
+      [ :days, 24 * 3600, 365 ] ].freeze
 
     def rough_frequency
 
@@ -612,10 +613,18 @@ module Fugit
 
     module Parser include Raabro
 
-      WEEKDAYS = %w[ sunday monday tuesday wednesday thursday friday saturday ]
-      WEEKDS = WEEKDAYS.collect { |d| d[0, 3] }
+      WEEKDAYS =
+        %w[ sunday monday tuesday wednesday thursday friday saturday ].freeze
 
-      MONTHS = %w[ - jan feb mar apr may jun jul aug sep oct nov dec ]
+      WEEKDS =
+        WEEKDAYS.collect { |d| d[0, 3] }.freeze
+      DOW_REX =
+        /([0-7]|#{WEEKDS.join('|')})/i.freeze
+
+      MONTHS =
+        %w[ - jan feb mar apr may jun jul aug sep oct nov dec ].freeze
+      MONTH_REX =
+        /(1[0-2]|0?[1-9]|#{MONTHS[1..-1].join('|')})/i.freeze
 
       # piece parsers bottom to top
 
@@ -629,8 +638,8 @@ module Fugit
       def mos(i); rex(:mos, i, /[0-5]?\d/); end # min or sec
       def hou(i); rex(:hou, i, /(2[0-4]|[01]?[0-9])/); end
       def dom(i); rex(:dom, i, /(-?(3[01]|[12][0-9]|0?[1-9])|last|l)/i); end
-      def mon(i); rex(:mon, i, /(1[0-2]|0?[1-9]|#{MONTHS[1..-1].join('|')})/i); end
-      def dow(i); rex(:dow, i, /([0-7]|#{WEEKDS.join('|')})/i); end
+      def mon(i); rex(:mon, i, MONTH_REX); end
+      def dow(i); rex(:dow, i, DOW_REX); end
 
       def dow_hash(i); rex(:hash, i, /#(-?[1-5]|last|l)/i); end
 
