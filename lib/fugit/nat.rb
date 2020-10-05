@@ -78,7 +78,7 @@ module Fugit
       oh = {
         '1st' => 1, '2nd' => 2, '3rd' => 3, '21st' => 21, '22nd' => 22,
         '23rd' => 23, '31st' => 31,
-        'last' => -1 }
+        'last' => 31 }
       (4..30)
         .each { |i| oh["#{i}th"] = i.to_i }
       %w[
@@ -435,9 +435,7 @@ else fail("argh")
       end
 
       def rewrite_to_omonthday(t)
-#Raabro.pp(t, colours: true)
         md0, md1 = _rewrite_subs(t, :omonthday).collect(&:_data0)
-        md1 = 'l' if md1 == -1
         slot(:monthday, "#{md0}-#{md1}")
       end
 

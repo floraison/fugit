@@ -149,8 +149,10 @@ describe Fugit::Nat do
         'every 2 days at 17:00' => '0 17 */2 * *',
         'every 2 months' => '0 0 1 */2 *',
 
-        #'every day from the 25th to the last' => '0 0 25-l * *',
-        #'every day at noon from the 25th to the last' => '0 12 25-l * *',
+        'every day from the 25th to the last' => '0 0 25-31 * *',
+        'every day at noon from the 25th to the last' => '0 12 25-31 * *',
+        'from the 25th to the last' => '0 0 25-31 * *',
+        'from the 25th to the last, at noon and midnight' => '0 0,12 25-31 * *',
           #
           # gh-45
 
