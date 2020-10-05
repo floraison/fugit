@@ -172,14 +172,13 @@ describe Fugit::Nat do
       end
     end
 
-    it 'parses "every Fri-Sun at 18:00 UTC" (gh-27)'
-#    it 'parses "every Fri-Sun at 18:00 UTC" (gh-27)' do
-#
-#      c = Fugit::Nat.parse('every Fri-Sun at 18:00 UTC')
-#
-#      expect(c.original).to eq('0 18 * * 5-0 UTC')
-#      expect(c.weekdays).to eq([ [ 0 ], [ 5 ], [ 6 ] ])
-#    end
+    it 'parses "every Fri-Sun at 18:00 UTC" (gh-27)' do
+
+      c = Fugit::Nat.parse('every Fri-Sun at 18:00 UTC')
+
+      expect(c.original).to eq('0 18 * * 5-0 UTC')
+      expect(c.weekdays).to eq([ [ 0 ], [ 5 ], [ 6 ] ])
+    end
 
     context 'multi:' do
 
@@ -204,30 +203,28 @@ describe Fugit::Nat do
           result[0].ancestors.include?(Exception)
         ) then
 
-          it "fails for #{nat.inspect} (#{opts.inspect})"
-#          it "fails for #{nat.inspect} (#{opts.inspect})" do
-#
-#            expect { Fugit::Nat.parse(nat, opts) }.to raise_error(*result)
-#          end
+          it "fails for #{nat.inspect} (#{opts.inspect})" do
+
+            expect { Fugit::Nat.parse(nat, opts) }.to raise_error(*result)
+          end
 
         else
 
-          it "parses #{nat.inspect} (#{opts.inspect}) into #{result.inspect}"
-          #it "parses #{nat.inspect} (#{opts.inspect}) into #{result.inspect}" do
+          it "parses #{nat.inspect} (#{opts.inspect}) into #{result.inspect}" do
 
-#            r = Fugit::Nat.parse(nat, opts)
+            r = Fugit::Nat.parse(nat, opts)
 #File.open('out.rb', 'ab') { |f| f.puts("\n#{nat.inspect}\n  #{r.inspect}") }
 #p r
 #expect(r).not_to eq(nil)
 
-#            if opts[:multi] == true
-#              expect(r.collect(&:class).uniq).to eq([ Fugit::Cron ])
-#              expect(r.collect(&:original)).to eq(result)
-#            else
-#              expect(r.class).to eq(Fugit::Cron)
-#              expect(r.original).to eq(result)
-#            end
-#          end
+            if opts[:multi] == true
+              expect(r.collect(&:class).uniq).to eq([ Fugit::Cron ])
+              expect(r.collect(&:original)).to eq(result)
+            else
+              expect(r.class).to eq(Fugit::Cron)
+              expect(r.original).to eq(result)
+            end
+          end
         end
       end
     end

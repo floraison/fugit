@@ -430,12 +430,12 @@ else fail("argh")
 
       def rewrite_to_weekday(t)
         wd0, wd1 = _rewrite_subs(t, :weekday)
-        wd1 = 7 if wd1 == 0
+        #wd1 = 7 if wd1 == 0
         slot(:weekday, "#{wd0}-#{wd1}")
       end
 
       def rewrite_to_omonthday(t)
-Raabro.pp(t, colours: true)
+#Raabro.pp(t, colours: true)
         md0, md1 = _rewrite_subs(t, :omonthday).collect(&:_data0)
         md1 = 'l' if md1 == -1
         slot(:monthday, "#{md0}-#{md1}")
@@ -527,7 +527,7 @@ Raabro.pp(t, colours: true)
 
       def initialize(slots)
 
-p slots
+#p slots
         @slots =
           slots.inject({}) { |h, s|
             if hs = h[s.key]
@@ -585,12 +585,12 @@ p slots
         tz = @slots[:tz]
         a << tz.data0 if tz
         a.shift if a.first == [ '0' ]
-p a
+#p a
 
         s = a
           .collect { |e| e.uniq.sort.collect(&:to_s).join(',') }
           .join(' ')
-p s
+#p s
 
         Fugit::Cron.parse(s)
       end
