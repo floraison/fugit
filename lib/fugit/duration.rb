@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 module Fugit
 
@@ -66,10 +67,9 @@ module Fugit
       day: { a: 'D', r: 'd', i: 'D', s: 24 * 3600, I: true, l: 'day' },
       hou: { a: 'h', r: 'h', i: 'H', s: 3600, I: true, l: 'hour' },
       min: { a: 'm', r: 'm', i: 'M', s: 60, I: true, l: 'minute' },
-      sec: { a: 's', r: 's', i: 'S', s: 1, I: true, l: 'second' },
-    }
+      sec: { a: 's', r: 's', i: 'S', s: 1, I: true, l: 'second' } }.freeze
     INFLA_KEYS, NON_INFLA_KEYS =
-      KEYS.partition { |k, v| v[:I] }
+      KEYS.partition { |k, v| v[:I] }.freeze
 
     def _to_s(key)
 
