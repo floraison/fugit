@@ -360,7 +360,7 @@ module Fugit
 
       def rewrite_at_p(t)
         pt = t.sublookup(:point).strinp
-        pt = pt.match?(/\Amon/i) ? 'M' : pt[0, 1]
+        pt = /\Amon/i.match?(pt) ? 'M' : pt[0, 1]
         pts = t.subgather(:count).collect { |e| e.string.to_i }
 #p [ pt, pts ]
         case pt
@@ -441,7 +441,7 @@ else slot(pt.to_sym, pts)
       def rewrite_simple_hour(t)
         a = t.subgather(nil).collect(&:string)
         h = a[0].to_i
-        h = h + 12 if a[1] && a[1].match?(/pm\z/)
+        h = h + 12 if a[1] && /pm\z/.match?(a[1])
         slot(:hm, h, 0)
       end
 
