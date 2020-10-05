@@ -101,7 +101,6 @@ module Fugit
       def _every(i); rex(nil, i, /[ \t]*every[ \t]+/i); end
       def _from(i); rex(nil, i, /[ \t]*from[ \t]+/i); end
       def _at(i); rex(nil, i, /[ \t]*at[ \t]+/i); end
-      def _in(i); rex(nil, i, /[ \t]*in[ \t]+/i); end
       def _on(i); rex(nil, i, /[ \t]*on[ \t]+/i); end
       def _to(i); rex(nil, i, /[ \t]*to[ \t]+/i); end
 
@@ -115,16 +114,13 @@ module Fugit
       def _to_or_dash(i);
         rex(nil, i, /[ \t]*-[ \t]*|[ \t]+(to|through)[ \t]+/i); end
 
-      #def _day(i); rex(nil, i, /[ \t]*day[ \t]+/i); end
       def _day_s(i); rex(nil, i, /[ \t]*days?[ \t]+/i); end
       def _the(i); rex(nil, i, /[ \t]*the[ \t]+/i); end
 
       def _space(i); rex(nil, i, /[ \t]+/); end
       def _sep(i); rex(nil, i, /([ \t]+|[ \t]*,[ \t]*)/); end
-      #def _comma(i); rex(nil, i, /[ \t]*,[ \t]*/); end
 
       def count(i); rex(:count, i, /\d+/); end
-      #def comma_count(i); seq(nil, i, :_comma, :count); end
 
       def omonthday(i)
         rex(:omonthday, i, OMONTHDAY_REX)
@@ -138,7 +134,8 @@ module Fugit
 
       def omonthdays(i); jseq(nil, i, :omonthday, :_and_or_or_or_comma); end
       def monthdays(i); jseq(nil, i, :monthday, :_and_or_or_or_comma); end
-      def weekdays(i); jseq(nil, i, :weekday, :_and_or_or_or_comma); end
+
+      def weekdays(i); jseq(:weekdays, i, :weekday, :_and_or_or_or_comma); end
 
       def on_the(i); seq(nil, i, :_the, :omonthdays); end
 
@@ -260,9 +257,6 @@ module Fugit
 
       def to_weekday(i)
         seq(:to_weekday, i, :weekday, :_to_or_dash, :weekday)
-      end
-      def weekdays(i)
-        jseq(:weekdays, i, :weekday, :_and_or_or_or_comma)
       end
 
       def weekday_range(i)
@@ -518,7 +512,6 @@ else slot(pt.to_sym, pts)
 
       def initialize(slots)
 
-#p slots
         @slots =
           slots.inject({}) { |h, s|
             if s.key == :hm
