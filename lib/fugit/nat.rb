@@ -359,8 +359,8 @@ module Fugit
       end
 
       def rewrite_at_p(t)
-        pt = t.sublookup(:point).strinp
-        pt = /\Amon/i.match?(pt) ? 'M' : pt[0, 1]
+        pt = t.sublookup(:point).strinpd
+        pt = pt.start_with?('mon') ? 'M' : pt[0, 1]
         pts = t.subgather(:count).collect { |e| e.string.to_i }
 #p [ pt, pts ]
         case pt
@@ -432,16 +432,16 @@ else slot(pt.to_sym, pts)
       end
 
       def rewrite_digital_hour(t)
-        h, m, ap = t.string.split(/[: \t]+/)
+        h, m, ap = t.strinpd.split(/[: \t]+/)
         h, m = h.to_i, m.to_i
-        h += 12 if ap && ap.downcase == 'pm'
+        h += 12 if ap && ap == 'pm'
         slot(:hm, h.to_i, m.to_i)
       end
 
       def rewrite_simple_hour(t)
-        a = t.subgather(nil).collect(&:string)
-        h = a[0].to_i
-        h = h + 12 if a[1] && /pm\z/.match?(a[1])
+        h, ap = t.subgather(nil).collect(&:strinpd)
+        h = h.to_i
+        h = h + 12 if ap == 'pm'
         slot(:hm, h, 0)
       end
 
