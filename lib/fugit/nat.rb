@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 module Fugit
 
@@ -50,23 +51,25 @@ module Fugit
         .inject({}) { |h, (n, i)| h[n] = i; h }
         .merge!(
           'midnight' => 0, 'oh' => 0, 'noon' => 12)
+        .freeze
       NMINUTES = sixties
         .each_with_index
         .inject({}) { |h, (n, i)| h[n] = i; h }
         .merge!(
           "o'clock" => 0, 'hundred' => 0)
+        .freeze
 
-      WEEKDAYS =
+      WEEKDAYS = (
         Fugit::Cron::Parser::WEEKDAYS +
-        Fugit::Cron::Parser::WEEKDS
+        Fugit::Cron::Parser::WEEKDS).freeze
 
       POINTS = %w[
-        minutes? mins? seconds? secs? hours? hou h ]
+        minutes? mins? seconds? secs? hours? hou h ].freeze
 
       INTERVALS = %w[
         seconds? minutes? hours? days? months?
         sec min
-        s m h d M ]
+        s m h d M ].freeze
 
       oh = {
         '1st' => 1, '2nd' => 2, '3rd' => 3, '21st' => 21, '22nd' => 22,
@@ -82,6 +85,15 @@ module Fugit
         twenty-ninth thirtieth thirty-first ]
           .each_with_index { |e, i| oh[e] = i + 1 }
       OMONTHDAYS = oh.freeze
+
+      OMONTHDAY_REX = /#{OMONTHDAYS.keys.join('|')}/i.freeze
+      MONTHDAY_REX = /3[0-1]|[0-2]?[0-9]/.freeze
+      WEEKDAY_REX = /(#{WEEKDAYS.join('|')})(?=($|[-, \t]))/i.freeze
+        # prevent "mon" from eating "monday"
+      NAMED_M_REX = /#{NMINUTES.keys.join('|')}/i.freeze
+      NAMED_H_REX = /#{NHOURS.keys.join('|')}/i.freeze
+      POINT_REX = /(#{POINTS.join('|')})[ \t]+/i.freeze
+      INTERVAL_REX = /[ \t]*(#{INTERVALS.join('|')})/.freeze
 
       #
       # parsers bottom to top #################################################
@@ -114,16 +126,12 @@ module Fugit
       def count(i); rex(:count, i, /\d+/); end
       #def comma_count(i); seq(nil, i, :_comma, :count); end
 
-OMONTHDAY_REX = /#{OMONTHDAYS.keys.join('|')}/i
       def omonthday(i)
         rex(:omonthday, i, OMONTHDAY_REX)
       end
-MONTHDAY_REX = /3[0-1]|[0-2]?[0-9]/
       def monthday(i)
         rex(:monthday, i, MONTHDAY_REX)
       end
-WEEKDAY_REX = /(#{WEEKDAYS.join('|')})(?=($|[-, \t]))/i
-  # prevent "mon" from eating "monday"
       def weekday(i)
         rex(:weekday, i, WEEKDAY_REX)
       end
@@ -192,7 +200,6 @@ WEEKDAY_REX = /(#{WEEKDAYS.join('|')})(?=($|[-, \t]))/i
         seq(:simple_hour, i, :simple_h, :ampm, '?')
       end
 
-NAMED_M_REX = /#{NMINUTES.keys.join('|')}/i
       def named_m(i)
         rex(:named_m, i, NAMED_M_REX)
       end
@@ -200,7 +207,6 @@ NAMED_M_REX = /#{NMINUTES.keys.join('|')}/i
         seq(nil, i, :_space, :named_m)
       end
 
-NAMED_H_REX = /#{NHOURS.keys.join('|')}/i
       def named_h(i)
         rex(:named_h, i, NAMED_H_REX)
       end
@@ -208,7 +214,6 @@ NAMED_H_REX = /#{NHOURS.keys.join('|')}/i
         seq(:named_hour, i, :named_h, :dark, '?', :named_min, '?', :ampm, '?')
       end
 
-POINT_REX = /(#{POINTS.join('|')})[ \t]+/i
       def _point(i); rex(:point, i, POINT_REX); end
 
       def counts(i)
@@ -239,7 +244,6 @@ POINT_REX = /(#{POINTS.join('|')})[ \t]+/i
         seq(:at, i, :_at, '?', :at_objects)
       end
 
-INTERVAL_REX = /[ \t]*(#{INTERVALS.join('|')})/
       def interval(i)
         rex(:interval, i, INTERVAL_REX)
       end
