@@ -831,6 +831,11 @@ describe Fugit::Cron do
           [ '* * L * *', '* * -1 * *' ],
           [ '* * -7-L * *', '* * -7,-6,-5,-4,-3,-2,-1 * *' ],
           [ '* * last * *', '* * -1 * *' ],
+
+          [ '* * 25-l * *', "* * #{(25..31).to_a.map(&:to_s).join(',')} * *" ],
+          [ '* * 25-L * *', "* * #{(25..31).to_a.map(&:to_s).join(',')} * *" ],
+            # not so negative...
+
         ].each { |c, e|
           it("parses #{c}") { expect(Fugit::Cron.parse(c).to_cron_s).to eq(e) }
         }

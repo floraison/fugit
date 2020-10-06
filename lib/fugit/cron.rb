@@ -496,7 +496,7 @@ module Fugit
 
       sla = 1 if sla == nil
       sta = min if sta == nil
-      edn = max if edn == nil
+      edn = max if edn == nil || edn < 0 && sta > 0
 
       range(min, max, sta, edn, sla)
     end
@@ -508,12 +508,10 @@ module Fugit
         { min: min, max: max, sta: sta, edn: edn, sla: sla }.inspect
       ) if (sta < 0 && edn > 0) || (edn < 0 && sta > 0)
 
-#p({ min: min, max: max, sta: sta, edn: edn, sla: sla })
       a = []
 
       omin, omax = min, max
       min, max = -max, -1 if sta < 0
-#p({ min: min, max: max })
 
       cur = sta
 

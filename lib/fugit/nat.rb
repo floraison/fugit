@@ -74,7 +74,7 @@ module Fugit
       oh = {
         '1st' => 1, '2nd' => 2, '3rd' => 3, '21st' => 21, '22nd' => 22,
         '23rd' => 23, '31st' => 31,
-        'last' => 31 }
+        'last' => 'L' }
       (4..30)
         .each { |i| oh["#{i}th"] = i.to_i }
       %w[
