@@ -156,6 +156,17 @@ describe Fugit::Nat do
           #
           # gh-45
 
+        'every weekday 8am to 5pm' => '0 8-17 * * 1-5',
+        'every weekday 8am to 5pm on the hour' => '0 8-17 * * 1-5',
+        'every weekday 8am to 5pm on the minute' => '* 8-16 * * 1-5',
+        'every weekday 8am to 5pm on minute 10 and 30' => '10,30 8-16 * * 1-5',
+        'every hour, 8am to 5pm' => '0 8-17 * * *',
+        'every hour, from 8am to 5pm' => '0 8-17 * * *',
+        'every minute, 8am to 5pm' => '* 8-16 * * *',
+        'every minute from 8am to 5pm' => '* 8-16 * * *',
+          #
+          # gh-44
+
         # minute hour day-of-month month day-of-week
 
       }.each do |nat, cron|

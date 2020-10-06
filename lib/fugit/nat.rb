@@ -139,12 +139,29 @@ module Fugit
 
       def on_the(i); seq(nil, i, :_the, :omonthdays); end
 
+      def _minute(i); rex(nil, i, /[ \t]*minute[ \t]+/i) end
+
+      def _dmin(i)
+        rex(:dmin, i, /[0-5]?[0-9]/)
+      end
+      def and_dmin(i)
+        seq(nil, i, :_and_or_or_or_comma, :_minute, '?', :_dmin)
+      end
+
+      def on_minutes(i)
+        seq(:on_minutes, i, :_minute, :_dmin, :and_dmin, '*')
+      end
+
+      def on_thex(i);
+        rex(:on_thex, i, /[ \t]*the[ \t]+(hour|minute)[ \t]*/i);
+      end
+
       def on_thes(i); jseq(:on_thes, i, :on_the, :_and_or_or_or_comma); end
       def on_days(i); seq(:on_days, i, :_day_s, :monthdays); end
       def on_weekdays(i); ren(:on_weekdays, i, :weekdays); end
 
       def on_object(i)
-        alt(nil, i, :on_days, :on_weekdays, :on_thes)
+        alt(nil, i, :on_days, :on_weekdays, :on_minutes, :on_thes, :on_thex)
       end
       def on_objects(i)
         jseq(nil, i, :on_object, :_and)
@@ -268,14 +285,18 @@ module Fugit
           :_the, '?', :omonthday, :_to, :_the, '?', :omonthday)
       end
 
+      def to_hour(i)
+        seq(:to_hour, i, :at_object, :_to, :at_object)
+      end
+
       def from_object(i)
-        alt(nil, i, :to_weekday, :to_omonthday)
+        alt(nil, i, :to_weekday, :to_omonthday, :to_hour)
       end
       def from_objects(i)
         jseq(nil, i, :from_object, :_and_or_or)
       end
       def from(i)
-        seq(nil, i, :_from, :from_objects)
+        seq(nil, i, :_from, '?', :from_objects)
       end
 
         # every monday
@@ -317,7 +338,7 @@ module Fugit
       end
 
       def nat_elt(i)
-        alt(nil, i, :every, :at, :from, :tzone, :on)
+        alt(nil, i, :every, :from, :at, :tzone, :on)
       end
       def nat(i)
         jseq(:nat, i, :nat_elt, :_sep)
@@ -326,17 +347,36 @@ module Fugit
       #
       # rewrite parsed tree ###################################################
 
-      def slot(key, data0, data1=nil)
-        Slot.new(key, data0, data1)
+      def slot(key, data0, data1=nil, opts=nil)
+        Slot.new(key, data0, data1, opts)
       end
 
       def _rewrite_subs(t, key=nil)
-#Raabro.pp(t, colours: true)
         t.subgather(key).collect { |ct| rewrite(ct) }
       end
       def _rewrite_sub(t, key=nil)
         st = t.sublookup(key)
         st ? rewrite(st) : nil
+      end
+
+      def rewrite_dmin(t)
+        t.strinp
+      end
+
+      def rewrite_on_minutes(t)
+#Raabro.pp(t, colours: true)
+        mins = t.subgather(:dmin).collect(&:strinp)
+        #slot(:m, mins.join(','))
+        slot(:hm, '*', mins.join(','), strong: 1)
+      end
+
+      def rewrite_on_thex(t)
+        case s = t.string
+        #when /hour/i then slot(:h, 0)
+        #else slot(:m, '*')
+        when /hour/i then slot(:hm, 0, '*', strong: 0)
+        else slot(:hm, '*', '*', strong: 1)
+        end
       end
 
       def rewrite_on_thes(t)
@@ -364,7 +404,8 @@ module Fugit
         pts = t.subgather(:count).collect { |e| e.string.to_i }
 #p [ pt, pts ]
         case pt
-        when 'm' then slot(:m, pts)
+        #when 'm' then slot(:m, pts)
+        when 'm' then slot(:hm, '*', pts, strong: 1)
         when 's' then slot(:second, pts)
 else slot(pt.to_sym, pts)
         end
@@ -390,8 +431,9 @@ else slot(pt.to_sym, pts)
         case i
         when 'M' then slot(:month, cc)
         when 'd' then slot(:monthday, cc, :weak)
-        when 'h' then slot(:hm, cc, 0)
-        when 'm' then slot(:hm, '*', cc)
+        #when 'h' then slot(:hm, cc, 0, weak: :minute)
+        when 'h' then slot(:hm, cc, 0, weak: 1)
+        when 'm' then slot(:hm, '*', cc, strong: 1)
         when 's' then slot(:second, cc)
         else {}
         end
@@ -446,7 +488,6 @@ else slot(pt.to_sym, pts)
       end
 
       def rewrite_named_hour(t)
-#Raabro.pp(t, colours: true)
 
         ht = t.sublookup(:named_h)
         mt = t.sublookup(:named_m)
@@ -462,6 +503,16 @@ else slot(pt.to_sym, pts)
         h += 12 if h < 13 && apt && apt.strinpd == 'pm'
 
         slot(:hm, h, m)
+      end
+
+      def rewrite_to_hour(t)
+#Raabro.pp(t, colours: true)
+        ht0, ht1 = t.subgather(nil)
+        h0, h1 = rewrite(ht0), rewrite(ht1)
+        fail ArgumentError.new(
+          "cannot deal with #{ht0.strinp} to #{ht1.strinp}, minutes diverge"
+        ) if h0.data1 != h1.data1
+        slot(:hm, "#{h0._data0}-#{h1._data0}", 0, strong: 0)
       end
 
       def rewrite_at(t)
@@ -481,30 +532,52 @@ else slot(pt.to_sym, pts)
     class Slot
       attr_reader :key
       attr_accessor :_data0, :_data1
-      def initialize(key, data0, data1)
-        @key = key
-        @_data0 = data0
-        @weak, @_data1 = (data1 == :weak) ? [ true, nil ] : [ false, data1 ]
+      def initialize(key, d0, d1=nil, opts=nil)
+        d1, opts = d1.is_a?(Symbol) ? [ nil, d1 ] : [ d1, opts ]
+        @key, @_data0, @_data1 = key, d0, d1
+        @opts = (opts.is_a?(Symbol) ? { opts => true } : opts) || {}
       end
-      def weak?; @weak; end
       def data0; @data0 ||= Array(@_data0); end
       def data1; @data1 ||= Array(@_data1); end
+      def weak; @opts[:weak]; end
+      def strong; @opts[:strong]; end
+      def graded?; weak || strong; end
+      def append(slot)
+        @_data0, @_data1 = conflate(0, slot), conflate(1, slot)
+        @opts.clear
+        self
+      end
       def inspect
         a = [ @key, @_data0 ]
         a << @_data1 if @_data1 != nil
-        a << :w if @weak
+        a << @opts if @opts && @opts.keys.any?
         "(slot #{a.collect(&:inspect).join(' ')})"
-      end
-      def append(slot)
-        @_data0 = conflate(@_data0, slot.data0, slot.weak?)
-        @_data1 = conflate(@_data1, slot.data1, slot.weak?)
       end
       def a; [ data0, data1 ]; end
       protected
-      def conflate(da, db, weakb)
-        return db if da.nil? || weak?
-        return da if db.nil? || weakb
-        Array(da).concat(Array(db))
+      def to_a(x)
+        return [] if x == '*'
+        Array(x)
+      end
+      def conflate(index, slot)
+        a, b = index == 0 ? [ @_data0, slot._data0 ] : [ @_data1, slot._data1 ]
+        return a if b == nil
+        return b if a == nil
+        if ra = (index == 0 && slot.strong == 1 && hour_range)
+          h0, h1 = ra[0], ra[1] - 1; return h0 == h1 ? h0 : "#{h0}-#{h1}"
+        elsif rb = (index == 0 && strong == 1 && slot.hour_range)
+          h0, h1 = rb[0], rb[1] - 1; return h0 == h1 ? h0 : "#{h0}-#{h1}"
+        end
+        return a if strong == index || strong == true
+        return b if slot.strong == index || slot.strong == true
+        return a if slot.weak == index || slot.weak == true
+        return b if weak == index || weak == true
+        return [ '*' ] if a == '*' && b == '*'
+        to_a(a).concat(to_a(b))
+      end
+      def hour_range
+        m = (key == :hm && @_data1 == 0 && @_data0.match(/\A(\d+)-(\d+)\z/))
+        m ? [ m[1].to_i, m[2].to_i ] : nil
       end
     end
 
@@ -512,29 +585,25 @@ else slot(pt.to_sym, pts)
 
       def initialize(slots)
 
-        @slots =
-          slots.inject({}) { |h, s|
-            if s.key == :hm
-              (h[:hm] ||= []) << s
-            elsif hs = h[s.key]
-              hs.append(s)
-            else
-              h[s.key] = s
-            end
-            h }
+#puts "SlotGroup.new " + slots.inspect
+        @slots = {}
+        @hms = []
 
-        if mi = @slots.delete(:m)
-          if hms = @slots[:hm]
-            hms[0]._data1 = mi._data0
+        slots.each do |s|
+          if s.key == :hm
+            #ls = @hms.last; @hms.pop if ls && ls.key == :hm && ls.weak == true
+            @hms << s
+          elsif hs = @slots[s.key]
+            hs.append(s)
           else
-            @slots[:hm] = make_slot(:hm, '*', mi._data0)
+            @slots[s.key] = s
           end
         end
 
         if @slots[:monthday] || @slots[:weekday]
-          @slots[:hm] ||= [ make_slot(:hm, 0, 0) ]
+          @hms << make_slot(:hm, 0, 0) if @hms.empty?
         elsif @slots[:month]
-          @slots[:hm] ||= [ make_slot(:hm, 0, 0) ]
+          @hms << make_slot(:hm, 0, 0) if @hms.empty?
           @slots[:monthday] ||= make_slot(:monthday, 1)
         end
       end
@@ -564,18 +633,18 @@ else slot(pt.to_sym, pts)
 
       def determine_hms
 
-#-        hours = (hms || [])
-#-          .uniq
-#-          .inject({}) { |r, hm| (r[hm[1]] ||= []) << hm[0]; r }
-#-          .inject({}) { |r, (m, hs)| (r[hs.sort] ||= []) << m; r }
-#-          .to_a
-#-          .sort_by { |hs, ms| -hs.size }
-#-        if hours.empty?
-#-          hours << (h[:dom] ? [ [ '0' ], [ '0' ] ] : [ [ '*' ], [ '*' ] ])
-#-        end
-        return [ [ [ '*' ], [ '*' ] ] ] unless @slots[:hm]
+        return [ [ [ '*' ], [ '*' ] ] ] if @hms.empty?
 
-        @slots[:hm].collect(&:a)
+        hms = @hms.dup
+          #
+        while ig = (hms.count > 1 && hms.index { |hm| hm.graded? }) do
+          sg = hms[ig]
+          so = hms.delete_at(ig == 0 ? 1 : ig - 1)
+          sg.append(so)
+        end
+
+        hms
+          .collect(&:a)
           .inject({}) { |r, hm|
             hm[1].each { |m| (r[m] ||= []).concat(hm[0]) }
             r }
