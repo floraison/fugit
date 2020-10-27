@@ -2,7 +2,12 @@
 # CHANGELOG.md
 
 
-## fugit 1.4.0 not yet released
+## fugit 1.4.0 released 2020-10-27
+
+* Ensure cron accepts "25-L" for monthday, gh-45
+* Allow for "every weekday 8am to 5pm", gh-44
+* Allow "every day from the 25th to the last", gh-45
+* Rework nat parser
 
 
 ## fugit 1.3.9 released 2020-09-17
