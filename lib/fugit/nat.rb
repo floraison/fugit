@@ -407,7 +407,7 @@ module Fugit
         #when 'm' then slot(:m, pts)
         when 'm' then slot(:hm, '*', pts, strong: 1)
         when 's' then slot(:second, pts)
-else slot(pt.to_sym, pts)
+        else slot(pt.to_sym, pts)
         end
       end
 
