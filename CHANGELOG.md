@@ -2,6 +2,11 @@
 # CHANGELOG.md
 
 
+## fugit 1.4.1 released 2020-11-25
+
+* Suppress warning, gh-46, thanks @amatsuda
+
+
 ## fugit 1.4.0 released 2020-10-27
 
 * Ensure cron accepts "25-L" for monthday, gh-45
