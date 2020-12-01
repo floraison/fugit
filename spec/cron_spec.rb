@@ -920,6 +920,10 @@ describe Fugit::Cron do
       [
         # min hou dom mon dow
 
+        nil,
+        '',
+        ' ',
+
         '* 25 * * *',
         '* * -32 * *',
 

@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Niklas https://github.com/gr8bit gh-49, Fugit::Cron.parse('')
 * Matsuda Akira https://github.com/amatsuda gh-46, warning suppression
 * Honglooker https://github.com/honglooker gh-43, New York cron skip
 * Jérôme Dalbert https://github.com/jeromedalbert gh-41, gh-42

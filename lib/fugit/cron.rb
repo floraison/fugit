@@ -780,8 +780,12 @@ module Fugit
 
       def rewrite_cron(t)
 
-        hcron = t
+        st = t
           .sublookup(nil) # go to :ccron or :scron
+
+        return nil unless st
+
+        hcron = st
           .subgather(nil) # list min, hou, mon, ...
           .inject({}) { |h, tt|
             h[tt.name] = tt.name == :tz ? rewrite_tz(tt) : rewrite_entry(tt)
