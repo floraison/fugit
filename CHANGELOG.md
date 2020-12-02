@@ -2,6 +2,11 @@
 # CHANGELOG.md
 
 
+## fugit 1.4.2 not yet released
+
+* Let Fugit::Cron.parse('') return nil, gh-49
+
+
 ## fugit 1.4.1 released 2020-11-25
 
 * Suppress warning, gh-46, thanks @amatsuda
