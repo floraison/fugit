@@ -112,12 +112,7 @@ module Fugit
       end
 
       def dec_month
-
-        #dec(@t.day * 24 * 3600 + @t.hour * 3600 + @t.min * 60 + @t.sec + 1)
-          #
-          # gh-18, so that '0 9 29 feb *' doesn't get skipped (over and over)
-          #
-        dec(@t.day * 24 * 3600 + 1)
+        dec((@t.day - 1) * 24 * 3600 + @t.hour * 3600 + @t.min * 60 + @t.sec + 1)
       end
 
       def dec_day
