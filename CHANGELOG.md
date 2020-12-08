@@ -4,6 +4,7 @@
 
 ## fugit 1.4.2 not yet released
 
+* Fix Fugit::Cron.previous_time vs last day of month, gh-51
 * Let Fugit::Cron.parse('') return nil, gh-49
 
 
