@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.4.2 not yet released
+## fugit 1.4.2 released 2021-01-12
 
 * Fix Fugit::Cron.previous_time vs last day of month, gh-51
 * Let Fugit::Cron.parse('') return nil, gh-49
