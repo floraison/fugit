@@ -107,9 +107,41 @@ describe Fugit::Cron do
       '2019-04-21 10:00:00', '2019-04-11 09:00:00', 'Europe/Berlin' ],
     [ '0 10 * * sun%2+1',
       '2019-04-14 10:00:00', '2019-04-11 09:00:00', 'Europe/Berlin' ],
+
+    # gh-52
+
+    [ '59 23 * * 2', '2021-02-02 23:59:00', '2021-02-02 00:00:00' ],
+    [ '59 23 * * 2', '2021-02-02 23:59:00', '2021-02-02 00:00:00', 'UTC' ],
+    #[ '59 23 * * 2', '2021-02-02 23:59:00', '2021-02-02 00:00:00', 'utc' ],
+
+    [ '59 23 * * 3', '2021-02-10 23:59:00', '2021-02-10 06:10:00' ],
+    [ '59 23 * * 3', '2021-02-10 23:59:00', '2021-02-10 06:10:00', 'UTC' ],
+    #[ '59 23 * * 3', '2021-02-10 23:59:00', '2021-02-10 06:10:00', 'utc' ],
   ]
 
   describe '#next_time' do
+
+    it 'calculates weekdays correctly when starting at the same day, gh-52' do
+
+      expect(
+        Fugit.do_parse_cron('59 23 * * 2')
+          .next_time(Time.parse('2021-02-02 00:00:00')).to_s
+      ).to match(
+        #'2021-02-02 23:59:00 -0000'
+        /^2021-02-02 23:59:00 .+$/
+      )
+    end
+
+    it 'calculates weekdays correctly when starting at the same day, gh-52 UTC' do
+
+      expect(
+        Fugit.do_parse_cron('59 23 * * 2 UTC')
+          .next_time(Time.parse('2021-02-02 00:00:00 UTC')).to_s
+      ).to eq(
+        '2021-02-02 23:59:00 Z'
+      )
+    end
+
 
     NEXT_TIMES.each do |cron, next_time, now, zone_name|
 
