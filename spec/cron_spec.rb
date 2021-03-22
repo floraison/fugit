@@ -230,15 +230,39 @@ describe Fugit::Cron do
             end
 
           expect(points.join("\n")).to eq(%w[
-            2021-03-16_00:00_CET__2021-03-15_23:00_UTC
-            2021-03-23_00:00_CET__2021-03-22_23:00_UTC
-            2021-03-30_00:00_CEST__2021-03-29_22:00_UTC
-            2021-04-06_00:00_CEST__2021-04-05_22:00_UTC
+            2021-03-15_00:00_CET__2021-03-14_23:00_UTC
+            2021-03-22_00:00_CET__2021-03-21_23:00_UTC
+            2021-03-29_00:00_CEST__2021-03-28_22:00_UTC
+            2021-04-05_00:00_CEST__2021-04-04_22:00_UTC
           ].join("\n"))
         end
       end
 
       it 'correctly increments into DST (gh-53 b)' do
+
+        in_zone 'Europe/Zurich' do
+
+          #c = Fugit::Nat.parse('every monday at midnight')
+          c = Fugit::Cron.parse('0 0 * * 1')
+          t = EtOrbi::EoTime.parse('2021-03-14 12:00:00')
+
+          points =
+            4.times.collect do
+              t = c.next_time(t)
+              tu = t.dup.utc
+              "#{t.strftime('%F_%H:%M_%Z')}__#{tu.strftime('%F_%H:%M_%Z')}"
+            end
+
+          expect(points.join("\n")).to eq(%w[
+            2021-03-15_00:00_CET__2021-03-14_23:00_UTC
+            2021-03-22_00:00_CET__2021-03-21_23:00_UTC
+            2021-03-29_00:00_CEST__2021-03-28_22:00_UTC
+            2021-04-05_00:00_CEST__2021-04-04_22:00_UTC
+          ].join("\n"))
+        end
+      end
+
+      it 'correctly increments into DST (gh-53 c)' do
 
         in_zone 'Europe/Zurich' do
 
@@ -262,7 +286,7 @@ describe Fugit::Cron do
         end
       end
 
-      it 'correctly increments into DST (gh-53 c)' do
+      it 'correctly increments into DST (gh-53 d)' do
 
         in_zone 'Europe/Zurich' do
 

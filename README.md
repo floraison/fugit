@@ -350,6 +350,10 @@ Fugit::Nat.parse('every day at 16:15 nada 18:30', multi: true)
 
 `multi: false` is the default behaviour, return a single `Fugit::Cron` instance or nil when it cannot parse.
 
+### Nat Midnight
+
+`"Every day at midnight"` is supported, but `"Every monday at midnight"` will be interpreted (as of Fugit <= 1.4.x) as `"Every monday at 00:00"`. Sorry about that.
+
 
 ## LICENSE
 
