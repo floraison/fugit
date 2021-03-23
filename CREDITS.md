@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Andy Pfister https://github.com/andyundso gh-53, entering DST
 * Solteszad https://github.com/solteszad gh-51, fix previous_time vs last day of month
 * Niklas https://github.com/gr8bit gh-49, Fugit::Cron.parse('')
 * Matsuda Akira https://github.com/amatsuda gh-46, warning suppression

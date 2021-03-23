@@ -2,7 +2,9 @@
 # CHANGELOG.md
 
 
-## fugit 1.4.3 not yet released
+## fugit 1.4.3 released 2021-03-23
+
+* Fix entering DST issue, gh-53
 
 
 ## fugit 1.4.2 released 2021-01-12
