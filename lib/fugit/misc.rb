@@ -2,6 +2,9 @@
 
 module Fugit
 
+  DAY_S = (24 * 3600).freeze
+  YEAR_S = (365 * DAY_S).freeze
+
   class << self
 
     def isostamp(show_date, show_time, show_usec, time)

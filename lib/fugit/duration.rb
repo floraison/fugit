@@ -61,10 +61,10 @@ module Fugit
     end
 
     KEYS = {
-      yea: { a: 'Y', r: 'y', i: 'Y', s: 365 * 24 * 3600, x: 0, l: 'year' },
-      mon: { a: 'M', r: 'M', i: 'M', s: 30 * 24 * 3600, x: 1, l: 'month' },
-      wee: { a: 'W', r: 'w', i: 'W', s: 7 * 24 * 3600, I: true, l: 'week' },
-      day: { a: 'D', r: 'd', i: 'D', s: 24 * 3600, I: true, l: 'day' },
+      yea: { a: 'Y', r: 'y', i: 'Y', s: YEAR_S, x: 0, l: 'year' },
+      mon: { a: 'M', r: 'M', i: 'M', s: 30 * DAY_S, x: 1, l: 'month' },
+      wee: { a: 'W', r: 'w', i: 'W', s: 7 * DAY_S, I: true, l: 'week' },
+      day: { a: 'D', r: 'd', i: 'D', s: DAY_S, I: true, l: 'day' },
       hou: { a: 'h', r: 'h', i: 'H', s: 3600, I: true, l: 'hour' },
       min: { a: 'm', r: 'm', i: 'M', s: 60, I: true, l: 'minute' },
       sec: { a: 's', r: 's', i: 'S', s: 1, I: true, l: 'second' } }.freeze

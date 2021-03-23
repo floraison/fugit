@@ -79,10 +79,7 @@ module Fugit
       %w[ year month day wday hour min sec wday_in_month rweek rday ]
         .collect(&:to_sym).each { |k| define_method(k) { @t.send(k) } }
 
-      def inc(i)
-        @t = @t + i
-        self
-      end
+      def inc(i); @t = @t + i; self; end
       def dec(i); inc(-i); end
 
       def inc_month
@@ -95,6 +92,7 @@ module Fugit
 
       def inc_day
         inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec)
+        inc( - @t.hour * 3600) if @t.hour != 0 # compensate for entering DST
       end
       def inc_hour
         inc((60 - @t.min) * 60 - @t.sec)
@@ -112,7 +110,7 @@ module Fugit
       end
 
       def dec_month
-        dec((@t.day - 1) * 24 * 3600 + @t.hour * 3600 + @t.min * 60 + @t.sec + 1)
+        dec((@t.day - 1) * DAY_S + @t.hour * 3600 + @t.min * 60 + @t.sec + 1)
       end
 
       def dec_day
@@ -332,7 +330,7 @@ module Fugit
       [ :seconds, 1, 60 ],
       [ :minutes, 60, 60 ],
       [ :hours, 3600, 24 ],
-      [ :days, 24 * 3600, 365 ] ].freeze
+      [ :days, DAY_S, 365 ] ].freeze
 
     def rough_frequency
 
@@ -374,7 +372,7 @@ module Fugit
 
         @delta_min = deltas.min; @delta_max = deltas.max
         @occurrences = deltas.size
-        @span_years = span / (365 * 24 * 3600)
+        @span_years = span / YEAR_S
         @yearly_occurrences = @occurrences.to_f / @span_years
       end
 
