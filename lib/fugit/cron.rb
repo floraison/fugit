@@ -92,7 +92,8 @@ module Fugit
 
       def inc_day
         inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec)
-        inc( - @t.hour * 3600) if @t.hour != 0 # compensate for entering DST
+        #inc( - @t.hour * 3600) if @t.hour != 0 # compensate for entering DST
+        inc( - @t.hour * 3600) if @t.hour > 0 && @t.hour < 7
       end
       def inc_hour
         inc((60 - @t.min) * 60 - @t.sec)

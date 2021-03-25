@@ -4,6 +4,8 @@
 
 ## fugit 1.4.4 not yet released
 
+* Ensure leaving ZH DST is OK, gh-53
+
 
 ## fugit 1.4.3 released 2021-03-23
 
