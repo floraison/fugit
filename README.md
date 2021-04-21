@@ -215,6 +215,10 @@ c.match?('2019-01-08')  # => false, since (rweek + 1) % 2 == 1
 # ...
 ```
 
+`sun%2` matches if Sunday and `current_date.rweek % 2 == 0`
+`tue%3+2` matches if Tuesday and `current_date.rweek + 2 % 3 == 0`
+`tue%x+y` matches if Tuesday and `current_date.rweek + y % x == 0`
+
 
 ## `Fugit::Duration`
 

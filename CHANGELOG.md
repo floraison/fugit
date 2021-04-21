@@ -4,6 +4,8 @@
 
 ## fugit 1.4.5 not yet released
 
+* Accept "* * * Mon%2+2", gh-47
+
 
 ## fugit 1.4.4 released 2021-03-25
 

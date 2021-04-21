@@ -551,6 +551,17 @@ describe Fugit::Cron do
           expect(nt.utc.to_s).to match(/ 16:00:00 /)
         end
       end
+
+      it 'does not break on "* * * * 1%2+2" (gh-47)' do
+
+        cron0 = Fugit.parse('0 8 * * 1%2+2')
+        cron1 = Fugit.parse('0 8 * * 1%2')
+
+        expect(cron0.next_time('2021-04-21 07:00:00').to_s
+          ).to match(/^2021-05-03 08:00:00 /)
+        expect(cron0.next_time('2021-04-21 07:00:00').to_s
+          ).to eq(cron1.next_time('2021-04-21 07:00:00').to_s)
+      end
     end
   end
 
