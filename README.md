@@ -203,6 +203,16 @@ p EtOrbi.parse('2019-01-01').rweek % 2  # => 1
 p EtOrbi.parse('2019-04-11').wday       # => 4
 p EtOrbi.parse('2019-04-11').rweek      # => 15
 p EtOrbi.parse('2019-04-11').rweek % 2  # => 1
+
+c = Fugit.parse('* * * * tue%2')
+c.match?('2019-01-01')  # => false, since rweek % 2 == 1
+c.match?('2019-01-08')  # => true, since rweek % 2 == 0
+
+c = Fugit.parse('* * * * tue%2+1')
+c.match?('2019-01-01')  # => true, since (rweek + 1) % 2 == 0
+c.match?('2019-01-08')  # => false, since (rweek + 1) % 2 == 1
+
+# ...
 ```
 
 
