@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Karen Sawrey https://github.com/karensawrey gh-47, Mon%2+1 rework idea
 * Olle Jonsson https://github.com/olleolleolle gha Ruby 3.0
 * Andy Pfister https://github.com/andyundso gh-53, entering DST
 * Solteszad https://github.com/solteszad gh-51, fix previous_time vs last day of month
