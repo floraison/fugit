@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.4.5 not yet released
+## fugit 1.4.5 released 2021-04-22
 
 * Accept "* * * Mon%2+2", gh-47
 
