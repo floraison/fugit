@@ -485,6 +485,8 @@ module Fugit
 
       sla = nil if sla == 1 # don't get fooled by /1
 
+      edn = max if sla && edn.nil?
+
       return [ nil ] if sta.nil? && edn.nil? && sla.nil?
       return [ sta ] if sta && edn.nil?
 
