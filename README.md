@@ -138,6 +138,8 @@ Example of cron strings understood by fugit:
 # and more...
 ```
 
+Please note that `'15/30 * * * *'` is interpreted as `'15-59/30 * * * *'` since fugit 1.4.6.
+
 ### the first Monday of the month
 
 Fugit tries to follow the `man 5 crontab` documentation.
