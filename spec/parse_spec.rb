@@ -105,6 +105,23 @@ describe Fugit do
         expect(o).to eq(n)
       end
     end
+
+    [
+
+      [ 'at 12:00 PM', '0 12 * * *' ],
+      [ 'at 12 PM', '0 12 * * *' ],
+      [ 'at noon', '0 12 * * *' ],
+
+    ].each do |s, c|
+
+      it "goes cron #{c} for #{s} (gh-57)" do
+
+        r = Fugit.parse(s)
+
+        expect(r.class).to eq(Fugit::Cron)
+        expect(r.to_cron_s).to eq(c)
+      end
+    end
   end
 
   describe '.do_parse' do

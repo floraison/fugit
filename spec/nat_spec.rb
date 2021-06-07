@@ -60,12 +60,15 @@ describe Fugit::Nat do
         'every month on day 2 and 5 at 10:00' => '0 10 2,5 * *',
         'every month on days 1,15 at 10:00' => '0 10 1,15 * *',
         'every month on the 1st at 11:00' => '0 11 1 * *',
-        'every month on the 1st and 2nd at 12:00 pm' => '0 24 1,2 * *',
-        'every month on the 1st and the 2nd at 12:00 pm' => '0 24 1,2 * *',
-        'every month on the 1st and the second at 12:00 pm' => '0 24 1,2 * *',
         'every 15th of the month' => '0 0 15 * *', # gh-38 title
           #
           # gh-38
+          #
+        'every month on the 1st and 2nd at 12:00 pm' => '0 12 1,2 * *',
+        'every month on the 1st and the 2nd at 12:00 pm' => '0 12 1,2 * *',
+        'every month on the 1st and the second at 12:00 pm' => '0 12 1,2 * *',
+          #
+          # gh-57, 12pm --> noon
 
         #'at 5 after 4, everyday' => '',
 
@@ -166,6 +169,18 @@ describe Fugit::Nat do
         'every minute from 8am to 5pm' => '* 8-16 * * *',
           #
           # gh-44
+
+        'at 12:00 PM' => '0 12 * * *',
+        'at 12:00PM' => '0 12 * * *',
+        'at 12 PM' => '0 12 * * *',
+        'at 12PM' => '0 12 * * *',
+        'at 12:00 pm' => '0 12 * * *',
+        'at 12:00pm' => '0 12 * * *',
+        'at 12 pm' => '0 12 * * *',
+        'at 12pm' => '0 12 * * *',
+        'at noon' => '0 12 * * *',
+          #
+          # gh-57
 
         # minute hour day-of-month month day-of-week
 

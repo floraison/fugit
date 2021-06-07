@@ -476,14 +476,14 @@ module Fugit
       def rewrite_digital_hour(t)
         h, m, ap = t.strinpd.split(/[: \t]+/)
         h, m = h.to_i, m.to_i
-        h += 12 if ap && ap == 'pm'
+        h += 12 if h < 12 && ap && ap == 'pm'
         slot(:hm, h.to_i, m.to_i)
       end
 
       def rewrite_simple_hour(t)
         h, ap = t.subgather(nil).collect(&:strinpd)
         h = h.to_i
-        h = h + 12 if ap == 'pm'
+        h = h + 12 if h < 12 && ap == 'pm'
         slot(:hm, h, 0)
       end
 
@@ -500,7 +500,7 @@ module Fugit
         m = NMINUTES[m] || m
 #p [ 1, '-->', h, m ]
 
-        h += 12 if h < 13 && apt && apt.strinpd == 'pm'
+        h += 12 if h < 12 && apt && apt.strinpd == 'pm'
 
         slot(:hm, h, m)
       end

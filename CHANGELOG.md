@@ -4,6 +4,7 @@
 
 ## fugit 1.5.0 not yet released
 
+* Accept "at 12pm" as "0 12 * * *", not "0 24 * * *", gh-57
 * Accept "15/30 * * * *" as "15-59/30 * * * *", gh-56
 
 

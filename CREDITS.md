@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Khaled AbuShqear https://github.com/shqear93 gh-57, "12pm"
 * John W Higgins https://github.com/wishdev gh-56, 15/30 cron decision
 * Karen Sawrey https://github.com/karensawrey gh-47, Mon%2+1 rework idea
 * Olle Jonsson https://github.com/olleolleolle gha Ruby 3.0
