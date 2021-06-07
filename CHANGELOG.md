@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.4.6 not yet released
+## fugit 1.5.0 not yet released
 
 * Accept "15/30 * * * *" as "15-59/30 * * * *", gh-56
 
