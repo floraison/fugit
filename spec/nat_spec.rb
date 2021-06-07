@@ -181,6 +181,12 @@ describe Fugit::Nat do
         'at noon' => '0 12 * * *',
           #
           # gh-57
+          #
+        'at 12 noon' => '0 12 * * *',
+        'at 12 Noon' => '0 12 * * *',
+        'at 12 NOON' => '0 12 * * *',
+        'at 12 midday' => '0 12 * * *',
+        'at 12 midnight' => '0 24 * * *',
 
         # minute hour day-of-month month day-of-week
 

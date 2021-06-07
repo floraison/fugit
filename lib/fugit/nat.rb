@@ -201,7 +201,7 @@ module Fugit
       end
 
       def ampm(i)
-        rex(:ampm, i, /[ \t]*(am|pm)/i)
+        rex(:ampm, i, /[ \t]*(am|pm|noon|midday|midnight)/i)
       end
       def dark(i)
         rex(:dark, i, /[ \t]*dark/i)
@@ -473,17 +473,21 @@ module Fugit
         slot(:monthday, "#{md0}-#{md1}")
       end
 
+      def adjust_h(h, ap)
+        h = h.to_i
+        ap = ap || ''
+        (h < 12 && ap == 'pm' || ap == 'midnight') ? h + 12 : h
+      end
+
       def rewrite_digital_hour(t)
         h, m, ap = t.strinpd.split(/[: \t]+/)
-        h, m = h.to_i, m.to_i
-        h += 12 if h < 12 && ap && ap == 'pm'
-        slot(:hm, h.to_i, m.to_i)
+        h, m = adjust_h(h, ap), m.to_i
+        slot(:hm, h, m)
       end
 
       def rewrite_simple_hour(t)
         h, ap = t.subgather(nil).collect(&:strinpd)
-        h = h.to_i
-        h = h + 12 if h < 12 && ap == 'pm'
+        h = adjust_h(h, ap)
         slot(:hm, h, 0)
       end
 
@@ -500,7 +504,7 @@ module Fugit
         m = NMINUTES[m] || m
 #p [ 1, '-->', h, m ]
 
-        h += 12 if h < 12 && apt && apt.strinpd == 'pm'
+        h = adjust_h(h, apt && apt.strinpd)
 
         slot(:hm, h, m)
       end
