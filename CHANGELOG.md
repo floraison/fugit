@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.5.0 not yet released
+## fugit 1.5.0 released 2021-06-08
 
 * Accept "at 12 noon" and "at 12 midday" as "* 12 * * *", gh-57
 * Accept "at 12pm" as "0 12 * * *", not "0 24 * * *", gh-57
