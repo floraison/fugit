@@ -51,6 +51,7 @@ bundle exec ruby -v
 bundle exec ruby -e "p [ :env_tz, ENV['TZ'] ]"
 bundle exec ruby -r et-orbi -e "EtOrbi._make_info"
 bundle exec ruby -r fugit -e "p Fugit::VERSION"
+bundle exec ruby -e "p [ :now, Time.now, :zone, Time.now.zone ]
 ```
 
 (It's supposed to look like
