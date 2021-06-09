@@ -958,6 +958,12 @@ describe Fugit::Cron do
           #
           # gh-43
 
+        [ '1 */1 * * *', '1 * * * *' ],
+        [ '1 0/1 * * *', '1 0 * * *' ],
+        [ '1 0-23/1 * * *', "1 #{(0..23).map(&:to_s).join(',')} * * *" ],
+          #
+          # some cronds are different, see https://crontab.guru/#7_0/1_*_*_*
+
       ].each { |c, e|
 
         it "parses #{c}" do
