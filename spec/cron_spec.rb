@@ -394,7 +394,7 @@ describe Fugit::Cron do
         end
       end
 
-      it 'correctly increments out of DST (America/Santiago) gh-60' do
+      it 'correctly increments into DST (America/Santiago) gh-60' do
 
         in_zone 'America/Santiago' do
 
