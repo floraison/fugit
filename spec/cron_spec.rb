@@ -422,6 +422,35 @@ describe Fugit::Cron do
           ).to eq(12)
         end
       end
+
+      it 'correctly increments out of DST (America/Santiago) gh-60' do
+
+        in_zone 'America/Santiago' do
+
+          c = Fugit.parse('0 8 15 * *')
+          t = EtOrbi::EoTime.parse('2021-01-12 01:00:00')
+
+          points =
+            6.times
+              .collect {
+                t = c.next_time(t)
+                t.to_zs + ' // ' + t.to_t.to_s }
+              .join("\n")
+
+          expect(points).to eq(%{
+            2021-01-15 08:00:00 America/Santiago // 2021-01-15 08:00:00 -0300
+            2021-02-15 08:00:00 America/Santiago // 2021-02-15 08:00:00 -0300
+            2021-03-15 08:00:00 America/Santiago // 2021-03-15 08:00:00 -0300
+            2021-04-15 08:00:00 America/Santiago // 2021-04-15 08:00:00 -0400
+            2021-05-15 08:00:00 America/Santiago // 2021-05-15 08:00:00 -0400
+            2021-06-15 08:00:00 America/Santiago // 2021-06-15 08:00:00 -0400
+          }.strip.split("\n").collect(&:strip).join("\n"))
+
+          expect(
+            c.brute_frequency(2021).occurrences
+          ).to eq(12)
+        end
+      end
     end
 
     it 'returns a plain second' do
