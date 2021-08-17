@@ -83,18 +83,33 @@ module Fugit
       def dec(i); inc(-i); end
 
       def inc_month
+
         y = @t.year
         m = @t.month + 1
         if m == 13; m = 1; y += 1; end
+
         @t = ::EtOrbi.make(y, m, @t.zone)
+
         self
       end
 
       def inc_day
+
         inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec)
+
         #inc( - @t.hour * 3600) if @t.hour != 0 # compensate for entering DST
-        inc( - @t.hour * 3600) if @t.hour > 0 && @t.hour < 7
+        #inc( - @t.hour * 3600) if @t.hour > 0 && @t.hour < 7
+          # leads to gh-60...
+
+        if @t.hour == 0
+          # it's good, carry on...
+        elsif @t.hour < 12
+          @t = ::EtOrbi.make(@t.year, @t.month, @t.day, @t.zone)
+        else
+          inc((24 - @t.hour) * 3600)
+        end
       end
+
       def inc_hour
         inc((60 - @t.min) * 60 - @t.sec)
       end

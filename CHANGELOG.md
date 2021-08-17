@@ -4,6 +4,8 @@
 
 ## fugit 1.5.1 not yet released
 
+* Fix #next_time break issue for America/Santiago out of DST, gh-60
+
 
 ## fugit 1.5.0 released 2021-06-08
 

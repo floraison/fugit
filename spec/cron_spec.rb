@@ -399,25 +399,27 @@ describe Fugit::Cron do
         in_zone 'America/Santiago' do
 
           c = Fugit.parse('0 8 15 * *')
-          t = EtOrbi::EoTime.parse('2021-08-18 01:00:00')
+          t = EtOrbi::EoTime.parse('2021-06-18 01:00:00')
 
           points =
-            4.times
+            6.times
               .collect {
                 t = c.next_time(t)
                 t.to_zs + ' // ' + t.to_t.to_s }
               .join("\n")
 
           expect(points).to eq(%{
-FIXME       2018-11-03 01:59:00 America/Santiago // 2018-11-03 01:59:00 -0400
-FIXME       2018-11-04 01:59:00 America/Santiago // 2018-11-04 01:59:00 -0400
-FIXME       2018-11-05 01:59:00 America/Santiago // 2018-11-05 01:59:00 -0500
-FIXME       2018-11-06 01:59:00 America/Santiago // 2018-11-06 01:59:00 -0500
+            2021-07-15 08:00:00 America/Santiago // 2021-07-15 08:00:00 -0400
+            2021-08-15 08:00:00 America/Santiago // 2021-08-15 08:00:00 -0400
+            2021-09-15 08:00:00 America/Santiago // 2021-09-15 08:00:00 -0300
+            2021-10-15 08:00:00 America/Santiago // 2021-10-15 08:00:00 -0300
+            2021-11-15 08:00:00 America/Santiago // 2021-11-15 08:00:00 -0300
+            2021-12-15 08:00:00 America/Santiago // 2021-12-15 08:00:00 -0300
           }.strip.split("\n").collect(&:strip).join("\n"))
 
           expect(
             c.brute_frequency(2021).occurrences
-          ).to eq(1)
+          ).to eq(12)
         end
       end
     end
