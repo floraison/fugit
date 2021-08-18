@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.5.1 not yet released
+## fugit 1.5.1 released 2021-08-18
 
 * Fix #next_time break issue for America/Santiago into DST, gh-60
 
