@@ -14,7 +14,8 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        ruby: [ '2.3', '2.5', '2.6', '2.7', '3.0', jruby-9.2 ]
+        #ruby: [ '2.3', '2.5', '2.6', '2.7', '3.0', jruby-9.2 ]
+        ruby: [ 2.3, 2.5, 2.6, 2.7, 3.0, jruby-9.2, truffle-ruby-21.2 ]
         experimental: [ false ]
       fail-fast: false
     runs-on: ${{matrix.os}}
