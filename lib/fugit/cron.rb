@@ -97,19 +97,14 @@ module Fugit
 
         inc((24 - @t.hour) * 3600 - @t.min * 60 - @t.sec)
 
-        #inc( - @t.hour * 3600) if @t.hour != 0 # compensate for entering DST
-        #inc( - @t.hour * 3600) if @t.hour > 0 && @t.hour < 7
-          # leads to gh-60...
+        return if @t.hour == 0
 
-        if @t.hour == 0
-          # it's good, carry on...
-        elsif @t.hour < 12
-          @t =
-            begin
-              ::EtOrbi.make(@t.year, @t.month, @t.day, @t.zone)
-            rescue ::TZInfo::PeriodNotFound
-              ::EtOrbi.make(@t.year, @t.month, @t.day + 1, @t.zone)
-            end
+        if @t.hour < 12
+          begin
+            @t = ::EtOrbi.make(@t.year, @t.month, @t.day, @t.zone)
+          rescue ::TZInfo::PeriodNotFound
+            inc((24 - @t.hour) * 3600)
+          end
         else
           inc((24 - @t.hour) * 3600)
         end
