@@ -104,7 +104,12 @@ module Fugit
         if @t.hour == 0
           # it's good, carry on...
         elsif @t.hour < 12
-          @t = ::EtOrbi.make(@t.year, @t.month, @t.day, @t.zone)
+          @t =
+            begin
+              ::EtOrbi.make(@t.year, @t.month, @t.day, @t.zone)
+            rescue ::TZInfo::PeriodNotFound
+              ::EtOrbi.make(@t.year, @t.month, @t.day + 1, @t.zone)
+            end
         else
           inc((24 - @t.hour) * 3600)
         end

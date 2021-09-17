@@ -434,16 +434,16 @@ describe Fugit::Cron do
             6.times
               .collect {
                 t = c.next_time(t)
-                t.to_zs + ' // ' + t.to_t.to_s }
+                t.to_zs + ' // ' + t.to_t.dup.utc.to_s }
               .join("\n")
 
           expect(points).to eq(%{
-            2021-07-15 08:00:00 America/Santiago // 2021-07-15 08:00:00 -0400
-            2021-08-15 08:00:00 America/Santiago // 2021-08-15 08:00:00 -0400
-            2021-09-15 08:00:00 America/Santiago // 2021-09-15 08:00:00 -0300
-            2021-10-15 08:00:00 America/Santiago // 2021-10-15 08:00:00 -0300
-            2021-11-15 08:00:00 America/Santiago // 2021-11-15 08:00:00 -0300
-            2021-12-15 08:00:00 America/Santiago // 2021-12-15 08:00:00 -0300
+            2021-07-15 08:00:00 America/Santiago // 2021-07-15 12:00:00 UTC
+            2021-08-15 08:00:00 America/Santiago // 2021-08-15 12:00:00 UTC
+            2021-09-15 08:00:00 America/Santiago // 2021-09-15 11:00:00 UTC
+            2021-10-15 08:00:00 America/Santiago // 2021-10-15 11:00:00 UTC
+            2021-11-15 08:00:00 America/Santiago // 2021-11-15 11:00:00 UTC
+            2021-12-15 08:00:00 America/Santiago // 2021-12-15 11:00:00 UTC
           }.strip.split("\n").collect(&:strip).join("\n"))
 
           expect(
@@ -492,16 +492,16 @@ describe Fugit::Cron do
             6.times
               .collect {
                 t = c.next_time(t)
-                t.to_zs + ' // ' + t.to_t.to_s }
+                t.to_zs + ' // ' + t.to_t.dup.utc.to_s }
               .join("\n")
 
           expect(points).to eq(%{
-            2021-01-15 08:00:00 America/Santiago // 2021-01-15 08:00:00 -0300
-            2021-02-15 08:00:00 America/Santiago // 2021-02-15 08:00:00 -0300
-            2021-03-15 08:00:00 America/Santiago // 2021-03-15 08:00:00 -0300
-            2021-04-15 08:00:00 America/Santiago // 2021-04-15 08:00:00 -0400
-            2021-05-15 08:00:00 America/Santiago // 2021-05-15 08:00:00 -0400
-            2021-06-15 08:00:00 America/Santiago // 2021-06-15 08:00:00 -0400
+            2021-01-15 08:00:00 America/Santiago // 2021-01-15 11:00:00 UTC
+            2021-02-15 08:00:00 America/Santiago // 2021-02-15 11:00:00 UTC
+            2021-03-15 08:00:00 America/Santiago // 2021-03-15 11:00:00 UTC
+            2021-04-15 08:00:00 America/Santiago // 2021-04-15 12:00:00 UTC
+            2021-05-15 08:00:00 America/Santiago // 2021-05-15 12:00:00 UTC
+            2021-06-15 08:00:00 America/Santiago // 2021-06-15 12:00:00 UTC
           }.strip.split("\n").collect(&:strip).join("\n"))
 
           expect(
