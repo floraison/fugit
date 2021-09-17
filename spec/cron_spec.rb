@@ -423,9 +423,67 @@ describe Fugit::Cron do
         end
       end
 
+      it 'correctly increments into DST (America/Santiago) gh-62' do
+
+        in_active_support_zone 'America/Santiago' do
+
+          c = Fugit.parse('0 8 15 * *')
+          t = EtOrbi::EoTime.parse('2021-06-18 01:00:00')
+
+          points =
+            6.times
+              .collect {
+                t = c.next_time(t)
+                t.to_zs + ' // ' + t.to_t.to_s }
+              .join("\n")
+
+          expect(points).to eq(%{
+            2021-07-15 08:00:00 America/Santiago // 2021-07-15 08:00:00 -0400
+            2021-08-15 08:00:00 America/Santiago // 2021-08-15 08:00:00 -0400
+            2021-09-15 08:00:00 America/Santiago // 2021-09-15 08:00:00 -0300
+            2021-10-15 08:00:00 America/Santiago // 2021-10-15 08:00:00 -0300
+            2021-11-15 08:00:00 America/Santiago // 2021-11-15 08:00:00 -0300
+            2021-12-15 08:00:00 America/Santiago // 2021-12-15 08:00:00 -0300
+          }.strip.split("\n").collect(&:strip).join("\n"))
+
+          expect(
+            c.brute_frequency(2021).occurrences
+          ).to eq(12)
+        end
+      end
+
       it 'correctly increments out of DST (America/Santiago) gh-60' do
 
         in_zone 'America/Santiago' do
+
+          c = Fugit.parse('0 8 15 * *')
+          t = EtOrbi::EoTime.parse('2021-01-12 01:00:00')
+
+          points =
+            6.times
+              .collect {
+                t = c.next_time(t)
+                t.to_zs + ' // ' + t.to_t.to_s }
+              .join("\n")
+
+          expect(points).to eq(%{
+            2021-01-15 08:00:00 America/Santiago // 2021-01-15 08:00:00 -0300
+            2021-02-15 08:00:00 America/Santiago // 2021-02-15 08:00:00 -0300
+            2021-03-15 08:00:00 America/Santiago // 2021-03-15 08:00:00 -0300
+            2021-04-15 08:00:00 America/Santiago // 2021-04-15 08:00:00 -0400
+            2021-05-15 08:00:00 America/Santiago // 2021-05-15 08:00:00 -0400
+            2021-06-15 08:00:00 America/Santiago // 2021-06-15 08:00:00 -0400
+          }.strip.split("\n").collect(&:strip).join("\n"))
+
+          expect(
+            c.brute_frequency(2021).occurrences
+          ).to eq(12)
+        end
+      end
+
+      it 'correctly increments out of DST (America/Santiago) gh-62' do
+
+        in_active_support_zone 'America/Santiago' do
 
           c = Fugit.parse('0 8 15 * *')
           t = EtOrbi::EoTime.parse('2021-01-12 01:00:00')
