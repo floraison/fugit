@@ -423,7 +423,7 @@ describe Fugit::Cron do
         end
       end
 
-      it 'correctly increments into DST (America/Santiago) gh-62' do
+      it 'correctly increments into DST (America/Santiago) Time.zone gh-62' do
 
         in_active_support_zone 'America/Santiago' do
 
@@ -449,6 +449,38 @@ describe Fugit::Cron do
           expect(
             c.brute_frequency(2021).occurrences
           ).to eq(12)
+        end
+      end
+
+      it 'correctly increments into DST (America/Santiago) Time.zone gh-62 hourly' do
+
+        in_active_support_zone 'America/Santiago' do
+
+          c = Fugit.parse('0 * * * *')
+          t = EtOrbi::EoTime.parse('2021-09-04 21:00:00')
+
+          points =
+            6.times
+              .collect {
+                t = c.next_time(t)
+                t.to_zs + ' // ' + t.to_t.dup.utc.to_s }
+              .join("\n")
+
+          expect(points).to eq(
+            %{
+              2021-09-04 22:00:00 America/Santiago // 2021-09-05 02:00:00 UTC
+              2021-09-04 23:00:00 America/Santiago // 2021-09-05 03:00:00 UTC
+              2021-09-05 01:00:00 America/Santiago // 2021-09-05 04:00:00 UTC
+              2021-09-05 02:00:00 America/Santiago // 2021-09-05 05:00:00 UTC
+              2021-09-05 03:00:00 America/Santiago // 2021-09-05 06:00:00 UTC
+              2021-09-05 04:00:00 America/Santiago // 2021-09-05 07:00:00 UTC
+            }
+              .strip.split("\n").map(&:strip)
+              .reject { |l| l[0, 1] == '#' }.join("\n"))
+
+          expect(
+            c.brute_frequency(2021).occurrences
+          ).to eq(8759)
         end
       end
 
@@ -481,7 +513,7 @@ describe Fugit::Cron do
         end
       end
 
-      it 'correctly increments out of DST (America/Santiago) gh-62' do
+      it 'correctly increments out of DST (America/Santiago) Time.zone gh-62' do
 
         in_active_support_zone 'America/Santiago' do
 
