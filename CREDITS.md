@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Pascal Zumkehr https://github.com/codez gh-62, Santiago into DST vs Time.zone
 * Ggallardoh https://github.com/Ggallardoh gh-60, America/Santiago into DST
 * Khaled AbuShqear https://github.com/shqear93 gh-57, "12pm"
 * John W Higgins https://github.com/wishdev gh-56, 15/30 cron decision

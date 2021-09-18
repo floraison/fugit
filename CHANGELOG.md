@@ -2,7 +2,9 @@
 # CHANGELOG.md
 
 
-## fugit 1.5.2 not yet released
+## fugit 1.5.2 released 2021-09-18
+
+* Simplify inc_day, gh-62
 
 
 ## fugit 1.5.1 released 2021-08-18
