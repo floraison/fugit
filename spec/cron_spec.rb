@@ -315,6 +315,32 @@ describe Fugit::Cron do
         end
       end
 
+      it 'correctly increments into DST (America/New_York) (gh-63)' do
+
+        in_zone 'America/New_York' do
+
+          c = Fugit::Cron.parse('30 4 * * *')
+          #t = EtOrbi::EoTime.parse('2021-03-11 12:00:00')
+          t = Time.parse('2021-03-11 12:00:00')
+
+          points =
+            6.times.collect do
+              t = c.next_time(t)
+              tu = t.dup.utc
+              "#{t.strftime('%F_%H:%M_%Z')}__#{tu.strftime('%F_%H:%M_%Z')}"
+            end
+
+          expect(points.join("\n")).to eq(%w[
+            2021-03-12_04:30_EST__2021-03-12_09:30_UTC
+            2021-03-13_04:30_EST__2021-03-13_09:30_UTC
+            2021-03-14_04:30_EDT__2021-03-14_08:30_UTC
+            2021-03-15_04:30_EDT__2021-03-15_08:30_UTC
+            2021-03-16_04:30_EDT__2021-03-16_08:30_UTC
+            2021-03-17_04:30_EDT__2021-03-17_08:30_UTC
+          ].join("\n"))
+        end
+      end
+
       it 'correctly increments out of DST (gh-53 e)' do
 
         in_zone 'Europe/Zurich' do
