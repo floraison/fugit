@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
+
 module Fugit
 
-  VERSION = '1.5.2'
+  VERSION = '1.5.3'
 end
 
 require 'time'
