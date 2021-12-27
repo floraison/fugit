@@ -67,12 +67,17 @@ describe Fugit::Cron do
     # gh-5  '0 8 L * * mon-thu', last day of month on Saturday
     #
     # gh-35  '59 6 1-7 * 2', monthdays 1-7 being ignored
+    #
+    # gh-64
 
     # Note: The day of a command's execution can be specified by two fields --
     # day of month, and day of week.  If both fields are restricted (ie, are
     # not *), the command will be run when either field matches the current
     # time.  For example, ``30 4 1,15 * 5'' would cause a command to be run
     # at 4:30 am on the 1st and 15th of each month, plus every Friday.
+
+    # I need to remember this, else I am going to lose time investigating
+    # those again and again :-(
 
     [ '0 8 L * mon-thu',
       '2018-06-30 08:00:00', '2018-06-28 18:00:00', 'Europe/Berlin' ],
@@ -96,6 +101,12 @@ describe Fugit::Cron do
     [ '59 6 1-7 * 2',
       '2020-03-01 06:59:00', # not '2020-03-03 06:59:00', monthday 1-7 matches
       '2020-02-29 07:29:00' ],
+
+    [ '0 0 29 2 0,6',     '2022-02-05 00:00:00', '2021-12-27 09:47:00' ],
+    [ '0 0 29 2 sat,sun', '2022-02-05 00:00:00', '2021-12-27 09:47:00' ],
+    [ '0 0 29 2 0,6',     '2022-02-05 00:00:00', '2021-12-27 09:47:00', 'UTC' ],
+      #
+    [ '0 0 11 * 3-6', '2021-12-29 00:00:00', '2021-12-27 09:47:00' ],
 
     #
     # gh-1 '0 9 * * sun%2' and '* * * * sun%2+1'
