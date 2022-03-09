@@ -74,6 +74,8 @@ module Fugit
       end
 
       def time; @t; end
+      def to_t; @t; end
+        #
       def to_i; @t.to_i; end
 
       %w[ year month day wday hour min sec wday_in_month rweek rday ]
