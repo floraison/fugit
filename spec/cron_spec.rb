@@ -762,14 +762,17 @@ describe Fugit::Cron do
 
   describe '#match?' do
 
-    NEXT_TIMES.each do |cron, next_time, _|
+    NEXT_TIMES.each do |cron, next_time, _, zone_name|
 
       it "succeeds #{cron.inspect} ? #{next_time.inspect}" do
 
-        c = Fugit::Cron.parse(cron)
-        ent = Time.parse(next_time)
+        in_zone(zone_name) do
 
-        expect(c.match?(ent)).to be(true)
+          c = Fugit::Cron.parse(cron)
+          ent = Time.parse(next_time)
+
+          expect(c.match?(ent)).to be(true)
+        end
       end
     end
 
