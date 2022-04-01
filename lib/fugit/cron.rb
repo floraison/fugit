@@ -60,7 +60,7 @@ module Fugit
         (@hours || [ '*' ]).join(','),
         (@monthdays || [ '*' ]).join(','),
         (@months || [ '*' ]).join(','),
-        (@weekdays || [ [ '*' ] ]).map { |d| d.compact.join('#') }.join(','),
+        weekdays_to_cron_s,
         @timezone ? @timezone.name : nil
           ].compact.join(' ')
     end
@@ -620,6 +620,24 @@ module Fugit
     def determine_timezone(z)
 
       @zone, @timezone = z
+    end
+
+    def weekdays_to_cron_s
+
+      return '*' unless @weekdays
+
+      @weekdays
+        .collect { |a|
+          if a.length == 1
+            a[0].to_s
+          elsif a[1].is_a?(Array)
+            a11 = a[1][1]
+            off = (a11 < 0) ? a11.to_s : (a11 > 0) ? "+#{a11}" : ''
+            "#{a[0]}%#{a[1][0]}" + off
+          else
+            a.collect(&:to_s).join('#')
+          end }
+        .join(',')
     end
 
     module Parser include Raabro

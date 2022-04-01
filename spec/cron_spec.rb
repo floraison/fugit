@@ -1405,17 +1405,20 @@ describe Fugit::Cron do
 
   describe '#to_cron_s' do
 
-    [
+    cron_s = {
+      '0 */3 * * 1,2' => '0 0,3,6,9,12,15,18,21 * * 1,2',
+      '0 5 * * 1,2,3,4,5' => '0 5 * * 1,2,3,4,5',
+      '0 5 * * 1-4,fri#3' => '0 5 * * 1,2,3,4,5#3',
+      '* * * * * America/Los_Angeles' => '* * * * * America/Los_Angeles',
+      #'0 */3 * * 1,2' => '0 */3 * * 1-2',
+      #'0 5 * * 1,2,3,4,5' => '0 5 * * 1-5',
+      #'0 5 * * 1,2,3,4,fri#3' => '0 5 * * 1-4,5#3',
+      '0 13 * * wed' => '0 13 * * 3',
+      '0 13 * * wed%2' => '0 13 * * 3%2',
+      '0 13 * * wed%2+1' => '0 13 * * 3%2+1',
+    }
 
-      [ '0 */3 * * 1,2', '0 0,3,6,9,12,15,18,21 * * 1,2' ],
-      [ '0 5 * * 1,2,3,4,5', '0 5 * * 1,2,3,4,5' ],
-      [ '0 5 * * 1-4,fri#3', '0 5 * * 1,2,3,4,5#3' ],
-      [ '* * * * * America/Los_Angeles', '* * * * * America/Los_Angeles' ],
-      #[ '0 */3 * * 1,2', '0 */3 * * 1-2' ],
-      #[ '0 5 * * 1,2,3,4,5', '0 5 * * 1-5' ],
-      #[ '0 5 * * 1,2,3,4,fri#3', '0 5 * * 1-4,5#3' ],
-
-    ].each do |source, target|
+    cron_s.each do |source, target|
 
       it "represents #{source.inspect} into #{target.inspect}" do
 
@@ -1427,12 +1430,15 @@ describe Fugit::Cron do
       end
     end
 
-    it "produces the same cron if parsing again the to_cron_s" do
+    cron_s.each do |k, _|
 
-      c1 = Fugit::Cron.parse('* * * * * America/Los_Angeles')
-      c2 = Fugit::Cron.parse(c1.to_cron_s)
+      it "produces the same cron string if parsing (#{k.inspect} to_cron_s)" do
 
-      expect(c1).to eq(c2)
+        ck = Fugit::Cron.parse(k)
+        cks = Fugit::Cron.parse(ck.to_cron_s)
+
+        expect(cks).to eq(ck)
+      end
     end
   end
 
