@@ -12,80 +12,55 @@ describe Fugit do
 
   describe '.parse' do
 
-    it 'parses time points' do
+    {
+      '2017-01-03 11:21:17' => [ EtOrbi::EoTime, '2017-01-03 11:21:17' ],
+      '00 00 L 5 *' => [ Fugit::Cron, '0 0 -1 5 *' ],
+      '1Y3M2d' => [ Fugit::Duration, '1Y3M2D' ],
+      '1Y2h' => [ Fugit::Duration, '1Y2h' ],
+      '0 0 1 jan *' => [ Fugit::Cron, '0 0 1 1 *' ],
+      '12y12M' => [ Fugit::Duration, '12Y12M' ],
+      '2017-12-12' => [ EtOrbi::EoTime, '2017-12-12 00:00:00' ],
+      'every day at noon' => [ Fugit::Cron, '0 12 * * *' ],
 
-      t = Fugit.parse('2017-01-03 11:21:17')
+      'at 12:00 PM' => [ Fugit::Cron, '0 12 * * *' ],
+      'at 12 PM' => [ Fugit::Cron, '0 12 * * *' ],
+      'at noon' => [ Fugit::Cron, '0 12 * * *' ],
 
-      expect(t.class).to eq(::EtOrbi::EoTime)
-      expect(Fugit.time_to_plain_s(t, false)).to eq('2017-01-03 11:21:17')
-    end
+        # testing nat: false and cron: false
+        #
+      [ '* * * * 1', { nat: false } ] => [ Fugit::Cron, '* * * * 1' ],
+      [ 'every day at noon', { cron: false } ] => [ Fugit::Cron, '0 12 * * *' ],
+        #
+      [ 'every day at noon', { nat: false } ] => nil,
+      [ '* * * * 1', { cron: false } ] => nil,
 
-    it 'parses cron strings' do
 
-      c = Fugit.parse('00 00 L 5 *')
+      true => nil,
+      'I have a pen, I have an apple, pen apple' => nil,
 
-      expect(c.class).to eq(Fugit::Cron)
-      expect(c.to_cron_s).to eq('0 0 -1 5 *')
-    end
+    }.each do |k, (c, s)|
 
-    it 'parses durations' do
+      k, opts = k
+      t = k.inspect + (opts ? ' ' + opts.inspect : '')
+      opts ||= {}
 
-      d = Fugit.parse('1Y3M2d')
+      it "parses #{t} into #{c} / #{s.inspect}" do
 
-      expect(d.class).to eq(Fugit::Duration)
-      expect(d.to_plain_s).to eq('1Y3M2D')
-    end
+        c = c || NilClass
 
-    it 'parses durations' do
+        x = Fugit.parse(k, opts)
 
-      d = Fugit.parse('1Y2h')
+        expect(x.class).to eq(c)
 
-      expect(d.class).to eq(Fugit::Duration)
-      expect(d.to_plain_s).to eq('1Y2h')
-    end
-
-    [
-      [ '0 0 1 jan *', ::Fugit::Cron ],
-      [ '12y12M', ::Fugit::Duration ],
-      [ '2017-12-12', ::EtOrbi::EoTime ],
-      #[ 'every day at noon', ::Fugit::Cron ],
-    ].each do |str, kla|
-
-      it "parses #{str.inspect} into a #{kla} instance" do
-
-        r = Fugit.parse(str)
-
-        expect(r.class).to eq(kla)
+        expect(
+          case x
+          when EtOrbi::EoTime then Fugit.time_to_plain_s(x)
+          when Fugit::Duration then x.to_plain_s
+          when Fugit::Cron then x.to_cron_s
+          else nil
+          end
+        ).to eq(s)
       end
-    end
-
-    it 'parses "nats"' do
-
-      c = Fugit.parse('every day at noon')
-
-      expect(c.class).to eq(Fugit::Cron)
-      expect(c.to_cron_s).to eq('0 12 * * *')
-    end
-
-    it 'disables nat parsing when nat: false' do
-
-      x = Fugit.parse('* * * * 1', nat: false)
-      expect(x.class).to eq(Fugit::Cron)
-
-      x = Fugit.parse('every day at noon', nat: false)
-      expect(x).to eq(nil)
-
-      x = Fugit.parse('* * * * 1', cron: false)
-      expect(x).to eq(nil)
-
-      x = Fugit.parse('every day at noon', cron: false)
-      expect(x.class).to eq(Fugit::Cron)
-    end
-
-    it 'returns nil when it cannot parse' do
-
-      expect(Fugit.parse(true)).to eq(nil)
-      expect(Fugit.parse('I have a pen, I have an apple, pen apple')).to eq(nil)
     end
 
     [
@@ -103,23 +78,6 @@ describe Fugit do
         n = Fugit.parse_nat(s)
 
         expect(o).to eq(n)
-      end
-    end
-
-    [
-
-      [ 'at 12:00 PM', '0 12 * * *' ],
-      [ 'at 12 PM', '0 12 * * *' ],
-      [ 'at noon', '0 12 * * *' ],
-
-    ].each do |s, c|
-
-      it "goes cron #{c} for #{s} (gh-57)" do
-
-        r = Fugit.parse(s)
-
-        expect(r.class).to eq(Fugit::Cron)
-        expect(r.to_cron_s).to eq(c)
       end
     end
   end
