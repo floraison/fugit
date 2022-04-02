@@ -96,15 +96,17 @@ describe Fugit do
       expect(c.to_cron_s).to eq('0 0 * * *')
     end
 
-    it 'fails when it cannot parse' do
+    [
 
-      expect {
-        Fugit.do_parse('I have a pen, I have an apple, pineapple!')
-      }.to raise_error(
-        ArgumentError,
-        'found no time information in ' +
-        '"I have a pen, I have an apple, pineapple!"'
-      )
+      'I have a pen, I have an apple, pineapple!',
+      #'0 13 * * 3#2#0', # gh-68 and gh-69
+
+    ].each do |k|
+
+      it "fails when attempting to parse #{k.inspect}" do
+
+        expect { Fugit.do_parse(k) }.to raise_error(ArgumentError)
+      end
     end
   end
 
