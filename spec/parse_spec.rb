@@ -13,13 +13,13 @@ describe Fugit do
   describe '.parse' do
 
     {
-      '2017-01-03 11:21:17' => [ EtOrbi::EoTime, '2017-01-03 11:21:17' ],
+      '2017-01-03 11:21:17' => [ EtOrbi::EoTime, '2017-01-03 11:21:17 Z' ],
       '00 00 L 5 *' => [ Fugit::Cron, '0 0 -1 5 *' ],
       '1Y3M2d' => [ Fugit::Duration, '1Y3M2D' ],
       '1Y2h' => [ Fugit::Duration, '1Y2h' ],
       '0 0 1 jan *' => [ Fugit::Cron, '0 0 1 1 *' ],
       '12y12M' => [ Fugit::Duration, '12Y12M' ],
-      '2017-12-12' => [ EtOrbi::EoTime, '2017-12-12 00:00:00' ],
+      '2017-12-12' => [ EtOrbi::EoTime, '2017-12-12 00:00:00 Z' ],
       'every day at noon' => [ Fugit::Cron, '0 12 * * *' ],
 
       'at 12:00 PM' => [ Fugit::Cron, '0 12 * * *' ],
@@ -46,9 +46,13 @@ describe Fugit do
 
       it "parses #{t} into #{c} / #{s.inspect}" do
 
-        c = c || NilClass
+        c =
+          c || NilClass
 
-        x = Fugit.parse(k, opts)
+        x =
+          in_zone('UTC') do
+            Fugit.parse(k, opts)
+          end
 
         expect(x.class).to eq(c)
 
