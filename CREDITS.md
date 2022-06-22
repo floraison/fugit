@@ -2,7 +2,7 @@
 # fugit credits
 
 * Vivek Miyani, https://github.com/vivekmiyani, gh-71
-* Peter Goldstein, https://github.com/petergoldstein GHA 3.3 j9.3, gh-65
+* Peter Goldstein, https://github.com/petergoldstein infra, gh-65, -72
 * Pascal Zumkehr https://github.com/codez gh-62, Santiago into DST vs Time.zone
 * Ggallardoh https://github.com/Ggallardoh gh-60, America/Santiago into DST
 * Khaled AbuShqear https://github.com/shqear93 gh-57, "12pm"
