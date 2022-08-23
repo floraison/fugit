@@ -1558,6 +1558,9 @@ describe Fugit::Cron do
       end
     end
   end
+end
+
+describe Fugit do
 
   describe '#parse_cron' do
 

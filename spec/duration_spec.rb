@@ -139,6 +139,23 @@ describe Fugit::Duration do
       end
     end
 
+    [
+
+      [ "7d7", 7 * 24 * 3600 + 7 ],
+      [ " 7d7\n \n", 7 * 24 * 3600 + 7 ],
+      [ " 7d 7\n \n", 7 * 24 * 3600 + 7 ],
+
+    ].each do |src, sec|
+
+      it "strips and parses #{src.inspect}" do
+
+        d = Fugit::Duration.parse(src)
+
+        expect(d.original).to eq(src)
+        expect(d.to_sec).to eq(sec)
+      end
+    end
+
     it 'rejects lower case when ISO and :stricter' do
 
       expect(
