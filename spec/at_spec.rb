@@ -29,6 +29,13 @@ describe Fugit do
       expect(t.object_id).to eq(eot.object_id)
     end
 
+    it 'strips before parsing' do
+
+      t = Fugit.parse_at(" 2017-01-03 11:21:17\n ")
+
+      expect(Fugit.time_to_plain_s(t, false)).to eq('2017-01-03 11:21:17')
+    end
+
     context 'with timezones' do
 
       [
@@ -39,9 +46,14 @@ describe Fugit do
         [ '2018-09-04 06:41:34 Etc/GMT-11', '2018-09-04 06:41:34 +11 +1100' ],
         #[ '2018-09-04 06:41:34 UTC+11', nil ],
 
+        [ "\n2018-09-04 06:41:34 +11:00",
+          '2018-09-04 06:41:34 +11:00 +1100' ],
+        [ " \n 2018-09-04 06:41:34  Etc/GMT-11",
+          '2018-09-04 06:41:34 +11 +1100' ],
+
       ].each do |string, plain|
 
-        it "parses #{string}" do
+        it "parses #{string.inspect}" do
 
           t = Fugit.parse_at(string)
 
