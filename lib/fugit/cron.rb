@@ -38,7 +38,7 @@ module Fugit
         return nil unless s.is_a?(String)
 
 #p s; Raabro.pp(Parser.parse(s, debug: 3), colors: true)
-        h = Parser.parse(s)
+        h = Parser.parse(s.strip)
 
         return nil unless h
 

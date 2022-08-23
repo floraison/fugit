@@ -1558,5 +1558,29 @@ describe Fugit::Cron do
       end
     end
   end
+
+  describe '#parse_cron' do
+
+    [
+
+      [ "45 5 * * sun", '45 5 * * 0' ],
+      [ "\n45 5 * * sun \n ", '45 5 * * 0' ],
+      [ "*   *  last  * *", '* * -1 * *' ],
+      [ " *   *  last  * *\n", '* * -1 * *' ],
+      [ "30 18 * * 2#5 Europe/Paris", '30 18 * * 2#5 Europe/Paris' ],
+      [ " 30 18 * * 2#5  Europe/Paris \n", '30 18 * * 2#5 Europe/Paris' ],
+
+    ].each do |src, cron_s|
+
+      it "parses #{src.inspect}" do
+
+        r = Fugit.parse_cron(src)
+
+        expect(r.class).to eq(Fugit::Cron)
+        expect(r.original).to eq(src)
+        expect(r.to_cron_s).to eq(cron_s)
+      end
+    end
+  end
 end
 
