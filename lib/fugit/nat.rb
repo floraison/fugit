@@ -15,6 +15,8 @@ module Fugit
 
         return nil unless s.is_a?(String)
 
+        s = s.strip
+
 #p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
 #(p s; Raabro.pp(Parser.parse(s, debug: 1), colours: true)) rescue nil
 

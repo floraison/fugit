@@ -286,3 +286,28 @@ describe Fugit::Nat do
   end
 end
 
+describe Fugit do
+
+  describe '.parse_nat' do
+
+    {
+
+      "every day at five" => '0 5 * * *',
+      "every day at 5 pm in Asia/Tokyo" => '0 17 * * * Asia/Tokyo',
+      " \nevery day at five \n" => '0 5 * * *',
+      "\n every day at 5 pm  in Asia/Tokyo\n" => '0 17 * * * Asia/Tokyo',
+
+    }.each do |src, cron_s|
+
+      it "strips and parses #{src.inspect}" do
+
+        r = Fugit.parse_nat(src)
+
+        expect(r.class).to eq(Fugit::Cron)
+        expect(r.to_cron_s).to eq(cron_s)
+      end
+    end
+  end
+end
+
+
