@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.6.0 not yet released
+
+
 ## fugit 1.5.3 released 2022-04-02
 
 * Fix Fugit::Cron.to_s vs "0 13 * * wed%2", gh-68
