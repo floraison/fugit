@@ -12,7 +12,7 @@ describe Fugit do
 
   describe '.parse' do
 
-    {
+    CASES = {
       '2017-01-03 11:21:17' => [ EtOrbi::EoTime, '2017-01-03 11:21:17 Z' ],
       '00 00 L 5 *' => [ Fugit::Cron, '0 0 -1 5 *' ],
       '1Y3M2d' => [ Fugit::Duration, '1Y3M2D' ],
@@ -34,11 +34,16 @@ describe Fugit do
       [ 'every day at noon', { nat: false } ] => nil,
       [ '* * * * 1', { cron: false } ] => nil,
 
-
       true => nil,
       'I have a pen, I have an apple, pen apple' => nil,
 
-    }.each do |k, (c, s)|
+      'every day at  noon' => [ Fugit::Cron, '0 12 * * *' ],
+      '0  0 1 jan  *' => [ Fugit::Cron, '0 0 1 1 *' ],
+      'at  12  PM' => [ Fugit::Cron, '0 12 * * *' ],
+      'at  noon' => [ Fugit::Cron, '0 12 * * *' ],
+    }
+
+    CASES.each do |k, (c, s)|
 
       k, opts = k
       t = k.inspect + (opts ? ' ' + opts.inspect : '')
@@ -46,13 +51,35 @@ describe Fugit do
 
       it "parses #{t} into #{c} / #{s.inspect}" do
 
-        c =
-          c || NilClass
+        c = c || NilClass
+        x = in_zone('UTC') { Fugit.parse(k, opts) }
 
-        x =
-          in_zone('UTC') do
-            Fugit.parse(k, opts)
+        expect(x.class).to eq(c)
+
+        expect(
+          case x
+          when EtOrbi::EoTime then Fugit.time_to_plain_s(x)
+          when Fugit::Duration then x.to_plain_s
+          when Fugit::Cron then x.to_cron_s
+          else nil
           end
+        ).to eq(s)
+      end
+    end
+
+    CASES.each do |k, (c, s)|
+
+      k, opts = k
+
+      t = k.inspect + (opts ? ' ' + opts.inspect : '')
+      t = " \n #{t} \n "
+
+      opts ||= {}
+
+      it "parses #{t} into #{c} / #{s.inspect}" do
+
+        c = c || NilClass
+        x = in_zone('UTC') { Fugit.parse(k, opts) }
 
         expect(x.class).to eq(c)
 
