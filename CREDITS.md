@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* John Bachir, https://github.com/jjb, gh-74
 * Vivek Miyani, https://github.com/vivekmiyani, gh-71
 * Peter Goldstein, https://github.com/petergoldstein infra, gh-65, -72
 * Pascal Zumkehr https://github.com/codez gh-62, Santiago into DST vs Time.zone

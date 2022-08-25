@@ -2,7 +2,9 @@
 # CHANGELOG.md
 
 
-## fugit 1.6.0 not yet released
+## fugit 1.6.0 release 2022-08-25
+
+* Ensure input strings are stripped before parsing, gh-74
 
 
 ## fugit 1.5.3 released 2022-04-02
