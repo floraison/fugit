@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* James Healy, https://github.com/yob, gh-76
 * John Bachir, https://github.com/jjb, gh-74
 * Vivek Miyani, https://github.com/vivekmiyani, gh-71
 * Peter Goldstein, https://github.com/petergoldstein infra, gh-65, -72
