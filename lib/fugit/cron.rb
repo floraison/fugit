@@ -660,7 +660,8 @@ module Fugit
       def s(i); rex(nil, i, /[ \t]+/); end
       def star(i); str(nil, i, '*'); end
       def hyphen(i); str(nil, i, '-'); end
-      def comma(i); str(nil, i, ','); end
+      def comma(i); rex(nil, i, /,([ \t]*,)*/); end
+      def comma?(i); rex(nil, i, /([ \t]*,)*/); end
 
       def slash(i); rex(:slash, i, /\/\d\d?/); end
 
@@ -720,12 +721,12 @@ module Fugit
       def list_mon(i); jseq(:mon, i, :mon_elt, :comma); end
       def list_dow(i); jseq(:dow, i, :dow_elt_, :comma); end
 
-      def lsec_(i); seq(nil, i, :list_sec, :s); end
-      def lmin_(i); seq(nil, i, :list_min, :s); end
-      def lhou_(i); seq(nil, i, :list_hou, :s); end
-      def ldom_(i); seq(nil, i, :list_dom, :s); end
-      def lmon_(i); seq(nil, i, :list_mon, :s); end
-      alias ldow list_dow
+      def lsec_(i); seq(nil, i, :comma, '?', :list_sec, :comma, '?', :s); end
+      def lmin_(i); seq(nil, i, :comma, '?', :list_min, :comma, '?', :s); end
+      def lhou_(i); seq(nil, i, :comma, '?', :list_hou, :comma, '?', :s); end
+      def ldom_(i); seq(nil, i, :comma, '?', :list_dom, :comma, '?', :s); end
+      def lmon_(i); seq(nil, i, :comma, '?', :list_mon, :comma, '?', :s); end
+      def ldow(i); seq(nil, i, :comma, '?', :list_dow, :comma, '?'); end
 
       def _tz_name(i)
         rex(nil, i, / +[A-Z][a-zA-Z0-9+\-]+(\/[A-Z][a-zA-Z0-9+\-_]+){0,2}/)

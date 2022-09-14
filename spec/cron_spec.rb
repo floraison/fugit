@@ -1158,6 +1158,12 @@ describe Fugit::Cron do
           #
           # some cronds are different, see https://crontab.guru/#7_0/1_*_*_*
 
+        [ '9,,19 * * * *', '9,19 * * * *' ],
+        [ ',8 * * * *', '8 * * * *' ],
+        [ ',,10,,20, * * * *', '10,20 * * * *' ],
+        [ '10,,20 * 1,,11,,21, * *', '10,20 * 1,11,21 * *' ],
+        [ ',,10,,22, * * * * Asia/Omsk', '10,22 * * * * Asia/Omsk' ],
+
       ].each { |c, e|
 
         it "parses #{c}" do
