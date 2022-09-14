@@ -721,12 +721,12 @@ module Fugit
       def list_mon(i); jseq(:mon, i, :mon_elt, :comma); end
       def list_dow(i); jseq(:dow, i, :dow_elt_, :comma); end
 
-      def lsec_(i); seq(nil, i, :comma, '?', :list_sec, :comma, '?', :s); end
-      def lmin_(i); seq(nil, i, :comma, '?', :list_min, :comma, '?', :s); end
-      def lhou_(i); seq(nil, i, :comma, '?', :list_hou, :comma, '?', :s); end
-      def ldom_(i); seq(nil, i, :comma, '?', :list_dom, :comma, '?', :s); end
-      def lmon_(i); seq(nil, i, :comma, '?', :list_mon, :comma, '?', :s); end
-      def ldow(i); seq(nil, i, :comma, '?', :list_dow, :comma, '?'); end
+      def lsec_(i); seq(nil, i, :comma?, :list_sec, :comma?, :s); end
+      def lmin_(i); seq(nil, i, :comma?, :list_min, :comma?, :s); end
+      def lhou_(i); seq(nil, i, :comma?, :list_hou, :comma?, :s); end
+      def ldom_(i); seq(nil, i, :comma?, :list_dom, :comma?, :s); end
+      def lmon_(i); seq(nil, i, :comma?, :list_mon, :comma?, :s); end
+      def ldow(i); seq(nil, i, :comma?, :list_dow, :comma?); end
 
       def _tz_name(i)
         rex(nil, i, / +[A-Z][a-zA-Z0-9+\-]+(\/[A-Z][a-zA-Z0-9+\-_]+){0,2}/)
