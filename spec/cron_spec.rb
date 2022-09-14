@@ -757,6 +757,21 @@ describe Fugit::Cron do
         expect(cron0.next_time('2021-04-21 07:00:00').to_s
           ).to eq(cron1.next_time('2021-04-21 07:00:00').to_s)
       end
+
+      it 'does not break on "30 14 * * 4%4+3" (gh-76)' do
+
+        t0 =
+          Time.utc(2022, 9, 12, 12, 1, 1, 0)
+        nt =
+          Fugit::Cron.do_parse('30 14 * * 4%4+3 Australia/Melbourne')
+            .next_time(t0)
+
+        expect(nt.to_s).to eq('2022-10-06 03:30:00 Z') # post gh-47
+          #
+        in_zone('Australia/Melbourne') do
+          expect(nt.to_t.to_s).to eq('2022-10-06 14:30:00 +1100')
+        end
+      end
     end
   end
 
