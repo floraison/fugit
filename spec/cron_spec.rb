@@ -766,10 +766,14 @@ describe Fugit::Cron do
           Fugit::Cron.do_parse('30 14 * * 4%4+3 Australia/Melbourne')
             .next_time(t0)
 
-        expect(nt.to_s).to eq('2022-10-06 03:30:00 Z') # post gh-47
-          #
+        #expect(nt.to_s).to eq(/^2022-10-06 03:30:00 (Z|\+0000)$/)
+          # post gh-47
+        expect(nt.to_s).to match(/^2022-09-22 04:30:00 (Z|\+0000)$/)
+          # post gh-76
+
         in_zone('Australia/Melbourne') do
-          expect(nt.to_t.to_s).to eq('2022-10-06 14:30:00 +1100')
+          #expect(nt.to_t.to_s).to eq('2022-10-06 14:30:00 +1100') # post gh-47
+          expect(nt.to_t.to_s).to eq('2022-09-22 14:30:00 +1000') # post gh-76
         end
       end
     end

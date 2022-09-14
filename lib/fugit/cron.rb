@@ -167,7 +167,7 @@ module Fugit
 
     def weekday_modulo_match?(nt, mod)
 
-      (nt.rweek + mod[1]) % mod[0] == 0
+      (nt.rweek % mod[0]) == (mod[1] % mod[0])
     end
 
     def weekday_match?(nt)
