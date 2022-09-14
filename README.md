@@ -160,7 +160,34 @@ The man page says:
 
 Fugit follows this specification.
 
-There is a solution though, please read on.
+Since fugit 1.7.0, by adding `&` right after a day specifier, the `day-of-month OR day-of-week` becomes `day-of-month AND day-of-week`.
+
+```ruby
+# standard cron
+
+p Fugit.parse_cron('0 0 */2 * 1-5').next_time('2022-08-09').to_s
+  # ==> "2022-08-10 00:00:00 +0900"
+
+# with an &
+
+p Fugit.parse_cron('0 0 */2 * 1-5&').next_time('2022-08-09').to_s # or
+p Fugit.parse_cron('0 0 */2& * 1-5').next_time('2022-08-09').to_s
+p Fugit.parse_cron('0 0 */2& * 1-5&').next_time('2022-08-09').to_s
+  # ==> "2022-08-11 00:00:00 +0900"
+
+
+# standard cron
+
+p Fugit.parse_cron('59 6 1-7 * 2').next_time('2020-03-15').to_s
+  # ==> "2020-03-17 06:59:00 +0900"
+
+# with an &
+
+p Fugit.parse_cron('59 6 1-7 * 2&').next_time('2020-03-15').to_s
+p Fugit.parse_cron('59 6 1-7& * 2').next_time('2020-03-15').to_s
+p Fugit.parse_cron('59 6 1-7& * 2&').next_time('2020-03-15').to_s
+  # ==> "2020-04-07 06:59:00 +0900"
+```
 
 ### the hash extension
 

@@ -4,6 +4,7 @@
 
 ## fugit 1.7.0 not yet released
 
+* Introduce the & cron syntax (day-of-month AND day-of-week), gh-78
 * Change how cron deals with modulo and offset, gh-76
 * Be liberal with extra commas, gh-77
 

@@ -199,8 +199,14 @@ module Fugit
 
     def day_match?(nt)
 
-      return weekday_match?(nt) || monthday_match?(nt) \
-        if @weekdays && @monthdays
+      if @weekdays && @monthdays
+
+        return weekday_match?(nt) && monthday_match?(nt) \
+          if @day_and
+            #
+            # extension for fugit, gh-78
+
+        return weekday_match?(nt) || monthday_match?(nt)
           #
           # From `man 5 crontab`
           #
@@ -212,6 +218,8 @@ module Fugit
           # at 4:30 am on the 1st and 15th of each month, plus every Friday.
           #
           # as seen in gh-5 and gh-35
+      end
+
 
       return false unless weekday_match?(nt)
       return false unless monthday_match?(nt)
@@ -482,6 +490,7 @@ module Fugit
 
       @original = original
       @cron_s = nil # just to be sure
+      @day_and = h[:&]
 
       determine_seconds(h[:sec])
       determine_minutes(h[:min])
@@ -662,6 +671,7 @@ module Fugit
       def hyphen(i); str(nil, i, '-'); end
       def comma(i); rex(nil, i, /,([ \t]*,)*/); end
       def comma?(i); rex(nil, i, /([ \t]*,)*/); end
+      def and?(i); rex(nil, i, /&?/); end
 
       def slash(i); rex(:slash, i, /\/\d\d?/); end
 
@@ -724,9 +734,9 @@ module Fugit
       def lsec_(i); seq(nil, i, :comma?, :list_sec, :comma?, :s); end
       def lmin_(i); seq(nil, i, :comma?, :list_min, :comma?, :s); end
       def lhou_(i); seq(nil, i, :comma?, :list_hou, :comma?, :s); end
-      def ldom_(i); seq(nil, i, :comma?, :list_dom, :comma?, :s); end
+      def ldom_(i); seq(nil, i, :comma?, :list_dom, :comma?, :and?, :s); end
       def lmon_(i); seq(nil, i, :comma?, :list_mon, :comma?, :s); end
-      def ldow(i); seq(nil, i, :comma?, :list_dow, :comma?); end
+      def ldow(i); seq(nil, i, :comma?, :list_dow, :comma?, :and?); end
 
       def _tz_name(i)
         rex(nil, i, / +[A-Z][a-zA-Z0-9+\-]+(\/[A-Z][a-zA-Z0-9+\-_]+){0,2}/)
@@ -737,10 +747,12 @@ module Fugit
       def _tz(i); alt(:tz, i, :_tz_delta, :_tz_name); end
 
       def classic_cron(i)
-        seq(:ccron, i, :lmin_, :lhou_, :ldom_, :lmon_, :ldow, :_tz, '?')
+        seq(:ccron, i,
+          :lmin_, :lhou_, :ldom_, :lmon_, :ldow, :_tz, '?')
       end
       def second_cron(i)
-        seq(:scron, i, :lsec_, :lmin_, :lhou_, :ldom_, :lmon_, :ldow, :_tz, '?')
+        seq(:scron, i,
+          :lsec_, :lmin_, :lhou_, :ldom_, :lmon_, :ldow, :_tz, '?')
       end
 
       def cron(i)
@@ -822,6 +834,7 @@ module Fugit
           .inject({}) { |h, tt|
             h[tt.name] = tt.name == :tz ? rewrite_tz(tt) : rewrite_entry(tt)
             h }
+        hcron[:&] = true if t.string.index('&')
 
         z, tz = hcron[:tz]; return nil if z && ! tz
 
