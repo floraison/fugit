@@ -2,6 +2,11 @@
 # CHANGELOG.md
 
 
+## fugit 1.7.0 not yet released
+
+* Be liberal with extra commas, gh-77
+
+
 ## fugit 1.6.0 release 2022-08-25
 
 * Ensure input strings are stripped before parsing, gh-74
