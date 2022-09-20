@@ -76,7 +76,7 @@ describe Fugit do
 
       opts ||= {}
 
-      it "parses #{t} into #{c} / #{s.inspect}" do
+      it "parses #{t.inspect} into #{c} / #{s.inspect}" do
 
         c = c || NilClass
         x = in_zone('UTC') { Fugit.parse(k, opts) }
