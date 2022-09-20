@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Joseph Halter, https://github.com/JosephHalter, gh-79
 * James Healy, https://github.com/yob, gh-76
 * John Bachir, https://github.com/jjb, gh-74
 * Vivek Miyani, https://github.com/vivekmiyani, gh-71
