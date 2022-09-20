@@ -509,8 +509,6 @@ module Fugit
 
       sta, edn, sla = r
 
-      sla = nil if sla == 1 # don't get fooled by /1
-
       edn = max if sla && edn.nil?
 
       return [ nil ] if sta.nil? && edn.nil? && sla.nil?
@@ -524,6 +522,8 @@ module Fugit
     end
 
     def range(min, max, sta, edn, sla)
+
+      return [ nil ] if sta == min && edn == max && sla == 1
 
       fail ArgumentError.new(
         'both start and end must be negative in ' +
