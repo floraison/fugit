@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.7.1 not yet released
+
+
 ## fugit 1.7.0 released 2022-09-15
 
 * Introduce the & cron syntax (day-of-month AND day-of-week), gh-78
