@@ -2,7 +2,10 @@
 # CHANGELOG.md
 
 
-## fugit 1.7.1 not yet released
+## fugit 1.7.1 released 2022-09-21
+
+* Change behaviour for "0 0/5 * * *", gh-79
+  go "every 5h start hour 0", previous behaviour only triggered at hour 0
 
 
 ## fugit 1.7.0 released 2022-09-15
