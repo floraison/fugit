@@ -90,6 +90,12 @@ describe Fugit::Nat do
           #
           # gh-42
 
+        'every day at 5pm' => '0 17 * * *',
+        'every day at 5:00pm' => '0 17 * * *',
+        'every day at 5:00 pm' => '0 17 * * *',
+          #
+          # gh-81
+
         #'every day at 18:15 and 20:45' => '* * * * *',
           #
           # gh-24 see below

@@ -196,17 +196,18 @@ module Fugit
         seq(nil, i, :_in_or_on, '?', :tz)
       end
 
-      def digital_hour(i)
-        rex(
-          :digital_hour, i,
-          /(2[0-4]|[0-1]?[0-9]):([0-5][0-9])([ \t]*(am|pm))?/i)
-      end
-
       def ampm(i)
         rex(:ampm, i, /[ \t]*(am|pm|noon|midday|midnight)/i)
       end
       def dark(i)
         rex(:dark, i, /[ \t]*dark/i)
+      end
+
+      def digital_h(i)
+        rex(:digital_h, i, /(2[0-4]|[0-1]?[0-9]):([0-5][0-9])/i)
+      end
+      def digital_hour(i)
+        seq(:digital_hour, i, :digital_h, :ampm, '?')
       end
 
       def simple_h(i)
@@ -477,12 +478,16 @@ module Fugit
 
       def adjust_h(h, ap)
         h = h.to_i
-        ap = ap || ''
-        (h < 12 && ap == 'pm' || ap == 'midnight') ? h + 12 : h
+        case ap
+        when 'pm' then h < 12 ? h + 12 : h
+        when 'midnight' then h + 12
+        else h
+        end
       end
 
       def rewrite_digital_hour(t)
-        h, m, ap = t.strinpd.split(/[: \t]+/)
+        h, m = t.sublookup(:digital_h).strinpd.split(':')
+        ap = t.sublookup(:ampm); ap = ap && ap.strinpd
         h, m = adjust_h(h, ap), m.to_i
         slot(:hm, h, m)
       end
