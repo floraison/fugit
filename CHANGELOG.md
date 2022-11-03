@@ -2,7 +2,10 @@
 # CHANGELOG.md
 
 
-## fugit 1.7.2 not yet released
+## fugit 1.7.2 released 2022-11-03
+
+* Fix 'every day at 12:15 am', gh-81
+* Fix 'every day at 5:00pm', gh-81
 
 
 ## fugit 1.7.1 released 2022-09-21

@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* ski-nine, https://github.com/ski-nine, gh-81
 * Joseph Halter, https://github.com/JosephHalter, gh-79
 * James Healy, https://github.com/yob, gh-76
 * John Bachir, https://github.com/jjb, gh-74
