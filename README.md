@@ -399,6 +399,36 @@ Fugit::Nat.parse('every day at 16:15 nada 18:30', multi: true)
 `"Every day at midnight"` is supported, but `"Every monday at midnight"` will be interpreted (as of Fugit <= 1.4.x) as `"Every monday at 00:00"`. Sorry about that.
 
 
+### 12 AM and PM
+
+How does fugit react with `"12 am"`, `"12 pm"`, `"12 midnight"`, etc?
+
+```ruby
+require 'fugit'
+
+p Fugit.parse('every day at 12am').original  # ==> "0 0 * * *"
+p Fugit.parse('every day at 12pm').original  # ==> "0 12 * * *"
+
+p Fugit.parse('every day at 12:00am').original   # ==> "0 0 * * *"
+p Fugit.parse('every day at 12:00pm').original   # ==> "0 12 * * *"
+p Fugit.parse('every day at 12:00 am').original  # ==> "0 0 * * *"
+p Fugit.parse('every day at 12:00 pm').original  # ==> "0 12 * * *"
+p Fugit.parse('every day at 12:15am').original   # ==> "15 0 * * *"
+p Fugit.parse('every day at 12:15pm').original   # ==> "15 12 * * *"
+p Fugit.parse('every day at 12:15 am').original  # ==> "15 0 * * *"
+p Fugit.parse('every day at 12:15 pm').original  # ==> "15 12 * * *"
+
+p Fugit.parse('every day at 12 noon').original         # ==> "0 12 * * *"
+p Fugit.parse('every day at 12 midnight').original     # ==> "0 24 * * *"
+p Fugit.parse('every day at 12:00 noon').original      # ==> "0 12 * * *"
+p Fugit.parse('every day at 12:00 midnight').original  # ==> "0 24 * * *"
+p Fugit.parse('every day at 12:15 noon').original      # ==> "15 12 * * *"
+p Fugit.parse('every day at 12:15 midnight').original  # ==> "15 24 * * *"
+
+  # as of fugit 1.7.2
+```
+
+
 ## LICENSE
 
 MIT, see [LICENSE.txt](LICENSE.txt)
