@@ -176,6 +176,7 @@ module Fugit
         #'every week on monday 18:23' => '23 18 * * 1',
         #
         # every month on the 1st
+        #
       def on(i)
         seq(:on, i, :_on, :on_objects)
       end
@@ -452,20 +453,24 @@ module Fugit
       end
 
       def rewrite_tz(t)
+
         slot(:tz, t.string)
       end
 
       def rewrite_weekday(t)
+
         Fugit::Cron::Parser::WEEKDS.index(t.string[0, 3].downcase)
       end
 
       def rewrite_weekdays(t)
+
 #Raabro.pp(t, colours: true)
         slot(:weekday, _rewrite_subs(t, :weekday))
       end
       alias rewrite_on_weekdays rewrite_weekdays
 
       def rewrite_to_weekday(t)
+
         wd0, wd1 = _rewrite_subs(t, :weekday)
         #wd1 = 7 if wd1 == 0
         slot(:weekday, "#{wd0}-#{wd1}")
@@ -476,25 +481,35 @@ module Fugit
         slot(:monthday, "#{md0}-#{md1}")
       end
 
-      def adjust_h(h, ap)
-        h = h.to_i
-        case ap
-        when 'pm' then h < 12 ? h + 12 : h
-        when 'midnight' then h + 12
-        else h
+      # Try to follow https://en.wikipedia.org/wiki/12-hour_clock#Confusion_at_noon_and_midnight
+      #
+      def adjust_h(h, m, ap)
+
+        if ap == 'midnight' && h == 12
+          24
+        elsif ap == 'pm' && h < 12 # post meridian
+          h + 12
+        elsif ap == 'am' && h == 12 # ante meridian
+          0
+        else
+          h
         end
       end
 
       def rewrite_digital_hour(t)
-        h, m = t.sublookup(:digital_h).strinpd.split(':')
-        ap = t.sublookup(:ampm); ap = ap && ap.strinpd
-        h, m = adjust_h(h, ap), m.to_i
+
+        h, m = t.sublookup(:digital_h).strinpd.split(':').collect(&:to_i)
+        ap = t.sublookup(:ampm)
+        h, m = adjust_h(h, m, ap && ap.strinpd), m
+
         slot(:hm, h, m)
       end
 
       def rewrite_simple_hour(t)
+
         h, ap = t.subgather(nil).collect(&:strinpd)
-        h = adjust_h(h, ap)
+        h = adjust_h(h.to_i, 0, ap)
+
         slot(:hm, h, 0)
       end
 
@@ -506,12 +521,10 @@ module Fugit
 
         h = ht.strinp
         m = mt ? mt.strinp : 0
-#p [ 0, '-->', h, m ]
         h = NHOURS[h]
         m = NMINUTES[m] || m
-#p [ 1, '-->', h, m ]
 
-        h = adjust_h(h, apt && apt.strinpd)
+        h = adjust_h(h, m, apt && apt.strinpd)
 
         slot(:hm, h, m)
       end

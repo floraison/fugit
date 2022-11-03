@@ -90,9 +90,27 @@ describe Fugit::Nat do
           #
           # gh-42
 
-        'every day at 5pm' => '0 17 * * *',
-        'every day at 5:00pm' => '0 17 * * *',
-        'every day at 5:00 pm' => '0 17 * * *',
+        'every day at 5pm'      => '0 17 * * *',
+        'every day at 5:00pm'   => '0 17 * * *',
+        'every day at 5:00 pm'  => '0 17 * * *',
+          #
+        'every day at 12am'      => '0 0 * * *',
+        'every day at 12pm'      => '0 12 * * *',
+        'every day at 12:00am'   => '0 0 * * *',
+        'every day at 12:00pm'   => '0 12 * * *',
+        'every day at 12:00 am'  => '0 0 * * *',
+        'every day at 12:00 pm'  => '0 12 * * *',
+        'every day at 12:15am'   => '15 0 * * *',
+        'every day at 12:15pm'   => '15 12 * * *',
+        'every day at 12:15 am'  => '15 0 * * *',
+        'every day at 12:15 pm'  => '15 12 * * *',
+          #
+        'every day at 12 noon'         => '0 12 * * *',
+        'every day at 12 midnight'     => '0 24 * * *',
+        'every day at 12:00 noon'      => '0 12 * * *',
+        'every day at 12:00 midnight'  => '0 24 * * *',
+        'every day at 12:15 noon'      => '15 12 * * *',
+        'every day at 12:15 midnight'  => '15 24 * * *',
           #
           # gh-81
 
