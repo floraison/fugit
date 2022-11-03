@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.7.2 not yet released
+
+
 ## fugit 1.7.1 released 2022-09-21
 
 * Change behaviour for "0 0/5 * * *", gh-79
