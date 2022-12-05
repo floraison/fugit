@@ -137,6 +137,62 @@ describe Fugit do
     end
   end
 
+  CRONISHES = {
+
+    '* * * * *' => '* * * * *',
+    'every day' => '0 0 * * *',
+
+    '2022-12-5 11:32' => ArgumentError,
+    'nada' => ArgumentError,
+    '100 * * * *' => ArgumentError,
+      }
+
+  describe '.parse_cronish' do
+
+    CRONISHES.each do |k, v|
+
+      if v.is_a?(String)
+
+        it "parses #{k.inspect} to #{v.inspect}" do
+
+          r = Fugit.parse_cronish(k)
+
+          expect(r.class).to eq(Fugit::Cron)
+          expect(r.original).to eq(v)
+        end
+      else
+
+        it "returns nil for #{k.inspect}" do
+
+          expect(Fugit.parse_cronish(k)).to eq(nil)
+        end
+      end
+    end
+  end
+
+  describe '.do_parse_cronish' do
+
+    CRONISHES.each do |k, v|
+
+      if v.is_a?(String)
+
+        it "parses #{k.inspect} to #{v.inspect}" do
+
+          r = Fugit.do_parse_cronish(k)
+
+          expect(r.class).to eq(Fugit::Cron)
+          expect(r.original).to eq(v)
+        end
+      else
+
+        it "fails on #{k.inspect}" do
+
+          expect { Fugit.do_parse_cronish(k) }.to raise_error(v)
+        end
+      end
+    end
+  end
+
   describe '.determine_type' do
 
     it 'returns nil if it cannot determine' do

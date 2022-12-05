@@ -4,6 +4,8 @@
 
 ## fugit 1.8.0 not yet released
 
+* Introduce Fugit.parse_cronish and .do_parse_cronish, gh-70
+
 
 ## fugit 1.7.2 released 2022-11-03
 

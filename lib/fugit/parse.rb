@@ -33,6 +33,19 @@ module Fugit
       fail(ArgumentError.new("found no time information in #{s.inspect}"))
     end
 
+    def parse_cronish(s, opts={})
+
+      r = parse_cron(s) || parse_nat(s, opts)
+
+      r.is_a?(::Fugit::Cron) ? r : nil
+    end
+
+    def do_parse_cronish(s, opts={})
+
+      parse_cronish(s) ||
+      fail(ArgumentError.new("not cron or 'natural' cron string: #{s.inspect}"))
+    end
+
     def determine_type(s)
 
       case self.parse(s)

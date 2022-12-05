@@ -89,6 +89,23 @@ Fugit.parse_nat('every day at noon').class  # ==> ::Fugit::Cron
 
 As `Fugit.parse(s)` returns nil when it doesn't grok its input, and `Fugit.do_parse(s)` fails when it doesn't grok, each of the `parse_` methods has its partner `do_parse_` method.
 
+## parse_cronish and do_parse_cronish
+
+Sometimes you know a cron expression or an "every" natural expression will come in and you want to discard the rest.
+
+```
+require 'fugit'
+
+Fugit.parse_cronish('0 0 1 jan *').class             # ==> ::Fugit::Cron
+Fugit.parse_cronish('every saturday at noon').class  # ==> ::Fugit::Cron
+
+Fugit.parse_cronish('12y12M')        # ==> nil
+```
+
+`.parse_cronish(s)` will return a `Fugit::Cron` instance or else nil.
+
+`.do_parse_cronish(s)` will return a `Fugit::Cron` instance or else fail with an `ArgumentError`.
+
 ## `Fugit::Cron`
 
 A class `Fugit::Cron` to parse cron strings and then `#next_time` and `#previous_time` to compute the next or the previous occurrence respectively.
