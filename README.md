@@ -106,6 +106,8 @@ Fugit.parse_cronish('12y12M')        # ==> nil
 
 `.do_parse_cronish(s)` will return a `Fugit::Cron` instance or else fail with an `ArgumentError`.
 
+Introduced in fugit 1.8.0.
+
 ## `Fugit::Cron`
 
 A class `Fugit::Cron` to parse cron strings and then `#next_time` and `#previous_time` to compute the next or the previous occurrence respectively.

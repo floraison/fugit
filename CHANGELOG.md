@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.8.0 not yet released
+## fugit 1.8.0 released 2022-12-06
 
 * Introduce Fugit.parse_cronish and .do_parse_cronish, gh-70
 
