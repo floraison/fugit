@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Michael Reinsch, https://github.com/mreinsch, gh-84 and gh-85
 * Marc Anguera, https://github.com/markets, gh-70 and Sidekiq-Cron
 * ski-nine, https://github.com/ski-nine, gh-81
 * Joseph Halter, https://github.com/JosephHalter, gh-79
