@@ -240,7 +240,7 @@ module Fugit
           n, m = at[1] / 12, at[1] % 12
           at[0], at[1] = at[0] + n, m
         elsif at[1] < 1
-          n, m = -at[1] / 12, -at[1] % 12
+          n, m = (-at[1]) / 12 + 1, (11+at[1]) % 12 + 1
           at[0], at[1] = at[0] - n, m
         end
 
