@@ -470,6 +470,15 @@ describe Fugit::Duration do
       expect((d - s).to_plain_s).to eq('3h1s')
     end
 
+    it 'subtracts Time instances' do
+
+      d = Fugit.parse('1Y2h')
+      t = Time.parse('2016-02-02T11:11:11Z')
+
+      expect(Fugit.time_to_plain_s(d.subtract(t), false)).to eq('2015-02-02 09:11:11')
+      expect(Fugit.time_to_plain_s(d - t, false)).to eq('2015-02-02 09:11:11')
+    end
+
     it 'fails else' do
 
       d = Fugit.parse('1Y2h')
