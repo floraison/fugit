@@ -269,7 +269,7 @@ module Fugit
       when Numeric then add_numeric(-a)
       when Fugit::Duration then add_duration(-a)
       when String then add_duration(-self.class.parse(a))
-      when ::Time, ::EtOrbi::EoTime then add_to_time(a)
+      when ::Time, ::EtOrbi::EoTime then opposite.add_to_time(a)
       else fail ArgumentError.new(
         "cannot subtract #{a.class} instance to a Fugit::Duration")
       end
