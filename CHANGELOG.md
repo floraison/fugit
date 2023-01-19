@@ -2,6 +2,12 @@
 # CHANGELOG.md
 
 
+## fugit 1.8.1 not yet released
+
+* Fix for month subtraction, gh-84, @mreinsch
+* Fix duration - time, gh-85, @mreinsch
+
+
 ## fugit 1.8.0 released 2022-12-06
 
 * Introduce Fugit.parse_cronish and .do_parse_cronish, gh-70
