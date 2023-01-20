@@ -396,6 +396,7 @@ describe Fugit::Duration do
       [ '-10M11m12s', '2016-12-30 17:00:00', '2016-03-01 16:48:48' ],
         #
         # 2016 is a bissextile year ;-)
+        # still "December 30" minus 10 months equals "March 1", ponder...
 
     ].each do |d, t, tt|
 

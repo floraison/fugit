@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.8.1 not yet released
+## fugit 1.8.1 released 2023-01-20
 
 * Fix for month subtraction, gh-84, @mreinsch
 * Fix duration - time, gh-85, @mreinsch
