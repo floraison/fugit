@@ -3,7 +3,6 @@
 
 [![tests](https://github.com/floraison/fugit/workflows/test/badge.svg)](https://github.com/floraison/fugit/actions)
 [![Gem Version](https://badge.fury.io/rb/fugit.svg)](http://badge.fury.io/rb/fugit)
-[![Join the chat at https://gitter.im/floraison/fugit](https://badges.gitter.im/floraison/fugit.svg)](https://gitter.im/floraison/fugit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Time tools for [flor](https://github.com/floraison/flor) and the floraison group.
 
