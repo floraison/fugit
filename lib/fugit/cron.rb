@@ -569,19 +569,18 @@ module Fugit
 
     def do_determine(key, arr, min, max)
 
-      invalid, null = false, false
+      null = false
 
       r = arr
         .collect { |v|
           expand(min, max, v) }
         .flatten(1)
         .collect { |e|
-          invalid = invalid || e == false
+          return false if e == false
           null = null || e == nil
           (key == :hours && e == 24) ? 0 : e }
 
       return nil if null
-      return false if invalid
       r.uniq.sort
     end
 
