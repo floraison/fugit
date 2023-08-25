@@ -287,25 +287,51 @@ describe Fugit::Nat do
       end
     end
 
-    it 'returns nil if it cannot parse' do
+    [
 
-      expect(Fugit::Nat.parse(true)).to eq(nil)
-      expect(Fugit::Nat.parse('nada')).to eq(nil)
-    end
+      true,
+      'nada',
+      'every 2 years',
+      'every 2 weeks',
 
-    it 'rejects strings that cannot be turned into crons' do
+    ].each do |input|
 
-      expect(Fugit::Nat.parse('every 2 years')).to eq(nil)
-      expect(Fugit::Nat.parse('every 2 weeks')).to eq(nil)
+      it "rejects (returns nil) for  #{input.inspect}" do
+
+        expect(Fugit::Nat.parse(input)).to eq(nil)
+      end
     end
   end
 
   describe '.do_parse' do
 
-    it 'fails if it cannot parse' do
+    [
 
-      expect { Fugit::Nat.do_parse(true) }.to raise_error(ArgumentError)
-      expect { Fugit::Nat.do_parse('nada') }.to raise_error(ArgumentError)
+      'at noon',
+      'at midnight',
+
+    ].each do |input|
+
+      it "parses as a Fugit::Cron #{input.inspect}" do
+
+        expect(Fugit.do_parse(input).class).to eq(Fugit::Cron)
+      end
+    end
+
+    [
+
+      true,
+      'nada',
+      'every 2 years',
+      'every 2 weeks',
+
+    ].each do |input|
+
+      it "fails with ArgumentError for #{input.inspect}" do
+
+        expect { Fugit::Nat.do_parse(input)
+          }.to raise_error(ArgumentError)
+      end
     end
   end
 end
