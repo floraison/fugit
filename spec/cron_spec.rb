@@ -1346,9 +1346,14 @@ describe Fugit::Cron do
         '* * * 0 *',   # and 0 is not a valid month
         '* * * 00 *',  #
 
+        #'* */17 * * *',
+        '* */27 * * *',
+          #
+          # gh-86
+
       ].each do |cron|
 
-        it "returns nil for #{cron}" do
+        it "returns nil for #{cron.inspect}" do
 
           expect(Fugit::Cron.parse(cron)).to eq(nil)
         end

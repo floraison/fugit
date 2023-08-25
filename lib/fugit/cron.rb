@@ -40,8 +40,6 @@ module Fugit
 #p s; Raabro.pp(Parser.parse(s, debug: 3), colors: true)
         h = Parser.parse(s.strip)
 
-        return nil unless h
-
         self.allocate.send(:init, s, h)
       end
 
@@ -488,18 +486,22 @@ module Fugit
 
     def init(original, h)
 
+      return nil unless h
+
       @original = original
       @cron_s = nil # just to be sure
       @day_and = h[:&]
 
-      determine_seconds(h[:sec])
-      determine_minutes(h[:min])
-      determine_hours(h[:hou])
-      determine_monthdays(h[:dom])
-      determine_months(h[:mon])
-      determine_weekdays(h[:dow])
-      determine_timezone(h[:tz])
+      valid =
+        determine_seconds(h[:sec]) &&
+        determine_minutes(h[:min]) &&
+        determine_hours(h[:hou]) &&
+        determine_monthdays(h[:dom]) &&
+        determine_months(h[:mon]) &&
+        determine_weekdays(h[:dow]) &&
+        determine_timezone(h[:tz])
 
+      return nil unless valid
       return nil unless compact_month_days
 
       self
@@ -509,10 +511,12 @@ module Fugit
 
       sta, edn, sla = r
 
+      return false if sla && sla > max
+
       edn = max if sla && edn.nil?
 
-      return [ nil ] if sta.nil? && edn.nil? && sla.nil?
-      return [ sta ] if sta && edn.nil?
+      return nil if sta.nil? && edn.nil? && sla.nil?
+      return sta if sta && edn.nil?
 
       sla = 1 if sla == nil
       sta = min if sta == nil
@@ -563,42 +567,42 @@ module Fugit
         .uniq
     end
 
-    def compact(key)
+    def do_determine(key, arr, min, max)
 
-      arr = instance_variable_get(key)
+      invalid, null = false, false
 
-      return instance_variable_set(key, nil) if arr.include?(nil)
-        # reductio ad astrum
+      r = arr
+        .collect { |v|
+          expand(min, max, v) }
+        .flatten(1)
+        .collect { |e|
+          invalid = invalid || e == false
+          null = null || e == nil
+          (key == :hours && e == 24) ? 0 : e }
 
-      arr.uniq!
-      arr.sort!
+      return nil if null
+      return false if invalid
+      r.uniq.sort
     end
 
     def determine_seconds(arr)
-      @seconds = (arr || [ 0 ]).inject([]) { |a, s| a.concat(expand(0, 59, s)) }
-      compact(:@seconds)
+      (@seconds = do_determine(:seconds, arr || [ 0 ], 0, 59)) != false
     end
 
     def determine_minutes(arr)
-      @minutes = arr.inject([]) { |a, m| a.concat(expand(0, 59, m)) }
-      compact(:@minutes)
+      (@minutes = do_determine(:minutes, arr, 0, 59)) != false
     end
 
     def determine_hours(arr)
-      @hours = arr
-        .inject([]) { |a, h| a.concat(expand(0, 23, h)) }
-        .collect { |h| h == 24 ? 0 : h }
-      compact(:@hours)
+      (@hours = do_determine(:hours, arr, 0, 23)) != false
     end
 
     def determine_monthdays(arr)
-      @monthdays = arr.inject([]) { |a, d| a.concat(expand(1, 31, d)) }
-      compact(:@monthdays)
+      (@monthdays = do_determine(:monthdays, arr, 1, 31)) != false
     end
 
     def determine_months(arr)
-      @months = arr.inject([]) { |a, m| a.concat(expand(1, 12, m)) }
-      compact(:@months)
+      (@months = do_determine(:months, arr, 1, 12)) != false
     end
 
     def determine_weekdays(arr)
@@ -624,11 +628,15 @@ module Fugit
       @weekdays.uniq!
       @weekdays.sort!
       @weekdays = nil if @weekdays.empty?
+
+      true
     end
 
     def determine_timezone(z)
 
       @zone, @timezone = z
+
+      true
     end
 
     def weekdays_to_cron_s

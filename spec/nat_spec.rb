@@ -293,6 +293,8 @@ describe Fugit::Nat do
       'nada',
       'every 2 years',
       'every 2 weeks',
+      #'every 17 hours',
+      'every 27 hours',
 
     ].each do |input|
 
@@ -324,6 +326,8 @@ describe Fugit::Nat do
       'nada',
       'every 2 years',
       'every 2 weeks',
+      #'every 17 hours',
+      'every 27 hours',
 
     ].each do |input|
 
