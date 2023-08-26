@@ -212,6 +212,10 @@ describe Fugit::Nat do
         'at 12 midday' => '0 12 * * *',
         'at 12 midnight' => '0 24 * * *',
 
+        'every 17 hours' => '0 */17 * * *',
+          #
+          # gh-86
+
         # minute hour day-of-month month day-of-week
 
       }.each do |nat, cron|
@@ -293,7 +297,7 @@ describe Fugit::Nat do
       'nada',
       'every 2 years',
       'every 2 weeks',
-      #'every 17 hours',
+      #'every 17 hours', # by default/strict:false --> "0 */17 * * *"
       'every 27 hours',
 
     ].each do |input|
@@ -303,6 +307,10 @@ describe Fugit::Nat do
         expect(Fugit::Nat.parse(input)).to eq(nil)
       end
     end
+
+    #context 'strict:' do
+    # TODO
+    #end
   end
 
   describe '.do_parse' do
@@ -326,7 +334,7 @@ describe Fugit::Nat do
       'nada',
       'every 2 years',
       'every 2 weeks',
-      #'every 17 hours',
+      #'every 17 hours', # by default/strict:false --> "0 */17 * * *"
       'every 27 hours',
 
     ].each do |input|
