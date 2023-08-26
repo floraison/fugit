@@ -642,9 +642,9 @@ module Fugit
           fail(ArgumentError.new(
             "multiple crons in #{opts[:_s].inspect} - #{@slots.inspect}"))
         elsif multi == true
-          hms.collect { |hm| parse_cron(hm) }
+          hms.collect { |hm| parse_cron(hm, opts) }
         else
-          parse_cron(hms.first)
+          parse_cron(hms.first, opts)
         end
       end
 
@@ -678,7 +678,7 @@ module Fugit
           .to_a
       end
 
-      def parse_cron(hm)
+      def parse_cron(hm, opts)
 
         a = [
           slot(:second, '0'),
@@ -695,7 +695,32 @@ module Fugit
           .collect { |e| e.uniq.sort.collect(&:to_s).join(',') }
           .join(' ')
 
-        Fugit::Cron.parse(s)
+        c = Fugit::Cron.parse(s)
+
+        if opts[:strict]
+          restrict(a, c)
+        else
+          c
+        end
+      end
+
+      # Return nil if the cron is "not strict"
+      #
+      # For example, "0 0/17 * * *" (gh-86) is a perfectly valid
+      # cron string, but makes not much sense when derived via `.parse_nat`
+      # from "every 17 hours".
+      #
+      # It happens here because it's nat being strict, not cron.
+      #
+      def restrict(a, cron)
+
+        if m = ((a[1] && a[1][0]) || '').match(/^(\d+|\*)\/(\d+)$/)
+#p m
+           sla = m[1].to_i
+          return nil unless [ 1, 2, 3, 4, 5, 6, 8, 12 ].include?(sla)
+        end
+
+        cron
       end
 
       def slot(key, default)

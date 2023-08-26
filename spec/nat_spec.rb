@@ -302,15 +302,26 @@ describe Fugit::Nat do
 
     ].each do |input|
 
-      it "rejects (returns nil) for  #{input.inspect}" do
+      it "rejects (returns nil) for #{input.inspect}" do
 
         expect(Fugit::Nat.parse(input)).to eq(nil)
       end
     end
 
-    #context 'strict:' do
-    # TODO
-    #end
+    context 'strict: true' do
+
+      [
+
+        'every 17 hours',
+
+      ].each do |input|
+
+        it "rejects (returns nil) for #{input.inspect}" do
+
+          expect(Fugit::Nat.parse(input, strict: true)).to eq(nil)
+        end
+      end
+    end
   end
 
   describe '.do_parse' do
