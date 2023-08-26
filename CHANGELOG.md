@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.8.2 not yet released
+## fugit 1.9.0 not yet released
 
 
 ## fugit 1.8.1 released 2023-01-20
