@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Marcos Belluci, https://github.com/delbetu, gh-88 , 1st and last nat
 * Michael Reinsch, https://github.com/mreinsch, gh-84 and gh-85
 * Marc Anguera, https://github.com/markets, gh-70 and Sidekiq-Cron
 * ski-nine, https://github.com/ski-nine, gh-81
