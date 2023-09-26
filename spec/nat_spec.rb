@@ -67,6 +67,8 @@ describe Fugit::Nat do
         'every month on the 1st and 2nd at 12:00 pm' => '0 12 1,2 * *',
         'every month on the 1st and the 2nd at 12:00 pm' => '0 12 1,2 * *',
         'every month on the 1st and the second at 12:00 pm' => '0 12 1,2 * *',
+        'every month on the 1st and last at 12:00 pm' => '0 12 L,1 * *',
+        'every month on the 1st and the last at 12:00 pm' => '0 12 L,1 * *',
           #
           # gh-57, 12pm --> noon
 

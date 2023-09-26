@@ -691,8 +691,10 @@ module Fugit
         a << tz.data0 if tz
         a.shift if a.first == [ '0' ]
 
+        letters_first = ->(x) { x.is_a?(Numeric) ? x : 0 }
+
         s = a
-          .collect { |e| e.uniq.sort.collect(&:to_s).join(',') }
+          .collect { |e| e.uniq.sort_by(&letters_first).collect(&:to_s).join(',') }
           .join(' ')
 
         c = Fugit::Cron.parse(s)
