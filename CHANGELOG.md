@@ -2,7 +2,10 @@
 # CHANGELOG.md
 
 
-## fugit 1.9.0 not yet released
+## fugit 1.9.0 released 2023-10-24
+
+* Let nat parse "last", gh-88
+* Change that I am not sure about, gh-86
 
 
 ## fugit 1.8.1 released 2023-01-20
