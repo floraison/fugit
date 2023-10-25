@@ -268,6 +268,18 @@ c.match?('2019-01-08')  # => false, since (rweek + 1) % 2 == 1
 `tue%x+y` matches if Tuesday and `current_date.rweek + y % x == 0`
 
 
+### the second extension
+
+Fugit accepts cron strings with five elements, `minute hour day-of-month month day-of-week`, the standard cron format or six elements `second minute hour day-of-month month day-of-week`.
+
+```ruby
+c = Fugit.parse('* * * * *') # every minute
+c = Fugit.parse('5 * * * *') # every hour at minute 5
+c = Fugit.parse('* * * * * *') # every second
+c = Fugit.parse('5 * * * * *') # every minute at second 5
+```
+
+
 ## `Fugit::Duration`
 
 A class `Fugit::Duration` to parse duration strings (vanilla [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) ones and [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) ones).
