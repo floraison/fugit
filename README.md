@@ -37,6 +37,7 @@ The intersection of those two projects is where fugit is born:
 * [que-scheduler](https://github.com/hlascelles/que-scheduler) - a reliable job scheduler for [que](https://github.com/chanks/que)
 * [serial_scheduler](https://github.com/grosser/serial_scheduler) - ruby task scheduler without threading
 * [delayed_cron_job](https://github.com/codez/delayed_cron_job) - an extension to Delayed::Job that allows you to set cron expressions for your jobs
+* [GoodJob](https://github.com/bensheldon/good_job) - a multithreaded, Postgres-based, Active Job backend for Ruby on Rails
 * ...
 
 ## `Fugit.parse(s)`
