@@ -9,5 +9,5 @@ The easy way out would be to run `#next_time` right after instantiation to deter
 
 Another way would be to have some smart validation. But that's almost like duplicating `#next_time`.
 
-Note that https://crontab.gury does consider `"* * 31 11 *"`. Crond probably never schedules it, silently. (Up to the tools that use fugit then).
+Note that https://crontab.guru does consider `"* * 31 11 *"`. Crond probably never schedules it, silently. (Up to the tools that use fugit then).
 
