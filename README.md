@@ -94,7 +94,7 @@ As `Fugit.parse(s)` returns nil when it doesn't grok its input, and `Fugit.do_pa
 
 Sometimes you know a cron expression or an "every" natural expression will come in and you want to discard the rest.
 
-```
+```ruby
 require 'fugit'
 
 Fugit.parse_cronish('0 0 1 jan *').class             # ==> ::Fugit::Cron
