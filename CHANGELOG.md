@@ -4,6 +4,7 @@
 
 ## fugit 1.10.0 not yet released
 
+* Implement `Fugit::Cron#within(time_start, time_end)`
 * Implement `Fugit::Cron#within(time_range)`
 * Implement iterator-returning `Fugit::Cron#next` and `#prev`
 
