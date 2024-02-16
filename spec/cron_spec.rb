@@ -1638,7 +1638,7 @@ describe Fugit::Cron do
 
       c = Fugit.parse_cron('0 12 * * mon#2')
 
-      in_zone 'UTC'  do
+      in_zone 'UTC' do
 
         expect(
           #c.next(Time.parse('2024-02-16 12:00:00'))
@@ -1662,7 +1662,7 @@ describe Fugit::Cron do
 
       c = Fugit.parse_cron('0 12 * * mon#2')
 
-      in_zone 'UTC'  do
+      in_zone 'UTC' do
 
         expect(
           c.prev(Time.parse('2024-02-16 12:00:00'))
@@ -1685,7 +1685,7 @@ describe Fugit::Cron do
 
       c = Fugit.parse_cron('0 12 * * mon#2')
 
-      in_zone 'UTC'  do
+      in_zone 'UTC' do
 
         expect(
           c
@@ -1698,6 +1698,28 @@ describe Fugit::Cron do
           '2024-05-13 12:00:00 Z',
           '2024-06-10 12:00:00 Z',
           '2024-07-08 12:00:00 Z'
+        ])
+      end
+    end
+
+    it 'returns all the occurences within a start time and an end time' do
+
+      c = Fugit.parse_cron('0 12 * * mon#2')
+
+      in_zone 'UTC' do
+
+        expect(
+          c
+            .within(
+              Time.parse('2024-01-16 12:00'),
+              '2024-07-01 12:00') # EtOrbi.make_time is used...
+            .map(&:to_s)
+        ).to eq([
+          '2024-02-12 12:00:00 Z',
+          '2024-03-11 12:00:00 Z',
+          '2024-04-08 12:00:00 Z',
+          '2024-05-13 12:00:00 Z',
+          '2024-06-10 12:00:00 Z'
         ])
       end
     end

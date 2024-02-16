@@ -354,11 +354,15 @@ module Fugit
     # Returns an array of EtOrbi::EoTime instances that correspond to
     # the occurrences of the cron within the given time range
     #
-    def within(time_range)
+    def within(time_range, time_end=nil)
+
+      sta, ned =
+        time_range.is_a?(::Range) ? [ time_range.begin, time_range.end ] :
+        [ ::EtOrbi.make_time(time_range), ::EtOrbi.make_time(time_end) ]
 
       CronIterator
-        .new(self, :next_time, time_range.begin)
-        .take_while { |eot| eot.to_t < time_range.end }
+        .new(self, :next_time, sta)
+        .take_while { |eot| eot.to_t < ned }
     end
 
     # Mostly used as a #next_time sanity check.
