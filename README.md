@@ -125,8 +125,15 @@ c = Fugit::Cron.new('0 0 * *  sun')
 
 p Time.now  # => 2017-01-03 09:53:27 +0900
 
-p c.next_time      # => 2017-01-08 00:00:00 +0900
-p c.previous_time  # => 2017-01-01 00:00:00 +0900
+p c.next_time.to_s      # => 2017-01-08 00:00:00 +0900
+p c.previous_time.to_s  # => 2017-01-01 00:00:00 +0900
+
+p c.next_time(Time.parse('2024-06-01')).to_s
+  # => "2024-06-02 00:00:00 +0900"
+p c.previous_time(Time.parse('2024-06-01')).to_s
+  # => "2024-05-26 00:00:00 +0900"
+    #
+    # `Fugit::Cron#next_time` and `#previous_time` accept a "start time"
 
 p c.brute_frequency  # => [ 604800, 604800, 53 ]
                      #    [ delta min, delta max, occurrence count ]
