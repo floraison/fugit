@@ -19,5 +19,8 @@ pkg/
 
 .todo.md
 
+.chat.md
+.openai.*
+
 Gemfile.lock
 
