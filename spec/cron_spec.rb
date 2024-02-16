@@ -1632,9 +1632,6 @@ describe Fugit::Cron do
     end
   end
 
-  describe '#within' do
-  end
-
   describe '#next' do
 
     it 'returns an iterator' do
@@ -1644,7 +1641,8 @@ describe Fugit::Cron do
       in_zone 'UTC'  do
 
         expect(
-          c.next
+          #c.next(Time.parse('2024-02-16 12:00:00'))
+          c.next('2024-02-16 12:00:00') # works too :-)
             .take(5)
             .map(&:to_s)
         ).to eq([
@@ -1667,7 +1665,7 @@ describe Fugit::Cron do
       in_zone 'UTC'  do
 
         expect(
-          c.prev
+          c.prev(Time.parse('2024-02-16 12:00:00'))
             .take(5)
             .map(&:to_s)
         ).to eq([
@@ -1680,6 +1678,8 @@ describe Fugit::Cron do
       end
     end
   end
+
+  describe '#within'
 end
 
 describe Fugit do
