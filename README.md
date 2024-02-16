@@ -452,7 +452,8 @@ Fugit::Nat.parse('every day at 16:15 and 18:30', multi: true)
     # ==> [ '15 16 * * *', '30 18 * * *' ] (two Fugit::Cron instances)
 
 Fugit::Nat.parse('every day at 16:15 and 18:30', multi: :fail)
-  # ==> ArgumentError: multiple crons in "every day at 16:15 and 18:30" (15 16 * * * | 30 18 * * *)
+  # ==> ArgumentError: multiple crons in "every day at 16:15 and 18:30"
+  #     (15 16 * * * | 30 18 * * *)
 Fugit::Nat.parse('every day at 16:15 nada 18:30', multi: true)
   # ==> nil
 ```
