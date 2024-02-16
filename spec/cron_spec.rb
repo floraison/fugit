@@ -1679,7 +1679,29 @@ describe Fugit::Cron do
     end
   end
 
-  describe '#within'
+  describe '#within' do
+
+    it 'returns all the occurences within a given time period' do
+
+      c = Fugit.parse_cron('0 12 * * mon#2')
+
+      in_zone 'UTC'  do
+
+        expect(
+          c
+            .within(
+              Time.parse('2024-02-16 12:00')..Time.parse('2024-08-01 12:00'))
+            .map(&:to_s)
+        ).to eq([
+          '2024-03-11 12:00:00 Z',
+          '2024-04-08 12:00:00 Z',
+          '2024-05-13 12:00:00 Z',
+          '2024-06-10 12:00:00 Z',
+          '2024-07-08 12:00:00 Z'
+        ])
+      end
+    end
+  end
 end
 
 describe Fugit do

@@ -345,6 +345,13 @@ module Fugit
       CronIterator.new(self, :previous_time, from)
     end
 
+    def within(time_range)
+
+      CronIterator
+        .new(self, :next_time, time_range.begin)
+        .take_while { |eot| eot.to_t < time_range.end }
+    end
+
     # Mostly used as a #next_time sanity check.
     # Avoid for "business" use, it's slow.
     #
