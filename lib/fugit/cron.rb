@@ -335,16 +335,25 @@ module Fugit
       end
     end
 
+    # Returns an ::Enumerable instance that yields each "next time" in
+    # succession
+    #
     def next(from=::EtOrbi::EoTime.now)
 
       CronIterator.new(self, :next_time, from)
     end
 
+    # Returns an ::Enumerable instance that yields each "previous time" in
+    # succession
+    #
     def prev(from=::EtOrbi::EoTime.now)
 
       CronIterator.new(self, :previous_time, from)
     end
 
+    # Returns an array of EtOrbi::EoTime instances that correspond to
+    # the occurrences of the cron within the given time range
+    #
     def within(time_range)
 
       CronIterator
