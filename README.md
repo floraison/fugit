@@ -140,21 +140,17 @@ c = Fugit.parse_cron('0 12 * * mon#2')
   # `#next` and `#prev` return Enumerable instances
   #
 c.next(Time.parse('2024-02-16 12:00:00'))
-  .take(5)
+  .take(3)
   .map(&:to_s)
     # => [ '2024-03-11 12:00:00',
     #      '2024-04-08 12:00:00',
-    #      '2024-05-13 12:00:00',
-    #      '2024-06-10 12:00:00',
-    #      '2024-07-08 12:00:00' ]
+    #      '2024-05-13 12:00:00' ]
 c.prev(Time.parse('2024-02-16 12:00:00'))
-  .take(5)
+  .take(3)
   .map(&:to_s)
     # => [ '2024-02-12 12:00:00',
     #      '2024-01-08 12:00:00',
-    #      '2023-12-11 12:00:00',
-    #      '2023-11-13 12:00:00',
-    #      '2023-10-09 12:00:00' ]
+    #      '2023-12-11 12:00:00' ]
 
   # `#within` accepts a time range and returns an array of Eo::EoTime
   # instances that correspond to the occurrences of the cron within
