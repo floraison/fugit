@@ -318,6 +318,33 @@ module Fugit
       t.time.translate(from.zone)
     end
 
+    # Used by Fugit::Cron#next and Fugit::Cron#prev
+    #
+    class CronIterator include ::Enumerable
+      attr_reader :cron, :start, :current, :direction
+      def initialize(cron, direction, start)
+        @cron = cron
+        @start = start
+        @current = start.dup
+        @direction = direction
+      end
+      def each
+        loop do
+          yield(@current = @cron.send(@direction, @current))
+        end
+      end
+    end
+
+    def next(from=::EtOrbi::EoTime.now)
+
+      CronIterator.new(self, :next_time, from)
+    end
+
+    def prev(from=::EtOrbi::EoTime.now)
+
+      CronIterator.new(self, :previous_time, from)
+    end
+
     # Mostly used as a #next_time sanity check.
     # Avoid for "business" use, it's slow.
     #

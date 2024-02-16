@@ -4,6 +4,8 @@
 
 ## fugit 1.10.0 not yet released
 
+* Implement iterator-returning `Fugit::Cron#next` and `#prev`
+
 
 ## fugit 1.9.0 released 2023-10-24
 

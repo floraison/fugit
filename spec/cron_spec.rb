@@ -1631,6 +1631,55 @@ describe Fugit::Cron do
       end
     end
   end
+
+  describe '#within' do
+  end
+
+  describe '#next' do
+
+    it 'returns an iterator' do
+
+      c = Fugit.parse_cron('0 12 * * mon#2')
+
+      in_zone 'UTC'  do
+
+        expect(
+          c.next
+            .take(5)
+            .map(&:to_s)
+        ).to eq([
+          '2024-03-11 12:00:00 Z',
+          '2024-04-08 12:00:00 Z',
+          '2024-05-13 12:00:00 Z',
+          '2024-06-10 12:00:00 Z',
+          '2024-07-08 12:00:00 Z'
+        ])
+      end
+    end
+  end
+
+  describe '#prev' do
+
+    it 'returns an iterator' do
+
+      c = Fugit.parse_cron('0 12 * * mon#2')
+
+      in_zone 'UTC'  do
+
+        expect(
+          c.prev
+            .take(5)
+            .map(&:to_s)
+        ).to eq([
+          '2024-02-12 12:00:00 Z',
+          '2024-01-08 12:00:00 Z',
+          '2023-12-11 12:00:00 Z',
+          '2023-11-13 12:00:00 Z',
+          '2023-10-09 12:00:00 Z'
+        ])
+      end
+    end
+  end
 end
 
 describe Fugit do
