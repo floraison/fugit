@@ -28,6 +28,7 @@ The intersection of those two projects is where fugit is born:
 * [ISO8601](https://github.com/arnau/ISO8601) - Ruby parser to work with ISO8601 dateTimes and durations
 * [chrono](https://github.com/r7kamura/chrono) - a chain of logics about chronology
 * [CronCalc](https://github.com/mizinsky/cron_calc) - calculates cron job occurrences
+* [Recurrence](https://github.com/fnando/recurrence) - a simple library to handle recurring events
 * ...
 
 ### Projects using fugit
