@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.11.0 not yet released
+
+
 ## fugit 1.10.0 released 2024-02-22
 
 * Implement `Fugit::Cron#within(time_start, time_end)`
