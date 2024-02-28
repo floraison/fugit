@@ -320,16 +320,23 @@ module Fugit
 
     # Used by Fugit::Cron#next and Fugit::Cron#prev
     #
-    class CronIterator include Enumerable
+    class CronIterator
+      include ::Enumerable
+
       attr_reader :cron, :start, :current, :direction
+
       def initialize(cron, direction, start)
+
         @cron = cron
         @start = start
         @current = start.dup
         @direction = direction
       end
+
       def each
+
         loop do
+
           yield(@current = @cron.send(@direction, @current))
         end
       end

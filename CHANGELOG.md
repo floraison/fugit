@@ -4,6 +4,8 @@
 
 ## fugit 1.10.1 not yet released
 
+* Fix on Ruby 2.2.6 thanks to @aunghtain, gh-93
+
 
 ## fugit 1.10.0 released 2024-02-22
 
