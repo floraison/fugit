@@ -629,16 +629,13 @@ describe Fugit::Duration do
 
     it 'returns now + this duration if no argument' do
 
+      t0 = Time.parse('2024-03-01 12:00')
       d = Fugit::Duration.new('1Y')
-      t = d.next_time
+      t = d.next_time(t0)
 
       expect(t.class).to eq(::EtOrbi::EoTime)
 
-      expect(
-        t.strftime('%Y-%m-%d')
-      ).to eq(
-        "#{Time.now.year + 1}-#{Time.now.strftime('%m-%d')}"
-      )
+      expect(t.strftime('%Y-%m-%d')).to eq('2025-03-01')
     end
 
     it 'returns arg + this duration' do
