@@ -251,6 +251,8 @@ p Fugit.parse_cron('59 6 1-7& * 2&').next_time('2020-03-15').to_s
 
 Fugit understands `0 5 * * 1#1` or `0 5 * * mon#1` as "each first Monday of the month, at 05:00".
 
+The hash extension can only be used in the day-of-week field.
+
 ```ruby
 '0 5 * * 1#1'    #
 '0 5 * * mon#1'  # the first Monday of the month at 05:00
@@ -272,6 +274,8 @@ Fugit understands `0 5 * * 1#1` or `0 5 * * mon#1` as "each first Monday of the 
 ### the modulo extension
 
 Fugit, since 1.1.10, also understands cron strings like "`9 0 * * sun%2`" which can be read as "every other Sunday at 9am".
+
+The modulo extension can only be used in the day-of-week field.
 
 For odd Sundays, one can write `9 0 * * sun%2+1`.
 
