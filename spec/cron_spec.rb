@@ -1226,6 +1226,16 @@ describe Fugit::Cron do
         [ '10,,20 * 1,,11,,21, * *', '10,20 * 1,11,21 * *' ],
         [ ',,10,,22, * * * * Asia/Omsk', '10,22 * * * * Asia/Omsk' ],
 
+          # gh-80
+          #
+        #[ '~ * * * *', '~ * * * *' ],
+        #[ '0~59 * * * *', '0~59 * * * *' ],
+        #[ '0~29,30~59 * * * *', '0~29,30~59 * * * *' ],
+        #[ '~/30 * * * *', '0~59/30 * * * *' ],
+        #[ '0~59/30 * * * *', '0~59/30 * * * *' ],
+
+        # min hou dom mon dow
+
       ].each { |c, e|
 
         it "parses #{c}" do
@@ -1628,6 +1638,29 @@ describe Fugit::Cron do
         else
           expect(Fugit.time_to_plain_s(c.previous_time(from), false)).to eq(pt)
         end
+      end
+    end
+  end
+
+  context 'tilde ~' do
+
+    {
+
+      #'~ * * * *' => [ -777, nil, nil, nil, nil ],
+      '0~59 * * * *' => [ [ 0 ], [ 0, :tilde, 59 ], nil, nil, nil, nil ],
+      '0~58 * * * *' => [ [ 0 ], [ 0, :tilde, 58 ], nil, nil, nil, nil ],
+      '0-29,30-59 * * * *' => [ -777, nil, nil, nil, nil ],
+      '0~29,30-59 * * * *' => [ -777, nil, nil, nil, nil ],
+      #'0~59/30 * * * *' => [ -777, nil, nil, nil, nil ],
+      #'-10~-1 * * * *' => [ -777, nil, nil, nil, nil ],
+
+    }.each do |k, v|
+
+      it "parses #{k.inspect} and stores it as #{v.inspect}" do
+
+        c = Fugit::Cron.parse(k)
+
+        expect(c.to_a).to eq(v)
       end
     end
   end

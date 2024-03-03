@@ -14,8 +14,8 @@ module Fugit
       '@midnight' => '0 0 * * *',
       '@noon' => '0 12 * * *',
       '@hourly' => '0 * * * *' }.freeze
-    MAXDAYS = [
-      nil, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ].freeze
+    #MAXDAYS = [
+    #  nil, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ].freeze
 
     attr_reader(
       :original, :zone)
@@ -147,10 +147,16 @@ module Fugit
       end
     end
 
-    def month_match?(nt); ( ! @months) || @months.include?(nt.month); end
-    def hour_match?(nt); ( ! @hours) || @hours.include?(nt.hour); end
-    def min_match?(nt); ( ! @minutes) || @minutes.include?(nt.min); end
-    def sec_match?(nt); ( ! @seconds) || @seconds.include?(nt.sec); end
+    def do_match?(array, nt)
+
+      array.nil? ||
+      array.find { |range| range.include?(nt) }
+    end
+
+    def month_match?(nt); do_match?(@months, nt.month); end
+    def hour_match?(nt); do_match?(@hours, nt.hour); end
+    def min_match?(nt); do_match?(@minutes, nt.min); end
+    def sec_match?(nt); do_match?(@seconds, nt.sec); end
 
     def weekday_hash_match?(nt, hsh)
 
@@ -218,7 +224,6 @@ module Fugit
           # as seen in gh-5 and gh-35
       end
 
-
       return false unless weekday_match?(nt)
       return false unless monthday_match?(nt)
 
@@ -229,8 +234,11 @@ module Fugit
 
       t = Fugit.do_parse_at(t).translate(@timezone)
 
-      month_match?(t) && day_match?(t) &&
-      hour_match?(t) && min_match?(t) && sec_match?(t)
+      month_match?(t) &&
+      day_match?(t) &&
+      hour_match?(t) &&
+      min_match?(t) &&
+      sec_match?(t)
     end
 
     MAX_ITERATION_COUNT = 2048
@@ -495,21 +503,21 @@ module Fugit
 
     protected
 
-    def compact_month_days
-
-      return true if @months == nil || @monthdays == nil
-
-      ms, ds =
-        @months.inject([ [], [] ]) { |a, m|
-          @monthdays.each { |d|
-            next if d > MAXDAYS[m]
-            a[0] << m; a[1] << d }
-          a }
-      @months = ms.uniq
-      @monthdays = ds.uniq
-
-      @months.any? && @monthdays.any?
-    end
+#    def compact_month_days
+#
+#      return true if @months == nil || @monthdays == nil
+#
+#      ms, ds =
+#        @months.inject([ [], [] ]) { |a, m|
+#          @monthdays.each { |d|
+#            next if d > MAXDAYS[m]
+#            a[0] << m; a[1] << d }
+#          a }
+#      @months = ms.uniq
+#      @monthdays = ds.uniq
+#
+#      @months.any? && @monthdays.any?
+#    end
 
     def rough_days
 
@@ -546,7 +554,7 @@ module Fugit
       @cron_s = nil # just to be sure
       @day_and = h[:&]
 
-      valid =
+      (
         determine_seconds(h[:sec]) &&
         determine_minutes(h[:min]) &&
         determine_hours(h[:hou]) &&
@@ -554,115 +562,138 @@ module Fugit
         determine_months(h[:mon]) &&
         determine_weekdays(h[:dow]) &&
         determine_timezone(h[:tz])
+      ) || (return nil) # invalid
 
-      return nil unless valid
-      return nil unless compact_month_days
+      #return nil unless compact_month_days
 
       self
     end
 
-    def expand(min, max, r)
+#    def expand(min, max, r)
+#
+#      sta, sep, edn, sla = r
+#
+#      return false if sla && sla > max
+#
+#      edn = max if sla && edn.nil?
+#
+#      return nil if sta.nil? && edn.nil? && sla.nil?
+#      return sta if sta && edn.nil?
+#
+#      sla = 1 if sla == nil
+#      sta = min if sta == nil
+#      edn = max if edn == nil || edn < 0 && sta > 0
+#
+#      fail ArgumentError.new(
+#        'both start and end must be negative in ' +
+#        { min: min, max: max, sta: sta, edn: edn, sla: sla }.inspect
+#      ) if (sta < 0 && edn > 0) || (edn < 0 && sta > 0)
+#
+#      if sep == :tilde
+#        tilde_range(min, max, sta, edn, sla)
+#      else
+#        range(min, max, sta, edn, sla)
+#      end
+#    end
+#
+#    def tilde_range(min, max, sta, edn, sla)
+#
+#      #{ type: :tilde, start: sta, end: edn }
+#      [ sta, :tilde, edn ]
+#    end
 
-      sta, edn, sla = r
+    class FieldRange
 
-      return false if sla && sla > max
+      attr_reader :key, :type
+      attr_reader :sta, :edn, :sla
 
-      edn = max if sla && edn.nil?
-
-      return nil if sta.nil? && edn.nil? && sla.nil?
-      return sta if sta && edn.nil?
-
-      sla = 1 if sla == nil
-      sta = min if sta == nil
-      edn = max if edn == nil || edn < 0 && sta > 0
-
-      range(min, max, sta, edn, sla)
-    end
-
-    def range(min, max, sta, edn, sla)
-
-      return [ nil ] if sta == min && edn == max && sla == 1
-
-      fail ArgumentError.new(
-        'both start and end must be negative in ' +
-        { min: min, max: max, sta: sta, edn: edn, sla: sla }.inspect
-      ) if (sta < 0 && edn > 0) || (edn < 0 && sta > 0)
-
-      a = []
-
-      omin, omax = min, max
-      min, max = -max, -1 if sta < 0
-
-      cur = sta
-
-      loop do
-
-        a << cur
-        break if cur == edn
-
-        cur += 1
-        if cur > max
-          cur = min
-          edn = edn - max - 1 if edn > max
-        end
-
-        fail RuntimeError.new(
-          "too many loops for " +
-          { min: omin, max: omax, sta: sta, edn: edn, sla: sla }.inspect +
-          " #range, breaking, " +
-          "please fill an issue at https://git.io/fjJC9"
-        ) if a.length > 2 * omax
-          # there is a #uniq afterwards, hence the 2* for 0-24 and friends
+      def initialize(key, type, a)
+        @key = key
+        @type = type
+        @a = a
+        min, max = case key
+          when :hours then [ 0, 23 ]
+          when :monthdays then [ 1, 31 ]
+          when :months then [ 1, 12 ]
+          else [ 0, 59 ]; end
+        @sta = a[0]
+        @edn = a[2] || a[0]
+        @sla = a[3] || 1
+        @sta = min if @sta == nil || @sta < min
+        @edn = max if @edn == nil || @edn > max
       end
 
-      a.each_with_index
-        .select { |e, i| i % sla == 0 }
-        .collect(&:first)
-        .uniq
+      def inspect
+        "#{self.class.name}(#{key}:#{sta}-#{edn}/#{sla})"
+      end
     end
 
-    def do_determine(key, arr, min, max)
+    class HyphenRange < FieldRange
+      def initialize(key, a)
+        super(key, :hyphen, a)
+      end
+      def include?(i)
+        expanded.include?(i)
+      end
+      protected
+      def expanded
+        @expanded ||= (@sta..@edn).step(@sla).to_a
+      end
+    end
 
-      null = false
+    class TildeRange < FieldRange
+      def initialize(key, a)
+        super(key, :tilde, a)
+      end
+    end
 
-      r = arr
-        .collect { |v|
-          expand(min, max, v) }
-        .flatten(1)
-        .collect { |e|
-          return false if e == false
-          null = null || e == nil
-          (key == :hours && e == 24) ? 0 : e }
+    def make_range(key, a)
 
-      return nil if null
-      r.uniq.sort
+      return HyphenRange.new(key, [ a ]) if a.is_a?(Integer)
+
+      type = a.is_a?(Array) && a.length >= 3 && a[1]
+
+      return HyphenRange.new(key, a) if type == :hyphen
+      return TildeRange.new(key, a) if type == :tilde
+
+      fail ArgumentError.new("Cannot make :#{key} range out of #{a.inspect}")
+    end
+
+    def do_determine(key, arr)
+
+      arr.collect { |a| make_range(key, a) }
     end
 
     def determine_seconds(arr)
-      (@seconds = do_determine(:seconds, arr || [ 0 ], 0, 59)) != false
+      #(@seconds = do_determine(:seconds, arr || [ 0 ], 0, 59)) != false
+      (@seconds = do_determine(:seconds, arr || [ 0 ])) != false
     end
 
     def determine_minutes(arr)
-      (@minutes = do_determine(:minutes, arr, 0, 59)) != false
+      #(@minutes = do_determine(:minutes, arr, 0, 59)) != false
+      (@minutes = do_determine(:minutes, arr)) != false
     end
 
     def determine_hours(arr)
-      (@hours = do_determine(:hours, arr, 0, 23)) != false
+      #(@hours = do_determine(:hours, arr, 0, 23)) != false
+      (@hours = do_determine(:hours, arr)) != false
     end
 
     def determine_monthdays(arr)
-      (@monthdays = do_determine(:monthdays, arr, 1, 31)) != false
+      #(@monthdays = do_determine(:monthdays, arr, 1, 31)) != false
+      (@monthdays = do_determine(:monthdays, arr)) != false
     end
 
     def determine_months(arr)
-      (@months = do_determine(:months, arr, 1, 12)) != false
+      #(@months = do_determine(:months, arr, 1, 12)) != false
+      (@months = do_determine(:months, arr)) != false
     end
 
     def determine_weekdays(arr)
 
       @weekdays = []
 
-      arr.each do |a, z, sl, ha, mo| # a to z, slash, hash, and mod
+      arr.each do |a, sep, z, sl, ha, mo| # a to z, slash, hash, and mod
         if ha || mo
           @weekdays << [ a, ha || mo ]
         elsif sl
@@ -734,6 +765,8 @@ module Fugit
       def comma?(i); rex(nil, i, /([ \t]*,)*/); end
       def and?(i); rex(nil, i, /&?/); end
 
+      def hyphen_or_tilde(i); rex(:hot, i, /[-~]/); end
+
       def slash(i); rex(:slash, i, /\/\d\d?/); end
 
       def mos(i); rex(:mos, i, /[0-5]?\d/); end # min or sec
@@ -744,7 +777,7 @@ module Fugit
 
       def dow_hash(i); rex(:hash, i, /#(-?[1-5]|last|l)/i); end
 
-      def _mos(i); seq(nil, i, :hyphen, :mos); end
+      def _mos(i); seq(nil, i, :hyphen_or_tilde, :mos); end
       def _hou(i); seq(nil, i, :hyphen, :hou); end
       def _dom(i); seq(nil, i, :hyphen, :dom); end
       def _mon(i); seq(nil, i, :hyphen, :mon); end
@@ -842,14 +875,21 @@ module Fugit
 
       def rewrite_elt(k, t)
 
-        at, zt, slt, hat, mot = nil; t.subgather(nil).each do |tt|
+#p k; Raabro.pp(t, colours: true)
+        at, zt, slt, hat, mot = nil
+        sep = :hyphen
+
+        t.subgather(nil).each do |tt|
           case tt.name
           when :slash then slt = tt
           when :hash then hat = tt
           when :mod then mot = tt
+          when :hot then sep = tt.string == '~' ? :tilde : :hyphen
           else if at; zt ||= tt; else; at = tt; end
           end
         end
+#p :at; Raabro.pp(at, colours: true) if at
+#p :zt; Raabro.pp(zt, colours: true) if zt
 
         sl = slt ? slt.string[1..-1].to_i : nil
 
@@ -865,7 +905,7 @@ module Fugit
         #a, z = z, a if a && z && a > z
           # handled downstream since gh-27
 
-        [ a, z, sl, ha, mo ]
+        [ a, sep, z, sl, ha, mo ]
       end
 
       def rewrite_entry(t)
