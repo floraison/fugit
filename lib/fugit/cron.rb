@@ -118,10 +118,12 @@ module Fugit
       end
 
       def inc_sec
-        if sec = @cron.seconds.find { |s| s > @t.sec }
+        #if sec = @cron.seconds.find { |s| s > @t.sec }
+        if sec = @cron.send(:next_second, @t.sec)
           inc(sec - @t.sec)
         else
-          inc(60 - @t.sec + @cron.seconds.first)
+          #inc(60 - @t.sec + @cron.seconds.first)
+          inc(60 - @t.sec + @cron.send(:first_second))
         end
       end
 
@@ -194,11 +196,12 @@ module Fugit
 
       return true if @monthdays.nil?
 
-      last = (TimeCursor.new(self, nt).inc_month.time - 24 * 3600).day + 1
+      #last = (TimeCursor.new(self, nt).inc_month.time - 24 * 3600).day + 1
+      #@monthdays
+      #  .collect { |d| d < 1 ? last + d : d }
+      #  .include?(nt.day)
 
-      @monthdays
-        .collect { |d| d < 1 ? last + d : d }
-        .include?(nt.day)
+      @monthdays.find { |range| range.include?(nt.day) }
     end
 
     def day_match?(nt)
@@ -503,6 +506,27 @@ module Fugit
 
     protected
 
+      # if sec = @cron.seconds.find { |s| s > @t.sec }
+      # if sec = @cron.next_second(@t.sec)
+      # if sec = @cron.send(:next_second, @t.sec)
+      #
+    def next_second(current_second)
+
+      @seconds
+        .collect { |range| range.next_after(current_second) }
+        .compact
+        .sort
+        .first
+    end
+
+    def first_second
+
+      @seconds
+        .collect(&:first)
+        .sort
+        .first
+    end
+
 #    def compact_month_days
 #
 #      return true if @months == nil || @monthdays == nil
@@ -634,6 +658,12 @@ module Fugit
       end
       def include?(i)
         expanded.include?(i)
+      end
+      def next_after(i)
+        expanded.find { |e| e > i }
+      end
+      def first
+        expanded.first
       end
       protected
       def expanded
