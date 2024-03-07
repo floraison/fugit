@@ -140,6 +140,8 @@ c = Fugit.parse_cron('0 12 * * mon#2')
 
   # `#next` and `#prev` return Enumerable instances
   #
+  # These two methods are available since fugit 1.10.0.
+  #
 c.next(Time.parse('2024-02-16 12:00:00'))
   .take(3)
   .map(&:to_s)
@@ -156,6 +158,8 @@ c.prev(Time.parse('2024-02-16 12:00:00'))
   # `#within` accepts a time range and returns an array of Eo::EoTime
   # instances that correspond to the occurrences of the cron within
   # the time range
+  #
+  # This method is available since fugit 1.10.0.
   #
 c.within(Time.parse('2024-02-16 12:00')..Time.parse('2024-08-01 12:00'))
   .map(&:to_s)
