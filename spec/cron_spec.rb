@@ -888,31 +888,37 @@ describe Fugit::Cron do
       # at 4:30 am on the 1st and 15th of each month, plus every Friday.
 
     [ '21 0 * * 1%2 America/Sao_Paulo',
-        '2024-03-04 12:21:00', '2024-03-13 12:00' ],
+        '2024-03-04 04:21:00', '2024-03-13 12:00', 'Europe/Paris' ],
     [ '21 0 * * 1%2 America/Santarem',
-        '2024-03-04 12:21:00', '2024-03-13 12:00' ],
+        '2024-03-04 04:21:00', '2024-03-13 12:00', 'Europe/Paris' ],
   ]
 
   describe '#previous_time' do
 
-    PREVIOUS_TIMES.each do |cron, previous_time, now|
+    PREVIOUS_TIMES.each do |cron, previous_time, now, zone_name|
 
-      now = now ? Time.parse(now) : NOW
+      d = "succeeds #{cron.inspect} #{now} -> #{previous_time.inspect}"
+      d = d += " in #{zone_name}" if zone_name
 
-      it "succeeds #{cron.inspect} #{now} -> #{previous_time.inspect}" do
+      it(d) do
 
-        c = Fugit::Cron.parse(cron)
-        ept = Time.parse(previous_time)
+        in_zone(zone_name) do
 
-        pt = c.previous_time(now)
+          now = now ? Time.parse(now) : NOW
 
-        expect(
-          Fugit.time_to_plain_s(pt, false)
-        ).to eq(
-          Fugit.time_to_plain_s(ept, false)
-        )
+          c = Fugit::Cron.parse(cron)
+          ept = Time.parse(previous_time)
 
-        expect(c.match?(ept)).to eq(true) # quick check
+          pt = c.previous_time(now)
+
+          expect(
+            Fugit.time_to_plain_s(pt, false)
+          ).to eq(
+            Fugit.time_to_plain_s(ept, false)
+          )
+
+          expect(c.match?(ept)).to eq(true) # quick check
+        end
       end
     end
 
