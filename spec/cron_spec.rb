@@ -886,6 +886,11 @@ describe Fugit::Cron do
       # run when either field matches the current time.
       # For example, ``30 4 1,15 * 5'' would cause a command to be run
       # at 4:30 am on the 1st and 15th of each month, plus every Friday.
+
+    [ '21 0 * * 1%2 America/Sao_Paulo',
+        '2024-03-04 12:21:00', '2024-03-13 12:00' ],
+    [ '21 0 * * 1%2 America/Santarem',
+        '2024-03-04 12:21:00', '2024-03-13 12:00' ],
   ]
 
   describe '#previous_time' do
