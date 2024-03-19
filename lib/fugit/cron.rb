@@ -21,6 +21,13 @@ module Fugit
       :original, :zone)
     attr_reader(
       :seconds, :minutes, :hours, :monthdays, :months, :weekdays, :timezone)
+    #attr_reader :original, :zone
+    #attr_reader :weekdays, :timezone
+    #def seconds; @seconds ? @seconds.map(&:to_a).flatten : nil; end
+    #def minutes; @minutes ? @minutes.map(&:to_a).flatten : nil; end
+    #def hours; @hours ? @hours.map(&:to_a).flatten : nil; end
+    #def monthdays; @monthdays ? @monthdays.map(&:to_a).flatten : nil; end
+    #def months; @months ? @months.map(&:to_a).flatten : nil; end
 
     class << self
 
@@ -53,7 +60,8 @@ module Fugit
     def to_cron_s
 
       @cron_s ||= [
-        @seconds == [ 0 ] ? nil : (@seconds || [ '*' ]).join(','),
+        #@seconds == [ 0 ] ? nil : (@seconds || [ '*' ]).join(','),
+        @seconds.all?(&:zero?) ? nil : (@seconds || [ '*' ]).join(','),
         (@minutes || [ '*' ]).join(','),
         (@hours || [ '*' ]).join(','),
         (@monthdays || [ '*' ]).join(','),
@@ -630,21 +638,30 @@ module Fugit
 
       attr_reader :key, :type
       attr_reader :sta, :edn, :sla
+      attr_reader :min, :max
 
       def initialize(key, type, a)
+
         @key = key
         @type = type
         @a = a
-        min, max = case key
+
+        @min, @max = case key
           when :hours then [ 0, 23 ]
           when :monthdays then [ 1, 31 ]
           when :months then [ 1, 12 ]
           else [ 0, 59 ]; end
+
         @sta = a[0]
         @edn = a[2] || a[0]
         @sla = a[3] || 1
-        @sta = min if @sta == nil || @sta < min
-        @edn = max if @edn == nil || @edn > max
+
+        @sta = @min if @sta == nil || @sta < @min
+        @edn = @max if @edn == nil || @edn > @max
+      end
+
+      def zero?
+        @sta == 0 && @edn == 0 && sla == 1
       end
 
       def inspect
@@ -665,6 +682,20 @@ module Fugit
       def first
         expanded.first
       end
+      def to_a
+        expanded
+      end
+      def to_s
+        if sta == edn
+          sta.to_s
+        elsif sta == 1 && edn < 0
+          edn.to_s
+        elsif sta == min && edn == max && sla == 1
+          '*'
+        else
+          "#{sta}-#{edn}/#{sla}"
+        end
+      end
       protected
       def expanded
         @expanded ||= (@sta..@edn).step(@sla).to_a
@@ -674,6 +705,9 @@ module Fugit
     class TildeRange < FieldRange
       def initialize(key, a)
         super(key, :tilde, a)
+      end
+      def to_s
+        "#{sta}~#{edn}/#{sla}"
       end
     end
 
