@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.11.0 not yet released
+## fugit 1.10.2 not yet released
 
 
 ## fugit 1.10.1 released 2024-02-29
