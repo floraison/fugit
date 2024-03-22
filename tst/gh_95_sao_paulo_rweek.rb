@@ -1,4 +1,11 @@
 
+#
+# exploring weekday modulo crons vs #previous_time
+#
+#   https://github.com/floraison/fugit/issues/95
+#   https://github.com/floraison/fugit/issues/96
+#
+
 require 'fugit'
 
 p [ :etorbi, EtOrbi::VERSION ]
@@ -11,21 +18,23 @@ def test(x)
   puts "  --- #{x} ---"
   c = Fugit.parse_cron(x)
   begin
-    puts 'prev> ' + c.previous_time(NOW).strftime('%F %T %:z %A')
+    t = c.previous_time(NOW)
+    puts "prev> #{t.strftime('%F %T %:z %A')} #{t.rweek}"
   rescue => err
     puts "\e[31m#{err.inspect}\e[0;0m"
   end
   begin
-    puts 'next> ' + c.next_time(NOW).strftime('%F %T %:z %A')
+    t = c.next_time(NOW)
+    puts "next> #{t.strftime('%F %T %:z %A')} #{t.rweek}"
   rescue => err
     puts "\e[31m#{err.inspect}\e[0;0m"
   end
 end
 
+# minute hour day-of-month month day-of-week
+
 test('21 0 * * 1%2')
 test('21 0 * * 1%1')
-
-# minute hour day-of-month month day-of-week [flags] command
 
 test('21 0 * * 1%2 UTC')
 test('21 0 * * 1%2 America/Chicago')

@@ -887,10 +887,23 @@ describe Fugit::Cron do
       # For example, ``30 4 1,15 * 5'' would cause a command to be run
       # at 4:30 am on the 1st and 15th of each month, plus every Friday.
 
+    # gh-95 and et-orbi #rweek
+    #
     [ '21 0 * * 1%2 America/Sao_Paulo',
         '2024-03-04 04:21:00', '2024-03-13 12:00', 'Europe/Paris' ],
     [ '21 0 * * 1%2 America/Santarem',
         '2024-03-04 04:21:00', '2024-03-13 12:00', 'Europe/Paris' ],
+
+    # gh-96 and et-orbi #rweek
+    #
+    [ '20 0 * * 2%4 Europe/London',
+        '2024-03-12 01:20:00', '2024-03-21 12:00', 'Europe/Paris' ],
+    [ '20 0 * * 2%4 Etc/UTC',
+        '2024-03-12 01:20:00', '2024-03-21 12:00', 'Europe/Paris' ],
+    [ '20 9 * * 2%4 Australia/Melbourne',
+        '2024-03-11 23:20:00', '2024-03-21 12:00', 'Europe/Paris' ],
+    [ '0 7 * * 2%2 America/Bogota',
+        '2024-03-12 13:00:00', '2024-03-21 12:00', 'Europe/Paris' ],
   ]
 
   describe '#previous_time' do
