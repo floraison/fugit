@@ -41,6 +41,7 @@ The intersection of those two projects is where fugit is born:
 * [serial_scheduler](https://github.com/grosser/serial_scheduler) - ruby task scheduler without threading
 * [delayed_cron_job](https://github.com/codez/delayed_cron_job) - an extension to Delayed::Job that allows you to set cron expressions for your jobs
 * [GoodJob](https://github.com/bensheldon/good_job) - a multithreaded, Postgres-based, Active Job backend for Ruby on Rails
+* [Solid Queue](https://github.com/rails/solid_queue) - Solid Queue is a DB-based queuing backend for Active Job, designed with simplicity and performance in mind
 * ...
 
 ## `Fugit.parse(s)`
