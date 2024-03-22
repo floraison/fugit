@@ -63,6 +63,11 @@ test('20 0 * * 2%4 Etc/UTC') # fails
 test('20 9 * * 2%4 Australia/Melbourne') # fails
 test('0 7 * * 2%2 America/Bogota') # fails
 
+test('0 5 * * 2%6 Europe/Berlin')
+test('0 10 * * 2%2 America/New_York')
+test('20 0 * * 2%2 America/Los_Angeles')
+test('20 9 * * 2%8 America/New_York')
+
 #if (ARGV[0] || '').match?(/p/)
 #  test('21 0 * * 1%2 America/Sao_Paulo')
 #else

@@ -264,6 +264,8 @@ module Fugit
           "please fill an issue at https://git.io/fjJC9"
         ) if (i += 1) > MAX_ITERATION_COUNT
 
+#tt = t.time;
+#puts "  #{tt.strftime('%F %T %:z %A')} #{tt.rweek} #{tt.rweek % 2}"
         (ifrom == t.to_i) && (t.inc(1); next)
         month_match?(t) || (t.inc_month; next)
         day_match?(t) || (t.inc_day; next)
