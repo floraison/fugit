@@ -50,7 +50,8 @@ uname -a
 bundle exec ruby -v
 bundle exec ruby -e "p [ :env_tz, ENV['TZ'] ]"
 bundle exec ruby -r et-orbi -e "EtOrbi._make_info"
-bundle exec ruby -r fugit -e "p [ :fugit, Fugit::VERSION ]"
+bundle exec ruby -r et-orbi -e "p [ :et_orbi, EtOrbi::VERSION ]"
+bundle exec ruby -e "require 'fugit'; p [ :fugit, Fugit::VERSION ]"
 bundle exec ruby -e "p [ :now, Time.now, :zone, Time.now.zone ]"
 ```
 
