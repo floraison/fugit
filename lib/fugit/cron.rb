@@ -196,33 +196,23 @@ module Fugit
     end
 
     def day_match?(nt)
+      weekday_match = weekday_match?(nt)
+      monthday_match = monthday_match?(nt)
 
-      if @weekdays && @monthdays
+      return weekday_match || monthday_match if @weekdays && @monthdays && !@day_and || @day_or
+      #
+      # From `man 5 crontab`
+      #
+      # Note: The day of a command's execution can be specified
+      # by two fields -- day of month, and day of week.
+      # If both fields are restricted (ie, are not *), the command will be
+      # run when either field matches the current time.
+      # For example, ``30 4 1,15 * 5'' would cause a command to be run
+      # at 4:30 am on the 1st and 15th of each month, plus every Friday.
+      #
+      # as seen in gh-5 and gh-35
 
-        return weekday_match?(nt) && monthday_match?(nt) \
-          if @day_and
-            #
-            # extension for fugit, gh-78
-
-        return weekday_match?(nt) || monthday_match?(nt)
-          #
-          # From `man 5 crontab`
-          #
-          # Note: The day of a command's execution can be specified
-          # by two fields -- day of month, and day of week.
-          # If both fields are restricted (ie, are not *), the command will be
-          # run when either field matches the current time.
-          # For example, ``30 4 1,15 * 5'' would cause a command to be run
-          # at 4:30 am on the 1st and 15th of each month, plus every Friday.
-          #
-          # as seen in gh-5 and gh-35
-      end
-
-
-      return false unless weekday_match?(nt)
-      return false unless monthday_match?(nt)
-
-      true
+      return weekday_match && monthday_match
     end
 
     def match?(t)
@@ -545,6 +535,7 @@ module Fugit
       @original = original
       @cron_s = nil # just to be sure
       @day_and = h[:&]
+      @day_or = h[:|]
 
       valid =
         determine_seconds(h[:sec]) &&
@@ -661,6 +652,7 @@ module Fugit
     def determine_weekdays(arr)
 
       @weekdays = []
+      null = false
 
       arr.each do |a, z, sl, ha, mo| # a to z, slash, hash, and mod
         if ha || mo
@@ -673,14 +665,15 @@ module Fugit
           (a..z).each { |i| @weekdays << [ (i > 6) ? i - 7 : i ] }
         elsif a
           @weekdays << [ a ]
-        #else
+        else
+          null = true
         end
       end
 
       @weekdays.each { |wd| wd[0] = 0 if wd[0] == 7 } # turn sun7 into sun0
       @weekdays.uniq!
       @weekdays.sort!
-      @weekdays = nil if @weekdays.empty?
+      @weekdays = nil if @weekdays.empty? || null
 
       true
     end
@@ -732,7 +725,7 @@ module Fugit
       def hyphen(i); str(nil, i, '-'); end
       def comma(i); rex(nil, i, /,([ \t]*,)*/); end
       def comma?(i); rex(nil, i, /([ \t]*,)*/); end
-      def and?(i); rex(nil, i, /&?/); end
+      def and_or?(i); rex(nil, i, /[&|]?/); end
 
       def slash(i); rex(:slash, i, /\/\d\d?/); end
 
@@ -795,9 +788,9 @@ module Fugit
       def lsec_(i); seq(nil, i, :comma?, :list_sec, :comma?, :s); end
       def lmin_(i); seq(nil, i, :comma?, :list_min, :comma?, :s); end
       def lhou_(i); seq(nil, i, :comma?, :list_hou, :comma?, :s); end
-      def ldom_(i); seq(nil, i, :comma?, :list_dom, :comma?, :and?, :s); end
+      def ldom_(i); seq(nil, i, :comma?, :list_dom, :comma?, :and_or?, :s); end
       def lmon_(i); seq(nil, i, :comma?, :list_mon, :comma?, :s); end
-      def ldow(i); seq(nil, i, :comma?, :list_dow, :comma?, :and?); end
+      def ldow(i); seq(nil, i, :comma?, :list_dow, :comma?, :and_or?); end
 
       def _tz_name(i)
         rex(nil, i, / +[A-Z][a-zA-Z0-9+\-]+(\/[A-Z][a-zA-Z0-9+\-_]+){0,2}/)
@@ -896,6 +889,7 @@ module Fugit
             h[tt.name] = tt.name == :tz ? rewrite_tz(tt) : rewrite_entry(tt)
             h }
         hcron[:&] = true if t.string.index('&')
+        hcron[:|] = true if t.string.index('|')
 
         z, tz = hcron[:tz]; return nil if z && ! tz
 
