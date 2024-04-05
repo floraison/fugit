@@ -29,8 +29,25 @@ module Fugit
 
     def do_parse(s, opts={})
 
-      parse(s, opts) ||
-      fail(ArgumentError.new("found no time information in #{s.inspect}"))
+      opts[:at] = opts[:in] if opts.has_key?(:in)
+
+      result = nil
+      errors = []
+
+      %i[ cron duration nat at ]
+        .each { |k|
+          begin
+            result ||= (opts[k] != false && self.send("do_parse_#{k}", s))
+          rescue => err
+            errors << err
+          end }
+
+      return result if result
+
+      raise(
+        errors.find { |r| r.class != ArgumentError } ||
+        errors.first ||
+        ArgumentError.new("found no time information in #{s.inspect}"))
     end
 
     def parse_cronish(s, opts={})
