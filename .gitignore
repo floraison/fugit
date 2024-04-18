@@ -24,3 +24,5 @@ pkg/
 
 Gemfile.lock
 
+tmp/
+
