@@ -34,7 +34,7 @@ The intersection of those two projects is where fugit is born:
 ### Projects using fugit
 
 * [arask](https://github.com/Ebbe/arask) - "Automatic RAils taSKs" uses fugit to parse cron strings
-* [sidekiq-cron](https://github.com/ondrejbartas/sidekiq-cron) - uses fugit to parse cron strings
+* [sidekiq-cron](https://github.com/ondrejbartas/sidekiq-cron) - uses fugit to parse cron strings since version 1.0.0, it was using rufus-scheduler previously
 * [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) - as seen above
 * [flor](https://github.com/floraison/flor) - used in the [cron](https://github.com/floraison/flor/blob/master/doc/procedures/cron.md) procedure
 * [que-scheduler](https://github.com/hlascelles/que-scheduler) - a reliable job scheduler for [que](https://github.com/chanks/que)
