@@ -299,8 +299,11 @@ describe Fugit::Nat do
       'nada',
       'every 2 years',
       'every 2 weeks',
-      #'every 17 hours', # by default/strict:false --> "0 */17 * * *"
-      'every 27 hours',
+
+      #'every 17 hours',
+        # by default/strict:false --> "0 */17 * * *"
+      #'every 27 hours',
+        # by default/strict:false --> "0 */27 * * *"
 
     ].each do |input|
 
@@ -315,6 +318,10 @@ describe Fugit::Nat do
       [
 
         'every 17 hours',
+
+        'every 27 hours',
+        'every 2 years',
+        'every 2 weeks',
 
       ].each do |input|
 
@@ -347,8 +354,11 @@ describe Fugit::Nat do
       'nada',
       'every 2 years',
       'every 2 weeks',
-      #'every 17 hours', # by default/strict:false --> "0 */17 * * *"
-      'every 27 hours',
+
+      #'every 17 hours',
+        # by default/strict:false --> "0 */17 * * *"
+      #'every 27 hours',
+        # by default/strict:false --> "0 */27 * * *"
 
     ].each do |input|
 

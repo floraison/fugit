@@ -569,7 +569,10 @@ module Fugit
 
       sta, edn, sla = r
 
-      return false if sla && sla > max
+      #return false if sla && sla > max
+        #
+        # let it go, "* */24 * * *" and "* */27 * * *" are okay
+        # gh-86 and gh-103
 
       edn = max if sla && edn.nil?
 
