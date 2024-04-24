@@ -1,7 +1,8 @@
 
 # fugit credits
 
-* Benjami Darcet https://github.com/bdarcet gh-95 gh-96 et-orbi #rweek
+* Michael Scrivo, https://github.com/mscrivo, gh-103
+* Benjamin Darcet, https://github.com/bdarcet gh-95 gh-96 et-orbi #rweek
 * https://github.com/franckduche gh-95 gh-96 et-orbi #rweek
 * https://hithub.com/aunghtain, gh-93, include oneliner vs Ruby 2.6.6
 * Marcos Belluci, https://github.com/delbetu, gh-88, 1st and last nat
