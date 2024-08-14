@@ -362,11 +362,17 @@ describe Fugit::Nat do
 
     ].each do |input|
 
-      it "fails with ArgumentError for #{input.inspect}" do
+      it "fails with an ArgumentError for #{input.inspect}" do
 
         expect { Fugit::Nat.do_parse(input)
-          }.to raise_error(ArgumentError)
+          }.to raise_error(ArgumentError, /could not parse a nat/)
       end
+    end
+
+    it "fails with an ArgumentError when the input length > 256" do
+
+        expect { Fugit::Nat.do_parse('a' * 5000)
+          }.to raise_error(ArgumentError, /too long .+ 5000 > 256/)
     end
   end
 end

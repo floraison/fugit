@@ -7,6 +7,8 @@ module Fugit
   #
   module Nat
 
+    MAX_INPUT_LENGTH = 256
+
     class << self
 
       def parse(s, opts={})
@@ -16,6 +18,16 @@ module Fugit
         return nil unless s.is_a?(String)
 
         s = s.strip
+
+        if s.length > MAX_INPUT_LENGTH
+
+          fail ArgumentError.new(
+            "input too long for a nat string, " +
+            "#{s.length} > #{MAX_INPUT_LENGTH}"
+          ) if opts[:do_parse]
+
+          return nil
+        end
 
 #p s; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
 #(p s; Raabro.pp(Parser.parse(s, debug: 1), colours: true)) rescue nil
@@ -29,7 +41,7 @@ module Fugit
 
       def do_parse(s, opts={})
 
-        parse(s, opts) ||
+        parse(s, opts.merge(do_parse: true)) ||
         fail(ArgumentError.new("could not parse a nat #{s.inspect}"))
       end
     end

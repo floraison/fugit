@@ -46,7 +46,20 @@ module Fugit
       def do_parse(s)
 
         parse(s) ||
-        fail(ArgumentError.new("invalid cron string #{s.inspect}"))
+        fail(ArgumentError.new("invalid cron string #{trunc(s)}"))
+      end
+
+      protected
+
+      def trunc(s)
+
+        if s.is_a?(String)
+          r = s.length > 28 ? s[0, 28] + "... len #{s.length}" : s
+          r.inspect
+        else
+          r = s.inspect
+          r.length > 35 ? s[0, 35] + '...' : r
+        end
       end
     end
 

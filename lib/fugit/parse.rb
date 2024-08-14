@@ -20,10 +20,10 @@ module Fugit
 
       opts[:at] = opts[:in] if opts.has_key?(:in)
 
-      (opts[:cron] != false && parse_cron(s)) ||
-      (opts[:duration] != false && parse_duration(s)) ||
-      (opts[:nat] != false && parse_nat(s, opts)) ||
-      (opts[:at] != false && parse_at(s)) ||
+      (opts[:cron] != false && parse_cron(s)) || # 542ms 616ms
+      (opts[:duration] != false && parse_duration(s)) || # 645ms # 534ms
+      (opts[:nat] != false && parse_nat(s, opts)) || # 2s # 35s
+      (opts[:at] != false && parse_at(s)) || # 568ms 622ms
       nil
     end
 
