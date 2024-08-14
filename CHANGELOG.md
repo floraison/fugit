@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.11.1 not yet released
+
+
 ## fugit 1.11.0 released 2024-04-24
 
 * Revert gh-86 ban on `every 27 hours` / `* */27 * * *` for gh-103
