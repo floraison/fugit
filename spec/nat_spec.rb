@@ -331,6 +331,11 @@ describe Fugit::Nat do
         end
       end
     end
+
+    it "rejects (returns nil) if input length > 256" do
+
+      expect(Fugit::Nat.parse('a' * 5000)).to be(nil)
+    end
   end
 
   describe '.do_parse' do
@@ -369,10 +374,10 @@ describe Fugit::Nat do
       end
     end
 
-    it "fails with an ArgumentError when the input length > 256" do
+    it "fails with an ArgumentError if input length > 256" do
 
-        expect { Fugit::Nat.do_parse('a' * 5000)
-          }.to raise_error(ArgumentError, /too long .+ 5000 > 256/)
+      expect { Fugit::Nat.do_parse('a' * 5000)
+        }.to raise_error(ArgumentError, /too long .+ 5000 > 256/)
     end
   end
 end
