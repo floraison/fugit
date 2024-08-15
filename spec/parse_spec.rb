@@ -114,9 +114,11 @@ describe Fugit do
 
     it "returns nil quickly if the input is useless and long, gh-104" do
 
-      o = Fugit.parse('0 0' + ' 0' * 10_000 + ' 1 jan * UTC')
-p o
-# TODO
+       o, d = do_time {
+         Fugit.parse('0 0' + ' 0' * 10_000 + ' 1 jan * UTC') }
+
+       expect(o).to be(nil)
+       expect(d).to be < 0.042
     end
   end
 
@@ -141,6 +143,23 @@ p o
 
         expect { Fugit.do_parse(k) }.to raise_error(ArgumentError)
       end
+    end
+
+    it "fails quickly if the input is useless and long, gh-104" do
+
+       r, d = do_time {
+         begin
+           Fugit.do_parse('0 0' + ' 0' * 10_000 + ' 1 jan * UTC')
+         rescue => err
+           err
+         end }
+
+       expect(r.class).to be(
+         ArgumentError)
+       expect(r.message).to eq(
+         'invalid cron string "0 0 0 0 0 0 0 0 0 0 0 0 0 0 ... len 20015"')
+
+       expect(d).to be < 0.042
     end
   end
 
