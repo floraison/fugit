@@ -2,7 +2,9 @@
 # CHANGELOG.md
 
 
-## fugit 1.11.1 not yet released
+## fugit 1.11.1 released 2024-08-15
+
+* Prevent nat parsing chocking on long input (> 256 chars), gh-104
 
 
 ## fugit 1.11.0 released 2024-04-24
