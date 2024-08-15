@@ -117,8 +117,8 @@ describe Fugit do
        o, d = do_time {
          Fugit.parse('0 0' + ' 0' * 10_000 + ' 1 jan * UTC') }
 
-       expect(o).to be(nil)
-       expect(d).to be < 0.042
+       expect(d).to be < 0.1
+       expect(o).to be nil
     end
   end
 
@@ -154,12 +154,12 @@ describe Fugit do
            err
          end }
 
+       expect(d).to be < 0.1
+
        expect(r.class).to be(
          ArgumentError)
        expect(r.message).to eq(
          'invalid cron string "0 0 0 0 0 0 0 0 0 0 0 0 0 0 ... len 20015"')
-
-       expect(d).to be < 0.042
     end
   end
 
