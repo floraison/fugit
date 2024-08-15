@@ -68,6 +68,17 @@ module Helpers
 
     Object.send(:remove_const, :Chronic)
   end
+
+  def monow; Process.clock_gettime(Process::CLOCK_MONOTONIC); end
+
+  def do_time(&block)
+
+    t0 = monow
+
+    r = block.call
+
+    [ r, monow - t0 ]
+  end
 end # Helpers
 
 RSpec.configure do |c|

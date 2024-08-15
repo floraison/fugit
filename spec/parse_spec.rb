@@ -111,6 +111,13 @@ describe Fugit do
         expect(o).to eq(n)
       end
     end
+
+    it "returns nil quickly if the input is useless and long, gh-104" do
+
+      o = Fugit.parse('0 0' + ' 0' * 10_000 + ' 1 jan * UTC')
+p o
+# TODO
+    end
   end
 
   describe '.do_parse' do
