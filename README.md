@@ -210,7 +210,7 @@ Fugit tries to follow the `man 5 crontab` documentation.
 
 There is a surprising thing about this canon, all the columns are joined by ANDs, except for monthday and weekday which are joined together by OR if they are both set (they are not `*`).
 
-Many people (me included) [are suprised](https://superuser.com/questions/428807/run-a-cron-job-on-the-first-monday-of-every-month) when they try to specify "at 05:00 on the first Monday of the month" as `0 5 1-7 * 1` or `0 5 1-7 * mon` and the results are off.
+Many people (me included) [are surprised](https://superuser.com/questions/428807/run-a-cron-job-on-the-first-monday-of-every-month) when they try to specify "at 05:00 on the first Monday of the month" as `0 5 1-7 * 1` or `0 5 1-7 * mon` and the results are off.
 
 The man page says:
 
