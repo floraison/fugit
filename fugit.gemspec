@@ -26,6 +26,7 @@ Time tools for flor and the floraison project. Cron parsing and occurrence compu
     'homepage_uri' =>  s.homepage,
     'source_code_uri' => s.homepage,
     #'wiki_uri' => s.homepage + '/wiki',
+    'rubygems_mfa_required' => 'true',
   }
 
   #s.files = `git ls-files`.split("\n")
