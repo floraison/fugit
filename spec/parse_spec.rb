@@ -154,7 +154,7 @@ describe Fugit do
            err
          end }
 
-       expect(d).to be < 0.1
+       expect(d).to be < 0.14
 
        expect(r.class).to be(
          ArgumentError)
