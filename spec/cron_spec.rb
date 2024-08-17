@@ -1715,7 +1715,7 @@ describe Fugit::Cron do
 
   describe '#within' do
 
-    it 'returns all the occurences within a given time period' do
+    it 'returns all the occurrences within a given time period' do
 
       c = Fugit.parse_cron('0 12 * * mon#2')
 
@@ -1736,7 +1736,7 @@ describe Fugit::Cron do
       end
     end
 
-    it 'returns all the occurences within a start time and an end time' do
+    it 'returns all the occurrences within a start time and an end time' do
 
       c = Fugit.parse_cron('0 12 * * mon#2')
 
