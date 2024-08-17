@@ -169,8 +169,9 @@ describe Fugit::Nat do
         'every year at 20:10' => '10 20 1 1 *',
 
         'every day at zero dark twenty' => '20 0 * * *',
+        'every day at zero dark forty' => '40 0 * * *',
+        'every day at oh dark forty' => '40 0 * * *',
         'every day at one dark fifty' => '50 1 * * *',
-        #'every day at oh dark fourty' => '40 0 * * *',
         'every day at noon' => '0 12 * * *',
         'every day at midnight' => '0 0 * * *',
 

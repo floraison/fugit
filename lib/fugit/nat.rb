@@ -54,7 +54,7 @@ module Fugit
         %w[ zero ] + one_to_nine +
         %w[ ten eleven twelve thirteen fourteen fifteen sixteen seventeen
             eighteen nineteen ] +
-          %w[ twenty thirty fourty fifty ]
+          %w[ twenty thirty forty fifty ]
             .collect { |a|
               ([ nil ] + one_to_nine)
                 .collect { |b| [ a, b ].compact.join('-') } }
