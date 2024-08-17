@@ -1,7 +1,7 @@
 
 # fugit credits
 
-* Geremia Taglialatela, https://github.com/tagliala, mfa opt-in gh-105
+* Geremia Taglialatela, https://github.com/tagliala, gh-105 gh-107
 * https://github.com/personnumber3377, gh-104 Fugit.parse choke on long input
 * Michael Scrivo, https://github.com/mscrivo, gh-103
 * Benjamin Darcet, https://github.com/bdarcet gh-95 gh-96 et-orbi #rweek

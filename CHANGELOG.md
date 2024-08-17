@@ -4,6 +4,8 @@
 
 ## fugit 1.11.2 not yet released
 
+* Fix Fugit::Nat "zero dark forty", gh-107
+
 
 ## fugit 1.11.1 released 2024-08-15
 
