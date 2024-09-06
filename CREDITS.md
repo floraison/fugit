@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Luis Castillo, https://github.com/lekastillo, nice_hash gh-108
 * Geremia Taglialatela, https://github.com/tagliala, gh-105 gh-107
 * https://github.com/personnumber3377, gh-104 Fugit.parse choke on long input
 * Michael Scrivo, https://github.com/mscrivo, gh-103
