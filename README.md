@@ -510,6 +510,10 @@ p Fugit.parse('every day at 12:15 midnight').original  # ==> "15 24 * * *"
   # as of fugit 1.7.2
 ```
 
+## KNOWN ISSUES
+
+The gem [nice_hash](https://github.com/MarioRuiz/nice_hash) gets in the way of `fugit`, as seen in [issue 108](https://github.com/floraison/fugit/issues/108). It prevents `fugit` from correctly parsing cron strings.
+
 
 ## LICENSE
 
