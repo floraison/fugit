@@ -286,7 +286,7 @@ For odd Sundays, one can write `9 0 * * sun%2+1`.
 
 It can be combined, as in `9 0 * * sun%2,tue%3+2`
 
-But what does it reference to? It starts at 1 on 2019-01-01.
+But what does it reference to? It starts at 1 on 2019-01-01 (in the EtOrbi instance timezone, not the UTC "timezone").
 
 ```ruby
 require 'et-orbi' # >= 1.1.8
