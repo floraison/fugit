@@ -20,19 +20,18 @@ Time tools for flor and the floraison project. Cron parsing and occurrence compu
 
   s.metadata = {
     'changelog_uri' => s.homepage + '/blob/master/CHANGELOG.md',
-    'documentation_uri' => s.homepage,
     'bug_tracker_uri' => s.homepage + '/issues',
-    #'mailing_list_uri' => 'https://groups.google.com/forum/#!forum/floraison',
+    'documentation_uri' => s.homepage,
     'homepage_uri' =>  s.homepage,
     'source_code_uri' => s.homepage,
+    #'mailing_list_uri' => 'https://groups.google.com/forum/#!forum/floraison',
     #'wiki_uri' => s.homepage + '/wiki',
     'rubygems_mfa_required' => 'true',
   }
 
   #s.files = `git ls-files`.split("\n")
   s.files = Dir[
-    'README.{md,txt}',
-    'CHANGELOG.{md,txt}', 'CREDITS.{md,txt}', 'LICENSE.{md,txt}',
+    '{README,CHANGELOG,CREDITS,LICENSE}.{md,txt}',
     #'Makefile',
     'lib/**/*.rb', #'spec/**/*.rb', 'test/**/*.rb',
     "#{s.name}.gemspec",
