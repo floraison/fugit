@@ -112,6 +112,7 @@ Fugit.parse_cronish('12y12M')        # ==> nil
 
 Introduced in fugit 1.8.0.
 
+
 ## `Fugit::Cron`
 
 A class `Fugit::Cron` to parse cron strings and then `#next_time` and `#previous_time` to compute the next or the previous occurrence respectively.
@@ -329,89 +330,6 @@ c = Fugit.parse('5 * * * * *') # every minute at second 5
 ```
 
 
-## `Fugit::Duration`
-
-A class `Fugit::Duration` to parse duration strings (vanilla [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) ones and [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) ones).
-
-Provides duration arithmetic tools.
-
-```ruby
-require 'fugit'
-
-d = Fugit::Duration.parse('1y2M1d4h')
-
-p d.to_plain_s  # => "1Y2M1D4h"
-p d.to_iso_s    # => "P1Y2M1DT4H" ISO 8601 duration
-p d.to_long_s   # => "1 year, 2 months, 1 day, and 4 hours"
-
-d += Fugit::Duration.parse('1y1h')
-
-p d.to_long_s  # => "2 years, 2 months, 1 day, and 5 hours"
-
-d += 3600
-
-p d.to_plain_s  # => "2Y2M1D5h3600s"
-
-p Fugit::Duration.parse('1y2M1d4h').to_sec # => 36820800
-```
-
-There is a `#deflate` method
-
-```ruby
-Fugit::Duration.parse(1000).to_plain_s # => "1000s"
-Fugit::Duration.parse(3600).to_plain_s # => "3600s"
-Fugit::Duration.parse(1000).deflate.to_plain_s # => "16m40s"
-Fugit::Duration.parse(3600).deflate.to_plain_s # => "1h"
-
-# or event shorter
-Fugit.parse(1000).deflate.to_plain_s # => "16m40s"
-Fugit.parse(3600).deflate.to_plain_s # => "1h"
-```
-
-There is also an `#inflate` method
-
-```ruby
-Fugit::Duration.parse('1h30m12').inflate.to_plain_s # => "5412s"
-Fugit.parse('1h30m12').inflate.to_plain_s # => "5412s"
-
-Fugit.parse('1h30m12').to_sec # => 5412
-Fugit.parse('1h30m12').to_sec.to_s + 's' # => "5412s"
-```
-
-The `to_*_s` methods are also available as class methods:
-```ruby
-p Fugit::Duration.to_plain_s('1y2M1d4h')
-  # => "1Y2M1D4h"
-p Fugit::Duration.to_iso_s('1y2M1d4h')
-  # => "P1Y2M1DT4H" ISO 8601 duration
-p Fugit::Duration.to_long_s('1y2M1d4h')
-  # => "1 year, 2 months, 1 day, and 4 hours"
-```
-
-## `Fugit::At`
-
-Points in time are parsed and given back as EtOrbi::EoTime instances.
-
-```ruby
-Fugit::At.parse('2017-12-12').to_s
-  # ==> "2017-12-12 00:00:00 +0900" (at least here in Hiroshima)
-
-Fugit::At.parse('2017-12-12 12:00:00 America/New_York').to_s
-  # ==> "2017-12-12 12:00:00 -0500"
-```
-
-Directly with `Fugit.parse_at(s)` is OK too:
-```ruby
-Fugit.parse_at('2017-12-12 12:00:00 America/New_York').to_s
-  # ==> "2017-12-12 12:00:00 -0500"
-```
-
-Directly with `Fugit.parse(s)` is OK too:
-```ruby
-Fugit.parse('2017-12-12 12:00:00 America/New_York').to_s
-  # ==> "2017-12-12 12:00:00 -0500"
-```
-
 ## `Fugit::Nat`
 
 Fugit understand some kind of "natural" language:
@@ -509,6 +427,92 @@ p Fugit.parse('every day at 12:15 midnight').original  # ==> "15 24 * * *"
 
   # as of fugit 1.7.2
 ```
+
+
+## `Fugit::Duration`
+
+A class `Fugit::Duration` to parse duration strings (vanilla [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) ones and [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) ones).
+
+Provides duration arithmetic tools.
+
+```ruby
+require 'fugit'
+
+d = Fugit::Duration.parse('1y2M1d4h')
+
+p d.to_plain_s  # => "1Y2M1D4h"
+p d.to_iso_s    # => "P1Y2M1DT4H" ISO 8601 duration
+p d.to_long_s   # => "1 year, 2 months, 1 day, and 4 hours"
+
+d += Fugit::Duration.parse('1y1h')
+
+p d.to_long_s  # => "2 years, 2 months, 1 day, and 5 hours"
+
+d += 3600
+
+p d.to_plain_s  # => "2Y2M1D5h3600s"
+
+p Fugit::Duration.parse('1y2M1d4h').to_sec # => 36820800
+```
+
+There is a `#deflate` method
+
+```ruby
+Fugit::Duration.parse(1000).to_plain_s # => "1000s"
+Fugit::Duration.parse(3600).to_plain_s # => "3600s"
+Fugit::Duration.parse(1000).deflate.to_plain_s # => "16m40s"
+Fugit::Duration.parse(3600).deflate.to_plain_s # => "1h"
+
+# or event shorter
+Fugit.parse(1000).deflate.to_plain_s # => "16m40s"
+Fugit.parse(3600).deflate.to_plain_s # => "1h"
+```
+
+There is also an `#inflate` method
+
+```ruby
+Fugit::Duration.parse('1h30m12').inflate.to_plain_s # => "5412s"
+Fugit.parse('1h30m12').inflate.to_plain_s # => "5412s"
+
+Fugit.parse('1h30m12').to_sec # => 5412
+Fugit.parse('1h30m12').to_sec.to_s + 's' # => "5412s"
+```
+
+The `to_*_s` methods are also available as class methods:
+```ruby
+p Fugit::Duration.to_plain_s('1y2M1d4h')
+  # => "1Y2M1D4h"
+p Fugit::Duration.to_iso_s('1y2M1d4h')
+  # => "P1Y2M1DT4H" ISO 8601 duration
+p Fugit::Duration.to_long_s('1y2M1d4h')
+  # => "1 year, 2 months, 1 day, and 4 hours"
+```
+
+
+## `Fugit::At`
+
+Points in time are parsed and given back as EtOrbi::EoTime instances.
+
+```ruby
+Fugit::At.parse('2017-12-12').to_s
+  # ==> "2017-12-12 00:00:00 +0900" (at least here in Hiroshima)
+
+Fugit::At.parse('2017-12-12 12:00:00 America/New_York').to_s
+  # ==> "2017-12-12 12:00:00 -0500"
+```
+
+Directly with `Fugit.parse_at(s)` is OK too:
+```ruby
+Fugit.parse_at('2017-12-12 12:00:00 America/New_York').to_s
+  # ==> "2017-12-12 12:00:00 -0500"
+```
+
+Directly with `Fugit.parse(s)` is OK too:
+```ruby
+Fugit.parse('2017-12-12 12:00:00 America/New_York').to_s
+  # ==> "2017-12-12 12:00:00 -0500"
+```
+
 
 ## KNOWN ISSUES
 
