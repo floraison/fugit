@@ -211,6 +211,11 @@ Fugit accepts a IANA timezone identifier right after a cron string:
 ```ruby
 '5 0 * * *  Europe/Rome'      # 5 minutes after midnight, every day, Rome tz
 '0 22 * * 1-5  Asia/Tbilisi'  # at 2200 on weekdays in Georgia
+
+'@yearly Asia/Kuala_Lumpur'  # turns into '0 0 1 1 * Asia/Kuala_Lumpur'
+'@monthly Asia/Jakarta'      # turns into '0 0 1 * * Asia/Jakarta'
+  #
+  # those two "ats" and friends since fugit 1.11.2...
 ```
 
 When no time zone is specified, fugit uses Ruby's provided timezone.
