@@ -205,6 +205,16 @@ Example of cron strings understood by fugit:
 
 Please note that `'15/30 * * * *'` is interpreted as `'15-59/30 * * * *'` since fugit 1.4.6.
 
+### time zones
+
+Fugit accepts a IANA timezone identifier right after a cron string:
+```ruby
+'5 0 * * *  Europe/Rome'      # 5 minutes after midnight, every day, Rome tz
+'0 22 * * 1-5  Asia/Tbilisi'  # at 2200 on weekdays in Georgia
+```
+
+When no time zone is specified, fugit uses Ruby's provided timezone.
+
 ### the first Monday of the month
 
 Fugit tries to follow the `man 5 crontab` documentation.
