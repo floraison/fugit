@@ -32,15 +32,23 @@ module Fugit
       def parse(s)
 
         return s if s.is_a?(self)
-
-        s = SPECIALS[s] || s
-
         return nil unless s.is_a?(String)
 
-#p s; Raabro.pp(Parser.parse(s, debug: 3), colors: true)
-        h = Parser.parse(s.strip)
+        s0 = s
+        s = s.strip
 
-        self.allocate.send(:init, s, h)
+        s =
+          if s[0, 1] == '@'
+            ss = s.split(/\s+/, 2)
+            [ SPECIALS[ss[0]] || ss, *ss[1..-1] ].join(' ')
+          else
+            s
+          end
+
+#p s; Raabro.pp(Parser.parse(s, debug: 3), colors: true)
+        h = Parser.parse(s)
+
+        self.allocate.send(:init, s0, h)
       end
 
       def do_parse(s)

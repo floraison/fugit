@@ -1130,6 +1130,9 @@ describe Fugit::Cron do
         [ '@noon', '0 12 * * *' ],
         [ '@hourly', '0 * * * *' ],
 
+        [ '@yearly Asia/Kuala_Lumpur', '0 0 1 1 * Asia/Kuala_Lumpur' ],
+        [ '@noon Asia/Jakarta', '0 12 * * * Asia/Jakarta' ],
+
         # min hou dom mon dow
 
         [ '5 0 * * *', '5 0 * * *' ],
