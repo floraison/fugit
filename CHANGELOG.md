@@ -5,6 +5,7 @@
 ## fugit 1.11.2 not yet released
 
 * Fix Fugit::Nat "zero dark forty", gh-107
+* Endure @yearly and other specials accept a timezone
 
 
 ## fugit 1.11.1 released 2024-08-15
