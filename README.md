@@ -17,31 +17,32 @@ Fugit is a core dependency of [rufus-scheduler](https://github.com/jmettraux/ruf
 
 The intersection of those two projects is where fugit is born:
 
-* [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) - a cron/at/in/every/interval in-process scheduler, in fact, it's the father project to this fugit project
-* [flor](https://github.com/floraison/flor) - a Ruby workflow engine, fugit provides the foundation for its time scheduling capabilities
+* [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) — a cron/at/in/every/interval in-process scheduler, in fact, it's the father project to this fugit project
+* [flor](https://github.com/floraison/flor) — a Ruby workflow engine, fugit provides the foundation for its time scheduling capabilities
 
 ### Similar, sometimes overlapping projects
 
-* [chronic](https://github.com/mojombo/chronic) - a pure Ruby natural language date parser
-* [parse-cron](https://github.com/siebertm/parse-cron) - parses cron expressions and calculates the next occurrence after a given date
-* [ice_cube](https://github.com/seejohnrun/ice_cube) - Ruby date recurrence library
-* [ISO8601](https://github.com/arnau/ISO8601) - Ruby parser to work with ISO8601 dateTimes and durations
-* [chrono](https://github.com/r7kamura/chrono) - a chain of logics about chronology
-* [CronCalc](https://github.com/mizinsky/cron_calc) - calculates cron job occurrences
-* [Recurrence](https://github.com/fnando/recurrence) - a simple library to handle recurring events
+* [chronic](https://github.com/mojombo/chronic) — a pure Ruby natural language date parser
+* [parse-cron](https://github.com/siebertm/parse-cron) — parses cron expressions and calculates the next occurrence after a given date
+* [ice_cube](https://github.com/seejohnrun/ice_cube) — Ruby date recurrence library
+* [ISO8601](https://github.com/arnau/ISO8601) — Ruby parser to work with ISO8601 dateTimes and durations
+* [chrono](https://github.com/r7kamura/chrono) — a chain of logics about chronology
+* [CronCalc](https://github.com/mizinsky/cron_calc) — calculates cron job occurrences
+* [Recurrence](https://github.com/fnando/recurrence) — a simple library to handle recurring events
+* [CronConfigParser](https://github.com/madogiwa0124/cron_config_parser) — parse the cron configuration for readability
 * ...
 
 ### Projects using fugit
 
-* [arask](https://github.com/Ebbe/arask) - "Automatic RAils taSKs" uses fugit to parse cron strings
-* [sidekiq-cron](https://github.com/ondrejbartas/sidekiq-cron) - uses fugit to parse cron strings since version 1.0.0, it was using rufus-scheduler previously
-* [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) - as seen above
-* [flor](https://github.com/floraison/flor) - used in the [cron](https://github.com/floraison/flor/blob/master/doc/procedures/cron.md) procedure
-* [que-scheduler](https://github.com/hlascelles/que-scheduler) - a reliable job scheduler for [que](https://github.com/chanks/que)
-* [serial_scheduler](https://github.com/grosser/serial_scheduler) - ruby task scheduler without threading
-* [delayed_cron_job](https://github.com/codez/delayed_cron_job) - an extension to Delayed::Job that allows you to set cron expressions for your jobs
-* [GoodJob](https://github.com/bensheldon/good_job) - a multithreaded, Postgres-based, Active Job backend for Ruby on Rails
-* [Solid Queue](https://github.com/rails/solid_queue) - a DB-based queuing backend for Active Job, designed with simplicity and performance in mind
+* [arask](https://github.com/Ebbe/arask) — "Automatic RAils taSKs" uses fugit to parse cron strings
+* [sidekiq-cron](https://github.com/ondrejbartas/sidekiq-cron) — uses fugit to parse cron strings since version 1.0.0, it was using rufus-scheduler previously
+* [rufus-scheduler](https://github.com/jmettraux/rufus-scheduler) — as seen above
+* [flor](https://github.com/floraison/flor) — used in the [cron](https://github.com/floraison/flor/blob/master/doc/procedures/cron.md) procedure
+* [que-scheduler](https://github.com/hlascelles/que-scheduler) — a reliable job scheduler for [que](https://github.com/chanks/que)
+* [serial_scheduler](https://github.com/grosser/serial_scheduler) — ruby task scheduler without threading
+* [delayed_cron_job](https://github.com/codez/delayed_cron_job) — an extension to Delayed::Job that allows you to set cron expressions for your jobs
+* [GoodJob](https://github.com/bensheldon/good_job) — a multithreaded, Postgres-based, Active Job backend for Ruby on Rails
+* [Solid Queue](https://github.com/rails/solid_queue) — a DB-based queuing backend for Active Job, designed with simplicity and performance in mind
 * ...
 
 ## `Fugit.parse(s)`
