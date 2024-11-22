@@ -67,11 +67,20 @@ module Fugit
       day: { a: 'D', r: 'd', i: 'D', s: DAY_S, I: true, l: 'day' },
       hou: { a: 'h', r: 'h', i: 'H', s: 3600, I: true, l: 'hour' },
       min: { a: 'm', r: 'm', i: 'M', s: 60, I: true, l: 'minute' },
-      sec: { a: 's', r: 's', i: 'S', s: 1, I: true, l: 'second' } }.freeze
+      sec: { a: 's', r: 's', i: 'S', s: 1, I: true, l: 'second' }
+        }.freeze
 
-    INFLA_KEYS, NON_INFLA_KEYS = KEYS
-      .partition { |k, v| v[:I] }
-      .collect(&:freeze)
+    #INFLA_KEYS, NON_INFLA_KEYS = KEYS
+    #  .partition { |k, v| v[:I] }
+    #  .collect(&:freeze)
+        #
+        # https://bugs.ruby-lang.org/issues/16252
+        #
+    kes = KEYS.entries
+    INFLA_KEYS,
+    NON_INFLA_KEYS =
+      kes.filter { |_, v| v[:I] }.freeze,
+      kes.filter { |_, v| ! v[:I] }.freeze
 
     def _to_s(key)
 

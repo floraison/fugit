@@ -4,6 +4,7 @@
 
 ## fugit 1.11.2 not yet released
 
+* Avoid Hash#partition https://bugs.ruby-lang.org/issues/16252
 * Fix Fugit::Nat "zero dark forty", gh-107
 * Endure @yearly and other specials accept a timezone
 
