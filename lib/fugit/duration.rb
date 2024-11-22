@@ -79,8 +79,8 @@ module Fugit
     kes = KEYS.entries
     INFLA_KEYS,
     NON_INFLA_KEYS =
-      kes.filter { |_, v| v[:I] }.freeze,
-      kes.filter { |_, v| ! v[:I] }.freeze
+      kes.select { |_, v| v[:I] }.freeze,
+      kes.select { |_, v| ! v[:I] }.freeze
 
     def _to_s(key)
 
