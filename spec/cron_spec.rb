@@ -158,6 +158,9 @@ describe Fugit::Cron do
 
     [ '0 0 1 jan *', '2026-01-01 00:00', '2025-02-26', 'Australia/Melbourne' ],
     [ '0 0 1 jan *', '2026-01-01 00:00', '2025-02-27', 'Australia/Melbourne' ],
+
+    #[ '0 0 1 jan *', '2026-01-01 00:00', '2025-02-27', 'Europe/Bern' ],
+    [ '0 0 1 jan *', '2026-01-01 00:00', '2025-02-27', 'Europe/Zurich' ],
   ]
 
   describe '#next_time' do
