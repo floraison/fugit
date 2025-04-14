@@ -235,5 +235,38 @@ describe Fugit do
       expect(Fugit.determine_type('2017-01-01')).to eq('at')
     end
   end
+
+  describe '.parse_max' do
+
+    {
+
+      'every day nada' =>
+        [ 'every day', '0 0 * * *' ],
+
+      'every day каждый день' =>
+        [ 'every day', '0 0 * * *' ],
+
+      '0 0 * * * Europe/Paris' =>
+        [ '0 0 * * * Europe/Paris', '0 0 * * * Europe/Paris' ],
+
+      '0 0 * * * America/New_York' =>
+        [ '0 0 * * * America/New_York', '0 0 * * * America/New_York' ],
+
+      '0 0 * * * Asia/Tokyo ever ' =>
+        [ '0 0 * * * Asia/Tokyo', '0 0 * * * Asia/Tokyo' ],
+
+      #'1Y2h toto' => [ '1Y2h', 'y' ],
+
+    }.each do |k, (capture, original)|
+
+      it "parses #{capture} in #{k}" do
+
+        s, c = Fugit.parse_max(k)
+
+        expect(s).to eq(capture)
+        expect(c.original).to eq(original)
+      end
+    end
+  end
 end
 

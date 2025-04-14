@@ -63,6 +63,24 @@ module Fugit
       fail(ArgumentError.new("not cron or 'natural' cron string: #{s.inspect}"))
     end
 
+    def parse_max(s, opts={})
+
+      s0 = s.lines.first
+
+      (0..[ ::Fugit::Nat::MAX_INPUT_LENGTH, s0.length - 1 ].min).each do |i|
+
+        s1 =
+          s0[0, s0.length - i].rstrip
+        f =
+          opts[:cronish] ? parse_cronish(s1, opts) :
+          parse(s1, opts)
+
+        return [ s1, f ] if f
+      end
+
+      nil
+    end
+
     def determine_type(s)
 
       case self.parse(s)
