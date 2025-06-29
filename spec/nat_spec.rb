@@ -407,4 +407,3 @@ describe Fugit do
   end
 end
 
-
