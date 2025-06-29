@@ -255,6 +255,7 @@ describe Fugit do
       '0 0 * * * Asia/Tokyo ever ' =>
         [ '0 0 * * * Asia/Tokyo', '0 0 * * * Asia/Tokyo' ],
 
+      #'1Y2h' => [ '1Y2h', 'y' ],
       #'1Y2h toto' => [ '1Y2h', 'y' ],
 
     }.each do |k, (capture, original)|
