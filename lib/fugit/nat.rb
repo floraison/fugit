@@ -210,7 +210,7 @@ module Fugit
       end
 
       def ampm(i)
-        rex(:ampm, i, /[ \t]*(am|pm|noon|midday|midnight)/i)
+        rex(:ampm, i, /[ \t]*(am|AM|pm|PM|[Nn]oon|[Mm]idday|[Mm]idnight)/)
       end
       def dark(i)
         rex(:dark, i, /[ \t]*dark/i)
