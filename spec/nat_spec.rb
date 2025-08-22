@@ -219,6 +219,11 @@ describe Fugit::Nat do
           #
           # gh-86
 
+        'every day at midnight America/Los_Angeles' =>
+          '0 0 * * * America/Los_Angeles',
+            #
+            # gh-113
+
         # minute hour day-of-month month day-of-week
 
       }.each do |nat, cron|
