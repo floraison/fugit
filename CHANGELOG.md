@@ -2,8 +2,9 @@
 # CHANGELOG.md
 
 
-## fugit 1.11.2 not yet released
+## fugit 1.11.2 released 2025-08-22
 
+* Fix "every day at midnight America/Los_Angeles", gh-113, Mark R. James
 * Avoid Hash#partition https://bugs.ruby-lang.org/issues/16252
 * Fix Fugit::Nat "zero dark forty", gh-107
 * Ensure @yearly and other specials accept a timezone
