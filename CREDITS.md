@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Mark R. James, https://github.com/mrj, AM vs America/Los_Angeles, gh-113
 * Tejas Bubane, https://github.com/tejasbubane, r3.4 in test matrix, gh-109
 * Luis Castillo, https://github.com/lekastillo, nice_hash gh-108
 * Geremia Taglialatela, https://github.com/tagliala, gh-105 gh-107
