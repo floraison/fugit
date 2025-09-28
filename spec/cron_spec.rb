@@ -1769,6 +1769,57 @@ describe Fugit::Cron do
       end
     end
   end
+
+  describe 'the module % extension' do
+
+    # mostly about 2025-09-26 gh-114
+
+    context 'EtOrbi.rweek_ref = :iso / :monday' do
+
+      it 'runs "0 12 * * sun%2+1,wed%3+1" as Wed+Sun then 1w pause' do
+
+        EtOrbi.rweek_ref = :monday # just to be sure
+
+        expect(EtOrbi.rweek_ref).to eq('2018-12-31')
+
+        r = Fugit.parse_cron("0 12 * * 0%2+1,3%2+1")
+          .next('2025-09-25')
+          .take(7)
+          .map { |t| "#{t.strftime('%F %a')} #{t.rweek}" }
+
+        expect(r).to eq([
+                                '2025-09-28 Sun 351',    # week 351
+          '2025-10-08 Wed 353', '2025-10-12 Sun 353',    # week 353
+          '2025-10-22 Wed 355', '2025-10-26 Sun 355',    # week 355
+          '2025-11-05 Wed 357', '2025-11-09 Sun 357' ])  # week 357
+      end
+    end
+
+    context 'EtOrbi.rweek_ref = :us / :sunday' do
+
+      it 'runs "0 12 * * sun%2+1,wed%3+1" as Sun+Wed then 1w pause' do
+
+        EtOrbi.rweek_ref = :sunday
+
+        expect(EtOrbi.rweek_ref).to eq('2018-12-30')
+
+        r = Fugit.parse_cron("0 12 * * 0%2+1,3%2+1")
+          .next('2025-09-25')
+          .take(7)
+          .map { |t| "#{t.strftime('%F %a')} #{t.rweek}" }
+
+        expect(r).to eq([
+          '2025-10-05 Sun 353', '2025-10-08 Wed 353',  # week 353
+          '2025-10-19 Sun 355', '2025-10-22 Wed 355',  # week 355
+          '2025-11-02 Sun 357', '2025-11-05 Wed 357',  # week 357
+          '2025-11-16 Sun 359' ])                      # week 359
+
+      ensure
+
+        EtOrbi.rweek_ref = :iso # :monday
+      end
+    end
+  end
 end
 
 describe Fugit do
