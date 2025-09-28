@@ -62,6 +62,33 @@ describe Fugit do
         end
       end
     end
+
+    { 'now' => lambda { |r| r },
+      'thursday' => lambda { |r| r },
+      'ThursDay' => lambda { |r| r },
+
+    }.each do |k, v|
+
+      it "parses #{k.inspect}" do
+
+        t = Fugit.do_parse_at(k)
+
+p [ k, v, '-->', t ]
+        expect(t.class).to eq(::EtOrbi::EoTime)
+
+        case v
+        when Proc then expect( !! v[t]).to eq(true)
+        else fail("cannot assert #{v.inspect}")
+        end
+      end
+    end
+
+    #it 'parses "now"' do
+    #  n = Time.now
+    #  t = Fugit.parse_at('now')
+    #  expect(t.class).to eq(::EtOrbi::EoTime)
+    #  expect(t - n).to be < 1.0
+    #end
   end
 end
 
