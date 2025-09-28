@@ -1819,6 +1819,36 @@ describe Fugit::Cron do
         EtOrbi.rweek_ref = :iso # :monday
       end
     end
+
+    it 'runs every fourth week on tuesday' do
+
+      ts = Fugit.parse_cron('20 0 * * 2%4')
+        .next('2025-09-25')
+        .take(14)
+
+      tts = ts
+        .each_with_index
+        .map { |t, i|
+          tt = i > 0 ? ts[i - 1] : nil
+          d = tt ? (t.rday - tt.rday) : 0
+          "#{t.strftime('%F %a')} #{t.rweek} +#{d}" }
+
+      expect(tts).to eq([
+        '2025-09-30 Tue 352 +0',
+        '2025-10-28 Tue 356 +28',
+        '2025-11-25 Tue 360 +28',
+        '2025-12-23 Tue 364 +28',
+        '2026-01-20 Tue 368 +28',
+        '2026-02-17 Tue 372 +28',
+        '2026-03-17 Tue 376 +28',
+        '2026-04-14 Tue 380 +28',
+        '2026-05-12 Tue 384 +28',
+        '2026-06-09 Tue 388 +28',
+        '2026-07-07 Tue 392 +28',
+        '2026-08-04 Tue 396 +28',
+        '2026-09-01 Tue 400 +28',
+        '2026-09-29 Tue 404 +28' ])
+    end
   end
 end
 
