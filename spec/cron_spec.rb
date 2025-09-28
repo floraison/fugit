@@ -1820,7 +1820,7 @@ describe Fugit::Cron do
       end
     end
 
-    it 'runs every fourth week on tuesday' do
+    it 'runs every fourth week on Tuesday' do
 
       ts = Fugit.parse_cron('20 0 * * 2%4')
         .next('2025-09-25')
@@ -1848,6 +1848,24 @@ describe Fugit::Cron do
         '2026-08-04 Tue 396 +28',
         '2026-09-01 Tue 400 +28',
         '2026-09-29 Tue 404 +28' ])
+    end
+
+    it 'runs every fourth week and fourth week + 1 on Wednesday' do
+
+      #ts = Fugit.parse_cron('12 0 * * wed%4,wed%4+1')
+      ts = Fugit.parse_cron('12 0 * * wed%4+1,wed%4')
+        .next('2025-09-25')
+        .take(14)
+
+      tts = ts
+        .each_with_index
+        .map { |t, i|
+          tt = i > 0 ? ts[i - 1] : nil
+          d = tt ? (t.rday - tt.rday) : 0
+          "#{t.strftime('%F %a')} #{t.rweek} +#{d}" }
+
+pp tts
+expect(false).to eq(true) # TODO
     end
   end
 end
