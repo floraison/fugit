@@ -113,11 +113,11 @@ describe Fugit::Cron do
     #      every other Sunday
 
     [ '0 9 * * sat%2',
-      '2019-01-12 09:00:00', '2019-01-01 09:00:00' ],
+      '2019-01-05 09:00:00', '2019-01-01 09:00:00' ],
     [ '0 10 * * sun%2',
-      '2019-04-21 10:00:00', '2019-04-11 09:00:00', 'Europe/Berlin' ],
-    [ '0 10 * * sun%2+1',
       '2019-04-14 10:00:00', '2019-04-11 09:00:00', 'Europe/Berlin' ],
+    [ '0 10 * * sun%2+1',
+      '2019-04-21 10:00:00', '2019-04-11 09:00:00', 'Europe/Berlin' ],
 
     # gh-52
 
@@ -791,12 +791,12 @@ describe Fugit::Cron do
 
         #expect(nt.to_s).to eq(/^2022-10-06 03:30:00 (Z|\+0000)$/)
           # post gh-47
-        expect(nt.to_s).to match(/^2022-09-22 04:30:00 (Z|\+0000)$/)
+        expect(nt.to_s).to match(/^2022-09-29 04:30:00 (Z|\+0000)$/)
           # post gh-76
 
         in_zone('Australia/Melbourne') do
           #expect(nt.to_t.to_s).to eq('2022-10-06 14:30:00 +1100') # post gh-47
-          expect(nt.to_t.to_s).to eq('2022-09-22 14:30:00 +1000') # post gh-76
+          expect(nt.to_t.to_s).to eq('2022-09-29 14:30:00 +1000') # post gh-76
         end
       end
     end
@@ -905,13 +905,13 @@ describe Fugit::Cron do
     # gh-96 and et-orbi #rweek
     #
     [ '20 0 * * 2%4 Europe/London',
-        '2024-03-12 01:20:00', '2024-03-21 12:00', 'Europe/Paris' ],
+        '2024-03-19 01:20:00', '2024-03-21 12:00', 'Europe/Paris' ],
     [ '20 0 * * 2%4 Etc/UTC',
-        '2024-03-12 01:20:00', '2024-03-21 12:00', 'Europe/Paris' ],
+        '2024-03-19 01:20:00', '2024-03-21 12:00', 'Europe/Paris' ],
     [ '20 9 * * 2%4 Australia/Melbourne',
-        '2024-03-11 23:20:00', '2024-03-21 12:00', 'Europe/Paris' ],
+        '2024-03-18 23:20:00', '2024-03-21 12:00', 'Europe/Paris' ],
     [ '0 7 * * 2%2 America/Bogota',
-        '2024-03-12 13:00:00', '2024-03-21 12:00', 'Europe/Paris' ],
+        '2024-03-19 13:00:00', '2024-03-21 12:00', 'Europe/Paris' ],
   ]
 
   describe '#previous_time' do
