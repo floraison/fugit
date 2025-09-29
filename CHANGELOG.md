@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.12.0 not yet released
+
+
 ## fugit 1.11.2 released 2025-08-22
 
 * Fix "every day at midnight America/Los_Angeles", gh-113, Mark R. James
