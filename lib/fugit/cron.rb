@@ -178,12 +178,11 @@ module Fugit
       return false unless hsh.is_a?(Integer)
 
       phsh, nhsh = nt.wday_in_month
+        #
+        # positive wday, from the beginning of the month
+        # negative wday, from the end of the month, -1 == last
 
-      if hsh > 0
-        hsh == phsh # positive wday, from the beginning of the month
-      else
-        hsh == nhsh # negative wday, from the end of the month, -1 == last
-      end
+      (hsh == phsh) || (hsh == nhsh)
     end
 
     def weekday_modulo_match?(nt, mod)
