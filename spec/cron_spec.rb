@@ -1852,7 +1852,33 @@ describe Fugit::Cron do
 
     it 'runs every fourth week and fourth week + 1 on Wednesday' do
 
-      #ts = Fugit.parse_cron('12 0 * * wed%4,wed%4+1')
+      ts = Fugit.parse_cron('12 0 * * wed%4,wed%4+1')
+        .next('2025-09-25')
+        .take(14)
+
+      tts = ts
+        .each_with_index
+        .map { |t, i|
+          tt = i > 0 ? ts[i - 1] : nil
+          d = tt ? (t.rday - tt.rday) : 0
+          "#{t.strftime('%F %a')} #{t.rweek} +#{d}" }
+
+      expect(tts).to eq([
+        '2025-10-01 Wed 352 +0',
+        '2025-10-08 Wed 353 +7',
+        '2025-10-29 Wed 356 +21',
+        '2025-11-05 Wed 357 +7',
+        '2025-11-26 Wed 360 +21',
+        '2025-12-03 Wed 361 +7',
+        '2025-12-24 Wed 364 +21',
+        '2025-12-31 Wed 365 +7',
+        '2026-01-21 Wed 368 +21',
+        '2026-01-28 Wed 369 +7',
+        '2026-02-18 Wed 372 +21',
+        '2026-02-25 Wed 373 +7',
+        '2026-03-18 Wed 376 +21',
+        '2026-03-25 Wed 377 +7' ])
+
       ts = Fugit.parse_cron('12 0 * * wed%4+1,wed%4')
         .next('2025-09-25')
         .take(14)
@@ -1864,8 +1890,21 @@ describe Fugit::Cron do
           d = tt ? (t.rday - tt.rday) : 0
           "#{t.strftime('%F %a')} #{t.rweek} +#{d}" }
 
-pp tts
-expect(false).to eq(true) # TODO
+      expect(tts).to eq([
+        '2025-10-01 Wed 352 +0',
+        '2025-10-08 Wed 353 +7',
+        '2025-10-29 Wed 356 +21',
+        '2025-11-05 Wed 357 +7',
+        '2025-11-26 Wed 360 +21',
+        '2025-12-03 Wed 361 +7',
+        '2025-12-24 Wed 364 +21',
+        '2025-12-31 Wed 365 +7',
+        '2026-01-21 Wed 368 +21',
+        '2026-01-28 Wed 369 +7',
+        '2026-02-18 Wed 372 +21',
+        '2026-02-25 Wed 373 +7',
+        '2026-03-18 Wed 376 +21',
+        '2026-03-25 Wed 377 +7' ])
     end
   end
 end

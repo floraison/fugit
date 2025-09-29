@@ -193,16 +193,18 @@ module Fugit
 
       return true if @weekdays.nil?
 
-      wd, hom = @weekdays.find { |d, _| d == nt.wday }
+      @weekdays.each do |wd, hom|
 
-      return false unless wd
-      return true if hom.nil?
+        next if nt.wday != wd
 
-      if hom.is_a?(Array)
-        weekday_modulo_match?(nt, hom)
-      else
-        weekday_hash_match?(nt, hom)
+        case hom
+        when nil;   return true
+        when Array; return true if weekday_modulo_match?(nt, hom)
+        else;       return true if weekday_hash_match?(nt, hom)
+        end
       end
+
+      false
     end
 
     def monthday_match?(nt)
