@@ -175,6 +175,8 @@ module Fugit
 
     def weekday_hash_match?(nt, hsh)
 
+      return false unless hsh.is_a?(Integer)
+
       phsh, nhsh = nt.wday_in_month
 
       if hsh > 0
@@ -186,25 +188,18 @@ module Fugit
 
     def weekday_modulo_match?(nt, mod)
 
-      (nt.rweek % mod[0]) == (mod[1] % mod[0])
+      mod.is_a?(Array) &&
+      ((nt.rweek % mod[0]) == (mod[1] % mod[0]))
     end
 
     def weekday_match?(nt)
 
-      return true if @weekdays.nil?
-
-      @weekdays.each do |wd, hom|
-
-        next if nt.wday != wd
-
-        case hom
-        when nil;   return true
-        when Array; return true if weekday_modulo_match?(nt, hom)
-        else;       return true if weekday_hash_match?(nt, hom)
-        end
-      end
-
-      false
+      @weekdays.nil? ||
+      @weekdays.find { |wd, hom|
+        (nt.wday == wd) &&
+        (hom.nil? ||
+         weekday_modulo_match?(nt, hom) ||
+         weekday_hash_match?(nt, hom)) }
     end
 
     def monthday_match?(nt)
