@@ -2,7 +2,11 @@
 # CHANGELOG.md
 
 
-## fugit 1.12.0 not yet released
+## fugit 1.12.0 released 2025-09-30
+
+* Upgrade et-orbi to ~> 1.4.0 for EtOrbi.rweek_ref=, gh-114
+  this changes the rweek reference point to 2018-12-31 (Monday)
+* Fix `12 0 * * wed%4+1,wed%4` issue where 1 wed was ignored, gh-114
 
 
 ## fugit 1.11.2 released 2025-08-22
