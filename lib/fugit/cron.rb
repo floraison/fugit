@@ -100,12 +100,11 @@ module Fugit
           when Hash then opts.merge!(a)
           end
         end
-p strings
-p opts
 
         from = opts[:from] || opts[:start] || from || ::EtOrbi::EoTime.now
+p [ :from, from.to_s ]
+
         scron = "0 12 * * #{strings.first || opts[:wday]}"
-p [ :from, from, from.to_s ]
 p [ :scron, scron ]
 
         cron = Fugit::Cron.parse(scron)

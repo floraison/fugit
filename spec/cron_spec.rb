@@ -1608,22 +1608,29 @@ describe Fugit::Cron do
     end
   end
 
+  NEXTS_AND_PREVS = {
+
+    [ 'tue', '2025-10-01' ] =>
+      [ '2025-10-07 Tue', :xxx ],
+    [ 'tue', { from: '2025-10-01' } ] =>
+      [ '2025-10-07 Tue', :xxx ],
+    { wday: 'tue', from: '2025-10-01' } =>
+      [ '2025-10-07 Tue', :xxx ],
+
+    [ 'tue', { yield: :cron } ] =>
+      [ '0 12 * * 2', :xxx ],
+    [ 'tue', :cron ] =>
+      [ '0 12 * * 2', :xxx ],
+  }
+
   describe '.next' do
 
-    # TODO Fugit.prev() and Fugit.next() maybe
+    NEXTS_AND_PREVS.each do |args, (result, _)|
 
-    {
-
-      [ 'tue', '2025-10-01' ] => '2025-10-07 Tue',
-      [ 'tue', { from: '2025-10-01' } ] => '2025-10-07 Tue',
-      { wday: 'tue', from: '2025-10-01' } => '2025-10-07 Tue',
-
-      [ 'tue', { yield: :cron } ] => '0 12 * * 2',
-      [ 'tue', :cron ] => '0 12 * * 2',
-
-    }.each do |args, result|
-
-      it "returns #{result.inspect} for #{args.inspect}" do
+      it(
+        result.is_a?(Regexp) ? "fails for #{args.inspect}" :
+        "returns #{result.inspect} for #{args.inspect}"
+      ) do
 
         args = [ args ] unless args.is_a?(Array)
 
@@ -1650,37 +1657,35 @@ describe Fugit::Cron do
 
   describe '.prev' do
 
-    {
+    NEXTS_AND_PREVS.each do |args, (_, result)|
 
-      [ 'tue', '2025-10-01' ] => '2025-10-07 Tue',
-      [ 'tue', { from: '2025-10-01' } ] => '2025-10-07 Tue',
-      { wday: 'tue', from: '2025-10-01' } => '2025-10-07 Tue',
+      if result == :xxx
 
-      [ 'tue', { yield: :cron } ] => '0 12 * * 2',
-      [ 'tue', :cron ] => '0 12 * * 2',
+        it "returns #{result.inspect} for #{args.inspect}"
 
-    }.each do |args, result|
+      else
 
-      it "returns #{result.inspect} for #{args.inspect}" do
+        it "returns #{result.inspect} for #{args.inspect}" do
 
-        args = [ args ] unless args.is_a?(Array)
+          args = [ args ] unless args.is_a?(Array)
 
-        r =
-          begin
-            Fugit::Cron.prev(*args)
-          rescue => err; err; end
+          r =
+            begin
+              Fugit::Cron.prev(*args)
+            rescue => err; err; end
 
-        r =
-          case r
-          when Fugit::Cron then r.to_cron_s
-          when StandardError then "#{r.class} #{r.message}"
-          else r.strftime('%F %a')
+          r =
+            case r
+            when Fugit::Cron then r.to_cron_s
+            when StandardError then "#{r.class} #{r.message}"
+            else r.strftime('%F %a')
+            end
+
+          if result.is_a?(Regexp)
+            expect(r).to match(result)
+          else
+            expect(r).to eq(result)
           end
-
-        if result.is_a?(Regexp)
-          expect(r).to match(result)
-        else
-          expect(r).to eq(result)
         end
       end
     end
