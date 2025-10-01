@@ -1607,6 +1607,48 @@ describe Fugit::Cron do
       end
     end
   end
+
+  describe '.next' do
+
+    # TODO Fugit.prev() and Fugit.next() maybe
+
+    {
+
+      [ 'tue', { from: '2025-10-01' } ] => '2025-10-07 tue',
+      { wday: 'tue', from: '2025-10-01' } => '2025-10-07 tue',
+
+    }.each do |args, result|
+
+      it "returns #{result.inspect} for #{args.inspect}" do
+
+        args = [ args ] unless args.is_a?(Array)
+
+        expect(
+          Fugit::Cron.next(*args).strftime('%F %a %z')
+        ).to eq(result)
+      end
+    end
+  end
+
+  describe '.prev' do
+
+    {
+
+      [ 'tue', { from: '2025-10-01' } ] => '2025-10-07 tue',
+      { wday: 'tue', from: '2025-10-01' } => '2025-10-07 tue',
+
+    }.each do |args, result|
+
+      it "returns #{result.inspect} for #{args.inspect}" do
+
+        args = [ args ] unless args.is_a?(Array)
+
+        expect(
+          Fugit::Cron.prev(*args).strftime('%F %a %z')
+        ).to eq(result)
+      end
+    end
+  end
 end
 
 describe Fugit::Cron do
