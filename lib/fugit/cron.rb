@@ -57,6 +57,16 @@ module Fugit
         fail(ArgumentError.new("invalid cron string #{trunc(s)}"))
       end
 
+      def next(*args)
+
+        iter(:next, args)
+      end
+
+      def prev(*args)
+
+        iter(:prev, args)
+      end
+
       protected
 
       def trunc(s)
@@ -67,6 +77,49 @@ module Fugit
         else
           r = s.inspect
           r.length > 35 ? s[0, 35] + '...' : r
+        end
+      end
+
+      def iter(dir, args)
+
+        strings = []
+        symbols = []
+        opts = {}
+        from = nil
+
+        args.each do |a|
+          case a
+          when /^\d{4}-\d{2}-\d{2}/
+            if t = ::EtOrbi.parse(a)
+              from = t
+            else
+              strings << a
+            end
+          when String then strings << a
+          when Symbol then symbols << a
+          when Hash then opts.merge!(a)
+          end
+        end
+p strings
+p opts
+
+        from = opts[:from] || opts[:start] || from || ::EtOrbi::EoTime.now
+        scron = "0 12 * * #{strings.first || opts[:wday]}"
+p [ :from, from, from.to_s ]
+p [ :scron, scron ]
+
+        cron = Fugit::Cron.parse(scron)
+
+        fail ArgumentError.new(
+          "could not fathom cron #{scron.inspect}? for #{args.inspect}"
+        ) unless cron
+
+        if symbols.include?(:cron) || opts[:yield] == :cron
+          cron
+        elsif dir == :next
+          cron.next_time(from)
+        else
+          cron.prev_time(from)
         end
       end
     end

@@ -1614,8 +1614,12 @@ describe Fugit::Cron do
 
     {
 
-      [ 'tue', { from: '2025-10-01' } ] => '2025-10-07 tue',
-      { wday: 'tue', from: '2025-10-01' } => '2025-10-07 tue',
+      [ 'tue', '2025-10-01' ] => '2025-10-07 Tue',
+      [ 'tue', { from: '2025-10-01' } ] => '2025-10-07 Tue',
+      { wday: 'tue', from: '2025-10-01' } => '2025-10-07 Tue',
+
+      [ 'tue', { yield: :cron } ] => '0 12 * * 2',
+      [ 'tue', :cron ] => '0 12 * * 2',
 
     }.each do |args, result|
 
@@ -1623,9 +1627,23 @@ describe Fugit::Cron do
 
         args = [ args ] unless args.is_a?(Array)
 
-        expect(
-          Fugit::Cron.next(*args).strftime('%F %a %z')
-        ).to eq(result)
+        r =
+          begin
+            Fugit::Cron.next(*args)
+          rescue => err; err; end
+
+        r =
+          case r
+          when Fugit::Cron then r.to_cron_s
+          when StandardError then "#{r.class} #{r.message}"
+          else r.strftime('%F %a')
+          end
+
+        if result.is_a?(Regexp)
+          expect(r).to match(result)
+        else
+          expect(r).to eq(result)
+        end
       end
     end
   end
@@ -1634,8 +1652,12 @@ describe Fugit::Cron do
 
     {
 
-      [ 'tue', { from: '2025-10-01' } ] => '2025-10-07 tue',
-      { wday: 'tue', from: '2025-10-01' } => '2025-10-07 tue',
+      [ 'tue', '2025-10-01' ] => '2025-10-07 Tue',
+      [ 'tue', { from: '2025-10-01' } ] => '2025-10-07 Tue',
+      { wday: 'tue', from: '2025-10-01' } => '2025-10-07 Tue',
+
+      [ 'tue', { yield: :cron } ] => '0 12 * * 2',
+      [ 'tue', :cron ] => '0 12 * * 2',
 
     }.each do |args, result|
 
@@ -1643,9 +1665,23 @@ describe Fugit::Cron do
 
         args = [ args ] unless args.is_a?(Array)
 
-        expect(
-          Fugit::Cron.prev(*args).strftime('%F %a %z')
-        ).to eq(result)
+        r =
+          begin
+            Fugit::Cron.prev(*args)
+          rescue => err; err; end
+
+        r =
+          case r
+          when Fugit::Cron then r.to_cron_s
+          when StandardError then "#{r.class} #{r.message}"
+          else r.strftime('%F %a')
+          end
+
+        if result.is_a?(Regexp)
+          expect(r).to match(result)
+        else
+          expect(r).to eq(result)
+        end
       end
     end
   end
