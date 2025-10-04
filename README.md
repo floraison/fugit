@@ -296,125 +296,187 @@ The hash extension can only be used in the day-of-week field.
 
 ### the modulo extension
 
-Fugit, since 1.1.10, also understands cron strings like `9 0 * * sun%2` which can be read as "every other Sunday at 9am" or `12 0 * * mon%4` for "every fourth monday at noon".
+Since 1.1.10, fugit also understands cron strings like `9 0 * * sun%2` which can be read as "every other Sunday at 9am" or `12 0 * * mon%4` for "every fourth monday at noon".
 
 The modulo extension can only be used in the day-of-week field.
 
 For odd Sundays, one can write `9 0 * * sun%2+1`.
 
-It can be combined, as in `9 0 * * sun%2,tue%3+2`
+It can be combined, as in `9 0 * * sun%2,tue%3+2`, which will match every other Sunday and 1 in 3 Sundays (with an offset of 2).
 
-But what does it reference to? It starts at 1 on 2019-01-01 (in the EtOrbi instance timezone, not the UTC "timezone").
-
-Since [et-orbi](https://github.com/floraison/et-orbi) 1.4.0, the reference has been switched to make `Monday 2018-12-31` as the reference, so that weeks start on Monday (read a bit below on how to make it start on another day).
-
+What does `sun%2` actually mean?
 ```ruby
-require 'et-orbi' # >= 1.1.8 and < 1.4.0
-
-class EtOrbi::EoTime
-  def d # debug
-    "%14s | rday: %4d | rweek: %3d" % [ strftime('%a'), rday, rweek ]
-  end
-end
-
-# the reference
-puts EtOrbi.parse('2019-01-01').d       # => Tue | rday:    1 | rweek:   1
-p EtOrbi.parse('2019-01-01').rweek % 2  # => 1
-
-# today (as of this coding...)
-puts EtOrbi.parse('2019-04-11').d       # => Thu | rday:  101 | rweek:  15
-p EtOrbi.parse('2019-04-11').rweek % 2  # => 1
-
-c = Fugit.parse('* * * * tue%2')
-p c.match?('2019-01-01')  # => false, since rweek % 2 == 1
-p c.match?('2019-01-08')  # => true, since rweek % 2 == 0
-
-c = Fugit.parse('* * * * tue%2+1')
-p c.match?('2019-01-01')  # => true, since (rweek + 1) % 2 == 0
-p c.match?('2019-01-08')  # => false, since (rweek + 1) % 2 == 1
-
-# ...
-
-class EtOrbi::EoTime
-  def d # debug
-    "%14s | rday: %4d | rweek: %3d" % [ strftime('%F %a'), rday, rweek ]
-  end
-end
-
-c = Fugit.parse_cron('20 0 * * mon%2,wed%3+1')
-puts c.next('2025-09-21').take(10).map(&:d)
-  #
-  # => 2025-09-24 Wed | rday: 2459 | rweek: 352
-  #    2025-09-29 Mon | rday: 2464 | rweek: 352
-  #    2025-10-13 Mon | rday: 2478 | rweek: 354
-  #    2025-10-15 Wed | rday: 2480 | rweek: 355
-  #    2025-10-27 Mon | rday: 2492 | rweek: 356
-  #    2025-11-05 Wed | rday: 2501 | rweek: 358
-  #    2025-11-10 Mon | rday: 2506 | rweek: 358
-  #    2025-11-24 Mon | rday: 2520 | rweek: 360
-  #    2025-11-26 Wed | rday: 2522 | rweek: 361
-  #    2025-12-08 Mon | rday: 2534 | rweek: 362
+t.wday == 0 && t.rweek % 2 == 0
 ```
 
-`sun%2` matches if Sunday and `current_date.rweek % 2 == 0`
-`tue%3+2` matches if Tuesday and `current_date.rweek + 2 % 3 == 0`
-`tue%x+y` matches if Tuesday and `current_date.rweek + y % x == 0`
-
+What does `tue%3+2` mean?
 ```ruby
-require 'et-orbi' # >= 1.4.0
-
-class EtOrbi::EoTime
-  def d # debug
-    "%14s | rday: %4d | rweek: %3d" % [ strftime('%a'), rday, rweek ]
-  end
-end
-
-puts EtOrbi.parse('2018-12-30').d  # =>  Sun | rday:   -1 | rweek:  -1
-puts EtOrbi.parse('2018-12-31').d  # =>  Mon | rday:    0 | rweek:   0  >REF<
-puts EtOrbi.parse('2019-01-01').d  # =>  Tue | rday:    1 | rweek:   0
-puts EtOrbi.parse('2019-01-02').d  # =>  Wed | rday:    2 | rweek:   0
-puts EtOrbi.parse('2019-01-31').d  # =>  Thu | rday:   31 | rweek:   4
-
-puts EtOrbi.parse('2019-04-11').d  # =>  Thu | rday:  101 | rweek:  14
-puts EtOrbi.parse('2025-09-30').d  # =>  Tue | rday: 2465 | rweek: 352
-
-class EtOrbi::EoTime
-  def d # debug
-    "%14s | rday: %4d | rweek: %3d" % [ strftime('%F %a'), rday, rweek ]
-  end
-end
-
-p EtOrbi.rweek_ref # => "2018-12-31"
-
-c = Fugit.parse_cron('20 0 * * mon%2,wed%3+1')
-puts c.next('2025-09-21').take(10).map(&:d)
-  #
-  # => 2025-09-29 Mon | rday: 2464 | rweek: 352
-  #    2025-10-01 Wed | rday: 2466 | rweek: 352
-  #    2025-10-13 Mon | rday: 2478 | rweek: 354
-  #    2025-10-22 Wed | rday: 2487 | rweek: 355
-  #    2025-10-27 Mon | rday: 2492 | rweek: 356
-  #    2025-11-10 Mon | rday: 2506 | rweek: 358
-  #    2025-11-12 Wed | rday: 2508 | rweek: 358
-  #    2025-11-24 Mon | rday: 2520 | rweek: 360
-  #    2025-12-03 Wed | rday: 2529 | rweek: 361
-  #    2025-12-08 Mon | rday: 2534 | rweek: 362
+t.wday == 2 && t.rweek % 3 == 2
 ```
 
-One can tell et-orbi >= 1.4.0 which day to take as reference:
+#### et-orbi < 1.4.0 : reference set on Tuesday 2019-01-01
+
+The original implementation of `#rweek` (and `#rday`) found in [et-orbi](https://github.com/floraison/et-orbi) was initially pointing to "Tuesday 2019-01-01" and it was set as rday 1 and rweek 1.
+
+Consider this iteration through the days around 2019-01-01.
 ```ruby
-EtOrbi.rweek_ref = :us      # or
-EtOrbi.rweek_ref = :sunday  # to start on a Sunday (2018-12-30)
+require 'fugit'
 
-EtOrbi.rweek_ref = :iso      # or
-EtOrbi.rweek_ref = :monday   # or
-EtOrbi.rweek_ref = :default  # to start on a Monday (2019-12-31)
+t = EtOrbi.parse('2018-12-28 12:00')
 
-EtOrbi.rweek_ref = :saturday  # to start on, well, a Saturday (2019-01-05)
+15.times do |i|
 
-EtOrbi.rweek_ref = '2025-09-30'   # to start on this very Tuesday...
+  puts " * %14s / rday: %5d / rweek: %5d" % [
+    t.strftime('%F %a'), t.rday, t.rweek ]
 
-p EtOrbi.rweek_ref # to determine what the current setting is...
+  w = t.rweek
+  t = t.add(24 * 3600)
+  puts if t.rweek != w
+
+  if i == 7
+    puts "\n  (...)\n\n"
+    t = EtOrbi.parse('2025-10-04 12:00')
+  end
+end
+```
+
+For et-orbi 1.2.11, it yields:
+```
+ * 2018-12-28 Fri / rday:    -3 / rweek:     0
+ * 2018-12-29 Sat / rday:    -2 / rweek:     0
+ * 2018-12-30 Sun / rday:    -1 / rweek:     0
+ * 2018-12-31 Mon / rday:     0 / rweek:     0
+
+ * 2019-01-01 Tue / rday:     1 / rweek:     1
+ * 2019-01-02 Wed / rday:     2 / rweek:     1
+ * 2019-01-03 Thu / rday:     3 / rweek:     1
+ * 2019-01-04 Fri / rday:     4 / rweek:     1
+ * 2019-01-05 Sat / rday:     5 / rweek:     1
+
+  (...)
+
+ * 2025-10-04 Sat / rday:  2469 / rweek:   353
+ * 2025-10-05 Sun / rday:  2470 / rweek:   353
+ * 2025-10-06 Mon / rday:  2471 / rweek:   353
+
+ * 2025-10-07 Tue / rday:  2472 / rweek:   354
+ * 2025-10-08 Wed / rday:  2473 / rweek:   354
+ * 2025-10-09 Thu / rday:  2474 / rweek:   354
+```
+
+This [was problematic](https://github.com/floraison/fugit/issues/114), since the week started on, well, Tuesday.
+
+
+#### et-orbi >= 1.4.0 : reference set on Monday 2018-12-31
+
+Since 1.4.0, et-orbi starts by default on Monday (2018-12-31), as rday 0 with rweek 0.
+
+Thus, the above code yields:
+```
+ * 2018-12-28 Fri / rday:    -3 / rweek:    -1
+ * 2018-12-29 Sat / rday:    -2 / rweek:    -1
+ * 2018-12-30 Sun / rday:    -1 / rweek:    -1
+
+ * 2018-12-31 Mon / rday:     0 / rweek:     0
+ * 2019-01-01 Tue / rday:     1 / rweek:     0
+ * 2019-01-02 Wed / rday:     2 / rweek:     0
+ * 2019-01-03 Thu / rday:     3 / rweek:     0
+ * 2019-01-04 Fri / rday:     4 / rweek:     0
+ * 2019-01-05 Sat / rday:     5 / rweek:     0
+
+  (...)
+
+ * 2025-10-04 Sat / rday:  2469 / rweek:   352
+ * 2025-10-05 Sun / rday:  2470 / rweek:   352
+
+ * 2025-10-06 Mon / rday:  2471 / rweek:   353
+ * 2025-10-07 Tue / rday:  2472 / rweek:   353
+ * 2025-10-08 Wed / rday:  2473 / rweek:   353
+ * 2025-10-09 Thu / rday:  2474 / rweek:   353
+```
+
+
+#### modulo and et-orbi >= 1.4.0 sanity check
+
+Given the cron `"0 12 * * mon%2,wed%3+1"`, here is a piece of code that considers a range of 44 days and tells in its last column if YES or no if each of the days matches the cron.
+
+```ruby
+require 'fugit'
+
+c = Fugit.parse_cron('0 12 * * mon%2,wed%3+1')
+
+t = EtOrbi.parse('2025-09-20 12:00')
+
+44.times do
+
+  wd = t.strftime('%a')
+  wd = %w[ Mon Wed ].include?(wd) ? '*' + wd.upcase : ' ' + wd.downcase
+
+  puts "%14s | rweek: %3d | %%2: %d == 0 | %%3: %d == 1 | ? %3s" % [
+    t.strftime('%F') + ' ' + wd,
+    t.rweek,
+    t.rweek % 2, t.rweek % 3,
+    c.match?(t)
+      ].map { |e| e == true ? 'YES' : e == false ? 'no' : e }
+
+  w = t.rweek
+  t = t.add(24 * 3600)
+  puts if t.rweek != w
+end
+```
+
+Here's the output:
+```
+2025-09-20  sat | rweek: 350 | %2: 0 == 0 | %3: 2 == 1 | ?  no
+2025-09-21  sun | rweek: 350 | %2: 0 == 0 | %3: 2 == 1 | ?  no
+
+2025-09-22 *MON | rweek: 351 | %2: 1 == 0 | %3: 0 == 1 | ?  no
+2025-09-23  tue | rweek: 351 | %2: 1 == 0 | %3: 0 == 1 | ?  no
+2025-09-24 *WED | rweek: 351 | %2: 1 == 0 | %3: 0 == 1 | ?  no
+2025-09-25  thu | rweek: 351 | %2: 1 == 0 | %3: 0 == 1 | ?  no
+2025-09-26  fri | rweek: 351 | %2: 1 == 0 | %3: 0 == 1 | ?  no
+2025-09-27  sat | rweek: 351 | %2: 1 == 0 | %3: 0 == 1 | ?  no
+2025-09-28  sun | rweek: 351 | %2: 1 == 0 | %3: 0 == 1 | ?  no
+
+2025-09-29 *MON | rweek: 352 | %2: 0 == 0 | %3: 1 == 1 | ? YES
+2025-09-30  tue | rweek: 352 | %2: 0 == 0 | %3: 1 == 1 | ?  no
+2025-10-01 *WED | rweek: 352 | %2: 0 == 0 | %3: 1 == 1 | ? YES
+2025-10-02  thu | rweek: 352 | %2: 0 == 0 | %3: 1 == 1 | ?  no
+2025-10-03  fri | rweek: 352 | %2: 0 == 0 | %3: 1 == 1 | ?  no
+2025-10-04  sat | rweek: 352 | %2: 0 == 0 | %3: 1 == 1 | ?  no
+2025-10-05  sun | rweek: 352 | %2: 0 == 0 | %3: 1 == 1 | ?  no
+
+2025-10-06 *MON | rweek: 353 | %2: 1 == 0 | %3: 2 == 1 | ?  no
+2025-10-07  tue | rweek: 353 | %2: 1 == 0 | %3: 2 == 1 | ?  no
+2025-10-08 *WED | rweek: 353 | %2: 1 == 0 | %3: 2 == 1 | ?  no
+2025-10-09  thu | rweek: 353 | %2: 1 == 0 | %3: 2 == 1 | ?  no
+2025-10-10  fri | rweek: 353 | %2: 1 == 0 | %3: 2 == 1 | ?  no
+2025-10-11  sat | rweek: 353 | %2: 1 == 0 | %3: 2 == 1 | ?  no
+2025-10-12  sun | rweek: 353 | %2: 1 == 0 | %3: 2 == 1 | ?  no
+
+2025-10-13 *MON | rweek: 354 | %2: 0 == 0 | %3: 0 == 1 | ? YES
+2025-10-14  tue | rweek: 354 | %2: 0 == 0 | %3: 0 == 1 | ?  no
+2025-10-15 *WED | rweek: 354 | %2: 0 == 0 | %3: 0 == 1 | ?  no
+2025-10-16  thu | rweek: 354 | %2: 0 == 0 | %3: 0 == 1 | ?  no
+2025-10-17  fri | rweek: 354 | %2: 0 == 0 | %3: 0 == 1 | ?  no
+2025-10-18  sat | rweek: 354 | %2: 0 == 0 | %3: 0 == 1 | ?  no
+2025-10-19  sun | rweek: 354 | %2: 0 == 0 | %3: 0 == 1 | ?  no
+
+2025-10-20 *MON | rweek: 355 | %2: 1 == 0 | %3: 1 == 1 | ?  no
+2025-10-21  tue | rweek: 355 | %2: 1 == 0 | %3: 1 == 1 | ?  no
+2025-10-22 *WED | rweek: 355 | %2: 1 == 0 | %3: 1 == 1 | ? YES
+2025-10-23  thu | rweek: 355 | %2: 1 == 0 | %3: 1 == 1 | ?  no
+2025-10-24  fri | rweek: 355 | %2: 1 == 0 | %3: 1 == 1 | ?  no
+2025-10-25  sat | rweek: 355 | %2: 1 == 0 | %3: 1 == 1 | ?  no
+2025-10-26  sun | rweek: 355 | %2: 1 == 0 | %3: 1 == 1 | ?  no
+
+2025-10-27 *MON | rweek: 356 | %2: 0 == 0 | %3: 2 == 1 | ? YES
+2025-10-28  tue | rweek: 356 | %2: 0 == 0 | %3: 2 == 1 | ?  no
+2025-10-29 *WED | rweek: 356 | %2: 0 == 0 | %3: 2 == 1 | ?  no
+2025-10-30  thu | rweek: 356 | %2: 0 == 0 | %3: 2 == 1 | ?  no
+2025-10-31  fri | rweek: 356 | %2: 0 == 0 | %3: 2 == 1 | ?  no
+2025-11-01  sat | rweek: 356 | %2: 0 == 0 | %3: 2 == 1 | ?  no
+2025-11-02  sun | rweek: 356 | %2: 0 == 0 | %3: 2 == 1 | ?  no
 ```
 
 
