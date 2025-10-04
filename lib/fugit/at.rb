@@ -16,6 +16,16 @@ module Fugit
         do_parse(s) rescue nil
       end
 
+      def do_parse_time(s)
+
+        et_orbi_parse(s)
+      end
+
+      def parse_time(s)
+
+        et_orbi_parse(s) rescue nil
+      end
+
       protected
 
       def et_orbi_parse(s)

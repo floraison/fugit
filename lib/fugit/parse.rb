@@ -8,12 +8,14 @@ module Fugit
     def parse_duration(s); ::Fugit::Duration.parse(s); end
     def parse_nat(s, opts={}); ::Fugit::Nat.parse(s, opts); end
     def parse_at(s); ::Fugit::At.parse(s); end
+    def parse_time(s); ::Fugit::At.parse_time(s); end
     def parse_in(s); parse_duration(s); end
 
     def do_parse_cron(s); ::Fugit::Cron.do_parse(s); end
     def do_parse_duration(s); ::Fugit::Duration.do_parse(s); end
     def do_parse_nat(s, opts={}); ::Fugit::Nat.do_parse(s, opts); end
     def do_parse_at(s); ::Fugit::At.do_parse(s); end
+    def do_parse_time(s); ::Fugit::At.do_parse_time(s); end
     def do_parse_in(s); do_parse_duration(s); end
 
     def parse(s, opts={})
