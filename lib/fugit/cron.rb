@@ -104,7 +104,6 @@ module Fugit
         from = opts[:from] || opts[:start] || from || ::EtOrbi::EoTime.now
 p [ :from, from.to_s ]
 
-# FIXME
         cron = make(strings, symbols, opts)
 p [ :cron, cron.to_cron_s ]
 
@@ -123,23 +122,21 @@ p [ :cron, cron.to_cron_s ]
 
       def make(strings, symbols, opts)
 
-scron = "0 12 * * #{strings.first || opts[:wday]}"
-p [ :scron, scron ]
-cron = Fugit::Cron.parse(scron)
-p cron
-
 p [ :make, strings, symbols, opts ]
-        c = allocate
-        c.instance_eval { @seconds = [ 0 ] }
+        wds = strings & WDS
+        wds += [ opts[:wday] || opts[:weekday] ].compact
+        wds = wds.map { |e| e[0, 3] }
 
-        wds = (strings & WDS).map { |e| e[0, 3] }
-p [ :wds, wds ]
+        c = allocate
 
         c.instance_eval do
 
+          @seconds = [ 0 ]
           @weekdays = wds.map { |e| [ WEEKDS.index(e) ] }
+
+          @minutes = [ 0 ]
+          @hours = [ 12 ]
         end
-p c
 
         c
       end
