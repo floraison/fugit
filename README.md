@@ -302,7 +302,7 @@ The modulo extension can only be used in the day-of-week field.
 
 For odd Sundays, one can write `9 0 * * sun%2+1`.
 
-It can be combined, as in `9 0 * * sun%2,tue%3+2`, which will match every other Sunday and 1 in 3 Sundays (with an offset of 2).
+It can be combined, as in `9 0 * * sun%2,tue%3+2`, which will match every other Sunday and 1 in 3 Tuesdays (with an offset of 2).
 
 What does `sun%2` actually mean?
 ```ruby
