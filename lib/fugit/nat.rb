@@ -719,6 +719,8 @@ module Fugit
         end
       end
 
+      SLASH_REGEX = /^(\d+|\*)\/(\d+)$/.freeze
+
       # Return nil if the cron is "not strict"
       #
       # For example, "0 0/17 * * *" (gh-86) is a perfectly valid
@@ -729,16 +731,18 @@ module Fugit
       #
       def restrict(a, cron)
 
-        if m = ((a[1] && a[1][0]) || '').match(/^(\d+|\*)\/(\d+)$/)
-#p m
-           sla = m[1].to_i
-          return nil unless [ 1, 2, 3, 4, 5, 6, 8, 12 ].include?(sla)
+        if m = ((a[0] && a[0] != [ 0 ] && a[0][0]) || '').match(SLASH_REGEX)
+          return nil unless (1..60).include?(m[1].to_i)
+        end
+        if m = ((a[1] && a[1][0]) || '').match(SLASH_REGEX)
+          return nil unless [ 1, 2, 3, 4, 5, 6, 8, 12 ].include?(m[1].to_i)
         end
 
         cron
       end
 
       def slot(key, default)
+
         s = @slots[key]
         s ? s.data0 : [ default ]
       end
