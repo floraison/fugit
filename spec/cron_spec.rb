@@ -1611,16 +1611,20 @@ describe Fugit::Cron do
   NEXTS_AND_PREVS = {
 
     [ 'tue', '2025-10-01' ] =>
-      [ '2025-10-07 Tue', :xxx ],
+      [ '2025-10-07 12:00 Tue', :xxx ],
     [ 'tue', { from: '2025-10-01' } ] =>
-      [ '2025-10-07 Tue', :xxx ],
+      [ '2025-10-07 12:00 Tue', :xxx ],
     { wday: 'tue', from: '2025-10-01' } =>
-      [ '2025-10-07 Tue', :xxx ],
+      [ '2025-10-07 12:00 Tue', :xxx ],
+    [ 'tue', '13:00', { from: '2025-10-01' } ] =>
+      [ '2025-10-07 13:00 Tue', :xxx ],
 
     [ 'tue', { yield: :cron } ] =>
       [ '0 12 * * 2', :xxx ],
     [ 'tue', :cron ] =>
       [ '0 12 * * 2', :xxx ],
+    [ 'tue', '13:15', :cron ] =>
+      [ '15 13 * * 2', :xxx ],
   }
 
   describe '.next' do
@@ -1643,7 +1647,7 @@ describe Fugit::Cron do
           case r
           when Fugit::Cron then r.to_cron_s
           when StandardError then "#{r.class} #{r.message}"
-          else r.strftime('%F %a')
+          else r.strftime('%F %H:%M %a')
           end
 
         if result.is_a?(Regexp)
@@ -1678,7 +1682,7 @@ describe Fugit::Cron do
             case r
             when Fugit::Cron then r.to_cron_s
             when StandardError then "#{r.class} #{r.message}"
-            else r.strftime('%F %a')
+            else r.strftime('%F %H:%M %a')
             end
 
           if result.is_a?(Regexp)

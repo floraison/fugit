@@ -124,8 +124,15 @@ p [ :cron, cron.to_cron_s ]
 
 p [ :make, strings, symbols, opts ]
         wds = strings & WDS
-        wds += [ opts[:wday] || opts[:weekday] ].compact
+        wds += [
+          opts[:wday] || opts[:weekday] || opts[:wdays] || opts[:weekdays] ]
+            .flatten(1)
+            .compact
         wds = wds.map { |e| e[0, 3] }
+
+        hms = strings
+          .select { |s| s.match(/^\d{1,2}:\d{2}$/) }
+          .map { |s| s.split(':').map(&:to_i) }
 
         c = allocate
 
@@ -136,6 +143,11 @@ p [ :make, strings, symbols, opts ]
 
           @minutes = [ 0 ]
           @hours = [ 12 ]
+
+          if hms.any?
+            @minutes = [ hms.first[1] ]
+            @hours = [ hms.first[0] ]
+          end
         end
 
         c
