@@ -1630,7 +1630,7 @@ describe Fugit::Cron do
       it(
         result.is_a?(Regexp) ? "fails for #{args.inspect}" :
         "returns #{result.inspect} for #{args.inspect}"
-      ); lambda do
+      ) do
 
         args = [ args ] unless args.is_a?(Array)
 

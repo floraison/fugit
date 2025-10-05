@@ -59,12 +59,12 @@ module Fugit
 
       def next(*args)
 
-        iter(:next, args)
+        skip(:next, args)
       end
 
       def prev(*args)
 
-        iter(:prev, args)
+        skip(:prev, args)
       end
 
       protected
@@ -80,7 +80,7 @@ module Fugit
         end
       end
 
-      def iter(dir, args)
+      def skip(dir, args)
 
         strings = []
         symbols = []
@@ -104,10 +104,9 @@ module Fugit
         from = opts[:from] || opts[:start] || from || ::EtOrbi::EoTime.now
 p [ :from, from.to_s ]
 
-        scron = "0 12 * * #{strings.first || opts[:wday]}"
-p [ :scron, scron ]
-
-        cron = Fugit::Cron.parse(scron)
+# FIXME
+        cron = make(strings, symbols, opts)
+p [ :cron, cron.to_cron_s ]
 
         fail ArgumentError.new(
           "could not fathom cron #{scron.inspect}? for #{args.inspect}"
@@ -120,6 +119,29 @@ p [ :scron, scron ]
         else
           cron.prev_time(from)
         end
+      end
+
+      def make(strings, symbols, opts)
+
+scron = "0 12 * * #{strings.first || opts[:wday]}"
+p [ :scron, scron ]
+cron = Fugit::Cron.parse(scron)
+p cron
+
+p [ :make, strings, symbols, opts ]
+        c = allocate
+        c.instance_eval { @seconds = [ 0 ] }
+
+        wds = (strings & WDS).map { |e| e[0, 3] }
+p [ :wds, wds ]
+
+        c.instance_eval do
+
+          @weekdays = wds.map { |e| [ WEEKDS.index(e) ] }
+        end
+p c
+
+        c
       end
     end
 
@@ -786,18 +808,20 @@ p [ :scron, scron ]
         .join(',')
     end
 
+    WEEKDAYS =
+      %w[ sunday monday tuesday wednesday thursday friday saturday ].freeze
+    WEEKDS =
+      WEEKDAYS.collect { |d| d[0, 3] }.freeze
+    WDS =
+      (WEEKDAYS + WEEKDS).freeze
+
+    MONTHS =
+      %w[ - jan feb mar apr may jun jul aug sep oct nov dec ].freeze
+
     module Parser include Raabro
 
-      WEEKDAYS =
-        %w[ sunday monday tuesday wednesday thursday friday saturday ].freeze
-
-      WEEKDS =
-        WEEKDAYS.collect { |d| d[0, 3] }.freeze
       DOW_REX =
         /([0-7]|#{WEEKDS.join('|')})/i.freeze
-
-      MONTHS =
-        %w[ - jan feb mar apr may jun jul aug sep oct nov dec ].freeze
       MONTH_REX =
         /(1[0-2]|0?[1-9]|#{MONTHS[1..-1].join('|')})/i.freeze
 

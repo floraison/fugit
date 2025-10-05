@@ -73,10 +73,6 @@ module Fugit
           "o'clock" => 0, 'hundred' => 0)
         .freeze
 
-      WEEKDAYS = (
-        Fugit::Cron::Parser::WEEKDAYS +
-        Fugit::Cron::Parser::WEEKDS).freeze
-
       POINTS = %w[
         minutes? mins? seconds? secs? hours? hou h ].freeze
 
@@ -102,7 +98,7 @@ module Fugit
 
       OMONTHDAY_REX = /#{OMONTHDAYS.keys.join('|')}/i.freeze
       MONTHDAY_REX = /3[0-1]|[0-2]?[0-9]/.freeze
-      WEEKDAY_REX = /(#{WEEKDAYS.join('|')})(?=($|[-, \t]))/i.freeze
+      WEEKDAY_REX = /(#{Fugit::Cron::WDS.join('|')})(?=($|[-, \t]))/i.freeze
         # prevent "mon" from eating "monday"
       NAMED_M_REX = /#{NMINUTES.keys.join('|')}/i.freeze
       NAMED_H_REX = /#{NHOURS.keys.join('|')}/i.freeze
@@ -471,7 +467,7 @@ module Fugit
 
       def rewrite_weekday(t)
 
-        Fugit::Cron::Parser::WEEKDS.index(t.string[0, 3].downcase)
+        Fugit::Cron::WEEKDS.index(t.string[0, 3].downcase)
       end
 
       def rewrite_weekdays(t)
