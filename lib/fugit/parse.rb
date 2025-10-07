@@ -2,6 +2,8 @@
 
 module Fugit
 
+  DO_PARSE_ORDER = %i[ cron duration nat at ].freeze
+
   class << self
 
     def parse_cron(s); ::Fugit::Cron.parse(s); end
@@ -34,7 +36,7 @@ module Fugit
       result = nil
       errors = []
 
-      %i[ cron duration nat at ]
+      DO_PARSE_ORDER
         .each { |k|
           begin
             result ||= (opts[k] != false && self.send("do_parse_#{k}", s))

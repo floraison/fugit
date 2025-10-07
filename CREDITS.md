@@ -1,7 +1,8 @@
 
 # fugit credits
 
-* Hugh Kelsey https://github.com/hughkelsey gh-94 rweek/rday / wed%4+1,wed%4
+* Eric Claerhout https://github.com/swebra gh-114 rweek readme clarity
+* Hugh Kelsey https://github.com/hughkelsey gh-114 rweek/rday / wed%4+1,wed%4
 * Mark R. James, https://github.com/mrj, AM vs America/Los_Angeles, gh-113
 * Tejas Bubane, https://github.com/tejasbubane, r3.4 in test matrix, gh-109
 * Luis Castillo, https://github.com/lekastillo, nice_hash gh-108

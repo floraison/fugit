@@ -224,6 +224,8 @@ describe Fugit::Nat do
             #
             # gh-113
 
+        'every 60 minutes' => '*/60 * * * *',
+
         # minute hour day-of-month month day-of-week
 
       }.each do |nat, cron|
@@ -311,6 +313,10 @@ describe Fugit::Nat do
       #'every 27 hours',
         # by default/strict:false --> "0 */27 * * *"
 
+      #'every 90 minutes',
+      'every 100 minutes',
+        # because the parser accepts 2 digits...
+
     ].each do |input|
 
       it "rejects (returns nil) for #{input.inspect}" do
@@ -328,6 +334,9 @@ describe Fugit::Nat do
         'every 27 hours',
         'every 2 years',
         'every 2 weeks',
+
+        'every 90 minutes',
+        'every 100 minutes',
 
       ].each do |input|
 
