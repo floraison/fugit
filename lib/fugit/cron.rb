@@ -111,13 +111,30 @@ module Fugit
 
         opts = args.last.is_a?(Hash) ? args.pop : {}
 
-p [ :make, args ]
-        wds = (args & WDS)
+        args = args.inject([]) { |a, arg|
+          a << arg
+          case arg
+          when Symbol
+            s = arg.to_s.downcase
+            a << s if s.length == 3
+          when String
+            a << arg.downcase
+            a << arg.downcase[0, 3] if arg.length > 3
+          end
+          a }
+
+        args3 = args.select { |a| a.is_a?(String) && a.length == 3 }
+
+        wds = (args3 & WEEKDS)
           .map { |e| e[0, 3] }
 
         hms = args
           .select { |s| s.is_a?(String) && s.match?(/^\d{1,2}:\d{2}$/) }
           .map { |s| s.split(':').map(&:to_i) }
+
+        months =
+          args.select { |a| a.is_a?(Integer) && a > 0 && a < 13 } +
+          args3.map { |a| MONTHS.index(a) }.compact
 
         c = allocate
 
@@ -125,6 +142,8 @@ p [ :make, args ]
 
           @seconds = [ 0 ]
           @weekdays = wds.map { |e| [ WEEKDS.index(e) ] }
+
+          @months = months if months.any?
 
           @minutes = [ 0 ]
           @hours = [ 12 ]
