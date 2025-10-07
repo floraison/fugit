@@ -82,36 +82,23 @@ module Fugit
 
       def skip(dir, args)
 
-        strings = []
-        symbols = []
-        opts = {}
-        from = nil
+        opts = args.last.is_a?(Hash) ? args.last : {}
 
-        args.each do |a|
-          case a
-          when /^\d{4}-\d{2}-\d{2}/
-            if t = ::EtOrbi.parse(a)
-              from = t
-            else
-              strings << a
-            end
-          when String then strings << a
-          when Symbol then symbols << a
-          when Hash then opts.merge!(a)
-          end
-        end
+        from = args.find { |a|
+          a.is_a?(::EtOrbi::EoTime) ||
+          (a.is_a?(String) && a.match?(/^\d{4}-\d{2}-\d{2}/)) }
 
         from = opts[:from] || opts[:start] || from || ::EtOrbi::EoTime.now
-p [ :from, from.to_s ]
+#p [ :from, from.to_s ]
 
-        cron = make(strings, symbols, opts)
-p [ :cron, cron.to_cron_s ]
+        cron = derive(*args)
+#p [ :cron, cron.to_cron_s ]
 
         fail ArgumentError.new(
           "could not fathom cron #{scron.inspect}? for #{args.inspect}"
         ) unless cron
 
-        if symbols.include?(:cron) || opts[:yield] == :cron
+        if args.include?(:cron) || opts[:yield] == :cron
           cron
         elsif dir == :next
           cron.next_time(from)
@@ -120,18 +107,16 @@ p [ :cron, cron.to_cron_s ]
         end
       end
 
-      def make(strings, symbols, opts)
+      def derive(*args)
 
-p [ :make, strings, symbols, opts ]
-        wds = strings & WDS
-        wds += [
-          opts[:wday] || opts[:weekday] || opts[:wdays] || opts[:weekdays] ]
-            .flatten(1)
-            .compact
-        wds = wds.map { |e| e[0, 3] }
+        opts = args.last.is_a?(Hash) ? args.pop : {}
 
-        hms = strings
-          .select { |s| s.match(/^\d{1,2}:\d{2}$/) }
+p [ :make, args ]
+        wds = (args & WDS)
+          .map { |e| e[0, 3] }
+
+        hms = args
+          .select { |s| s.is_a?(String) && s.match?(/^\d{1,2}:\d{2}$/) }
           .map { |s| s.split(':').map(&:to_i) }
 
         c = allocate
