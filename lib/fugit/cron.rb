@@ -141,6 +141,8 @@ module Fugit
         opts = args.last.is_a?(Hash) ? args.last : {}
 
         from = args.find { |a|
+          a.is_a?(::Date) ||
+          a.is_a?(::Time) ||
           a.is_a?(::EtOrbi::EoTime) ||
           (a.is_a?(String) && a.match?(/^\d{4}-\d{2}-\d{2}/)) }
 

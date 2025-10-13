@@ -1633,6 +1633,17 @@ describe Fugit::Cron do
 
     [ 'December', from: '2025-10-01' ] =>
       [ '0 12 * 12 *', '2025-12-01 12:00:00 Mon', :xxx ],
+
+    [ 'Dec', from: Time.parse('2026-10-01') ] =>
+      [ '0 12 * 12 *', '2026-12-01 12:00:00 Tue', :xxx ],
+
+    [ 'Dec', Time.parse('2026-10-01') ] =>
+      [ '0 12 * 12 *', '2026-12-01 12:00:00 Tue', :xxx ],
+
+    [ 'Dec', Date.parse('2027-10-01') ] =>
+      [ '0 12 * 12 *', '2027-12-01 12:00:00 Wed', :xxx ],
+
+    # TODO "America/Los_Angeles" time zones...
   }
 
   describe '.derive' do
