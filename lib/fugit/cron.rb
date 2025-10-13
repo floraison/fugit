@@ -92,7 +92,7 @@ module Fugit
 #p [ :from, from.to_s ]
 
         cron = derive(*args)
-#p [ :cron, cron.to_cron_s ]
+#p [ :cron, cron, cron.to_cron_s ]
 
         fail ArgumentError.new(
           "could not fathom cron #{scron.inspect}? for #{args.inspect}"
@@ -126,7 +126,7 @@ module Fugit
         args3 = args.select { |a| a.is_a?(String) && a.length == 3 }
 
         wds = (args3 & WEEKDS)
-          .map { |e| e[0, 3] }
+          .map { |e| [ WEEKDS.index(e[0, 3]) ] }
 
         hms = args
           .select { |s| s.is_a?(String) && s.match?(/^\d{1,2}:\d{2}$/) }
@@ -141,7 +141,7 @@ module Fugit
         c.instance_eval do
 
           @seconds = [ 0 ]
-          @weekdays = wds.map { |e| [ WEEKDS.index(e) ] }
+          @weekdays = wds if wds.any?
 
           @months = months if months.any?
 

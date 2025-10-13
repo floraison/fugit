@@ -1622,6 +1622,8 @@ describe Fugit::Cron do
       [ '2025-12-02 13:00 Tue', :xxx ],
     [ 'tue', '13:00', 'December', from: '2025-10-01' ] =>
       [ '2025-12-02 13:00 Tue', :xxx ],
+    [ 'December', from: '2025-10-01' ] =>
+      [ '2025-12-01 12:00 Mon', :xxx ],
 
     [ 'tue', yield: :cron ] =>
       [ '0 12 * * 2', :xxx ],
