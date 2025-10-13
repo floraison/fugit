@@ -129,8 +129,10 @@ module Fugit
           .map { |e| [ WEEKDS.index(e[0, 3]) ] }
 
         hms = args
-          .select { |s| s.is_a?(String) && s.match?(/^\d{1,2}:\d{2}$/) }
-          .map { |s| s.split(':').map(&:to_i) }
+          .select { |s|
+            s.is_a?(String) && s.match?(/^\d{1,2}:\d{2}(:\d{2})?$/) }
+          .map { |s|
+            s.split(':').map(&:to_i) }
 
         months =
           args.select { |a| a.is_a?(Integer) && a > 0 && a < 13 } +
@@ -145,12 +147,14 @@ module Fugit
 
           @months = months if months.any?
 
-          @minutes = [ 0 ]
           @hours = [ 12 ]
+          @minutes = [ 0 ]
+          @sconds = [ 0 ]
 
           if hms.any?
-            @minutes = [ hms.first[1] ]
             @hours = [ hms.first[0] ]
+            @minutes = [ hms.first[1] ]
+            @seconds = [ hms.first[2] ] if hms.first[2]
           end
         end
 
