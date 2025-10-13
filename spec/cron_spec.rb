@@ -1611,19 +1611,19 @@ describe Fugit::Cron do
   NEXTS_AND_PREVS = {
 
     [ 'tue', '2025-10-01' ] =>
-      [ '2025-10-07 12:00 Tue', :xxx ],
+      [ '2025-10-07 12:00:00 Tue', :xxx ],
     [ 'tue', { from: '2025-10-01' } ] =>
-      [ '2025-10-07 12:00 Tue', :xxx ],
+      [ '2025-10-07 12:00:00 Tue', :xxx ],
     [ 'tue', '13:00', from: '2025-10-01' ] =>
-      [ '2025-10-07 13:00 Tue', :xxx ],
+      [ '2025-10-07 13:00:00 Tue', :xxx ],
     [ 'tue', '13:00', 12, from: '2025-10-01' ] =>
-      [ '2025-12-02 13:00 Tue', :xxx ],
+      [ '2025-12-02 13:00:00 Tue', :xxx ],
     [ 'tue', '13:00', 'dec', from: '2025-10-01' ] =>
-      [ '2025-12-02 13:00 Tue', :xxx ],
+      [ '2025-12-02 13:00:00 Tue', :xxx ],
     [ 'tue', '13:00', 'December', from: '2025-10-01' ] =>
-      [ '2025-12-02 13:00 Tue', :xxx ],
+      [ '2025-12-02 13:00:00 Tue', :xxx ],
     [ 'December', from: '2025-10-01' ] =>
-      [ '2025-12-01 12:00 Mon', :xxx ],
+      [ '2025-12-01 12:00:00 Mon', :xxx ],
 
     [ 'tue', yield: :cron ] =>
       [ '0 12 * * 2', :xxx ],
@@ -1653,7 +1653,7 @@ describe Fugit::Cron do
           case r
           when Fugit::Cron then r.to_cron_s
           when StandardError then "#{r.class} #{r.message}"
-          else r.strftime('%F %H:%M %a')
+          else r.strftime('%F %H:%M:%S %a')
           end
 
         if result.is_a?(Regexp)
@@ -1688,7 +1688,7 @@ describe Fugit::Cron do
             case r
             when Fugit::Cron then r.to_cron_s
             when StandardError then "#{r.class} #{r.message}"
-            else r.strftime('%F %H:%M %a')
+            else r.strftime('%F %H:%M:%S %a')
             end
 
           if result.is_a?(Regexp)
