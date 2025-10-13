@@ -1643,6 +1643,13 @@ describe Fugit::Cron do
     [ 'Dec', Date.parse('2027-10-01') ] =>
       [ '0 12 * 12 *', '2027-12-01 12:00:00 Wed', :xxx ],
 
+    [ 'Jan', 'Dec', '2027-10-01' ] =>
+      [ '0 12 * 1,12 *', '2027-12-01 12:00:00 Wed', :xxx ],
+    [ 'dec', 'january', '2027-10-01' ] =>
+      [ '0 12 * 1,12 *', '2027-12-01 12:00:00 Wed', :xxx ],
+    [ 'dec', 'january', 'Fri', 'Friday', 'Monday', '2027-10-01' ] =>
+      [ '0 12 * 1,12 1,5', '2027-12-03 12:00:00 Fri', :xxx ],
+
     # TODO "America/Los_Angeles" time zones...
   }
 

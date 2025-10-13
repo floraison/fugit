@@ -80,6 +80,7 @@ module Fugit
 
         wds = (args3 & WEEKDS)
           .map { |e| [ WEEKDS.index(e[0, 3]) ] }
+          .sort
 
         hms = args
           .select { |s|
@@ -90,11 +91,9 @@ module Fugit
         months = (
           args.select { |a| a.is_a?(Integer) && a > 0 && a < 13 } +
           args3.map { |a| MONTHS.index(a) }.compact
-            ).uniq
+            ).uniq.sort
 
-        c = allocate
-
-        c.instance_eval do
+        allocate.instance_eval do
 
           @seconds = [ 0 ]
           @weekdays = wds if wds.any?
