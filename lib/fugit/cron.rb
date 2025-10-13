@@ -57,15 +57,71 @@ module Fugit
         fail(ArgumentError.new("invalid cron string #{trunc(s)}"))
       end
 
-      def next(*args)
+      # Take piece of information like 'dec', 'thu', '12:30' and derive
+      # a Fugit::Cron instance
+      #
+      def derive(*args)
 
-        skip(:next, args)
+        opts = args.last.is_a?(Hash) ? args.pop : {}
+
+        args = args.inject([]) { |a, arg|
+          a << arg
+          case arg
+          when Symbol
+            s = arg.to_s.downcase
+            a << s if s.length == 3
+          when String
+            a << arg.downcase
+            a << arg.downcase[0, 3] if arg.length > 3
+          end
+          a }
+
+        args3 = args.select { |a| a.is_a?(String) && a.length == 3 }
+
+        wds = (args3 & WEEKDS)
+          .map { |e| [ WEEKDS.index(e[0, 3]) ] }
+
+        hms = args
+          .select { |s|
+            s.is_a?(String) && s.match?(/^\d{1,2}:\d{2}(:\d{2})?$/) }
+          .map { |s|
+            s.split(':').map(&:to_i) }
+
+        months = (
+          args.select { |a| a.is_a?(Integer) && a > 0 && a < 13 } +
+          args3.map { |a| MONTHS.index(a) }.compact
+            ).uniq
+
+        c = allocate
+
+        c.instance_eval do
+
+          @seconds = [ 0 ]
+          @weekdays = wds if wds.any?
+
+          @months = months if months.any?
+
+          @hours = [ 12 ]
+          @minutes = [ 0 ]
+          @seconds = [ 0 ]
+
+          if hms.any?
+            @hours = [ hms.first[0] ]
+            @minutes = [ hms.first[1] ]
+            @seconds = [ hms.first[2] ] if hms.first[2]
+          end
+
+          self
+        end
       end
 
-      def prev(*args)
+      # Short for Fugit::Cron.derive(*args).next_time()
+      #
+      def next(*args); skip(:next, args); end
 
-        skip(:prev, args)
-      end
+      # Short for Fugit::Cron.derive(*args).previous_time()
+      #
+      def prev(*args); skip(:prev, args); end
 
       protected
 
@@ -98,67 +154,11 @@ module Fugit
           "could not fathom cron #{scron.inspect}? for #{args.inspect}"
         ) unless cron
 
-        if args.include?(:cron) || opts[:yield] == :cron
-          cron
-        elsif dir == :next
+        if dir == :next
           cron.next_time(from)
         else
           cron.prev_time(from)
         end
-      end
-
-      def derive(*args)
-
-        opts = args.last.is_a?(Hash) ? args.pop : {}
-
-        args = args.inject([]) { |a, arg|
-          a << arg
-          case arg
-          when Symbol
-            s = arg.to_s.downcase
-            a << s if s.length == 3
-          when String
-            a << arg.downcase
-            a << arg.downcase[0, 3] if arg.length > 3
-          end
-          a }
-
-        args3 = args.select { |a| a.is_a?(String) && a.length == 3 }
-
-        wds = (args3 & WEEKDS)
-          .map { |e| [ WEEKDS.index(e[0, 3]) ] }
-
-        hms = args
-          .select { |s|
-            s.is_a?(String) && s.match?(/^\d{1,2}:\d{2}(:\d{2})?$/) }
-          .map { |s|
-            s.split(':').map(&:to_i) }
-
-        months =
-          args.select { |a| a.is_a?(Integer) && a > 0 && a < 13 } +
-          args3.map { |a| MONTHS.index(a) }.compact
-
-        c = allocate
-
-        c.instance_eval do
-
-          @seconds = [ 0 ]
-          @weekdays = wds if wds.any?
-
-          @months = months if months.any?
-
-          @hours = [ 12 ]
-          @minutes = [ 0 ]
-          @sconds = [ 0 ]
-
-          if hms.any?
-            @hours = [ hms.first[0] ]
-            @minutes = [ hms.first[1] ]
-            @seconds = [ hms.first[2] ] if hms.first[2]
-          end
-        end
-
-        c
       end
     end
 

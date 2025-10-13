@@ -1608,38 +1608,31 @@ describe Fugit::Cron do
     end
   end
 
-  NEXTS_AND_PREVS = {
+  DERIVATIVES = {
 
     [ 'tue', '2025-10-01' ] =>
-      [ '2025-10-07 12:00:00 Tue', :xxx ],
+      [ '0 12 * * 2', '2025-10-07 12:00:00 Tue', :xxx ],
     [ 'tue', { from: '2025-10-01' } ] =>
-      [ '2025-10-07 12:00:00 Tue', :xxx ],
+      [ '0 12 * * 2', '2025-10-07 12:00:00 Tue', :xxx ],
     [ 'tue', '13:00', from: '2025-10-01' ] =>
-      [ '2025-10-07 13:00:00 Tue', :xxx ],
+      [ '0 13 * * 2', '2025-10-07 13:00:00 Tue', :xxx ],
     [ 'tue', '13:10:05', from: '2025-10-01' ] =>
-      [ '2025-10-07 13:10:05 Tue', :xxx ],
+      [ '5 10 13 * * 2', '2025-10-07 13:10:05 Tue', :xxx ],
     [ 'tue', '13:00', 12, from: '2025-10-01' ] =>
-      [ '2025-12-02 13:00:00 Tue', :xxx ],
+      [ '0 13 * 12 2', '2025-12-02 13:00:00 Tue', :xxx ],
     [ 'tue', '13:00', 'dec', from: '2025-10-01' ] =>
-      [ '2025-12-02 13:00:00 Tue', :xxx ],
+      [ '0 13 * 12 2', '2025-12-02 13:00:00 Tue', :xxx ],
     [ 'tue', '13:00', 'December', from: '2025-10-01' ] =>
-      [ '2025-12-02 13:00:00 Tue', :xxx ],
+      [ '0 13 * 12 2', '2025-12-02 13:00:00 Tue', :xxx ],
     [ 'December', from: '2025-10-01' ] =>
-      [ '2025-12-01 12:00:00 Mon', :xxx ],
-
-    [ 'tue', yield: :cron ] =>
-      [ '0 12 * * 2', :xxx ],
-    [ 'tue', :cron ] =>
-      [ '0 12 * * 2', :xxx ],
-    [ 'tue', '13:15', :cron ] =>
-      [ '15 13 * * 2', :xxx ],
-    [ 'tue', '13:20:10', :cron ] =>
-      [ '10 20 13 * * 2', :xxx ],
+      [ '0 12 * 12 *', '2025-12-01 12:00:00 Mon', :xxx ],
   }
 
-  describe '.next' do
+  describe '.derive' do
 
-    NEXTS_AND_PREVS.each do |args, (result, _)|
+    DERIVATIVES.each do |args, (cro, nxt, prv)|
+
+      result = cro
 
       it(
         result.is_a?(Regexp) ? "fails for #{args.inspect}" :
@@ -1650,9 +1643,8 @@ describe Fugit::Cron do
 
         r =
           begin
-            Fugit::Cron.next(*args)
+            Fugit::Cron.derive(*args)
           rescue => err; err; end
-
         r =
           case r
           when Fugit::Cron then r.to_cron_s
@@ -1669,39 +1661,19 @@ describe Fugit::Cron do
     end
   end
 
+  describe '.next' do
+
+    DERIVATIVES.each do |args, (cro, nxt, prv)|
+
+      # TODO
+    end
+  end
+
   describe '.prev' do
 
-    NEXTS_AND_PREVS.each do |args, (_, result)|
+    DERIVATIVES.each do |args, (cro, nxt, prv)|
 
-      if result == :xxx
-
-        it "returns #{result.inspect} for #{args.inspect}"
-
-      else
-
-        it "returns #{result.inspect} for #{args.inspect}"; lambda do
-
-          args = [ args ] unless args.is_a?(Array)
-
-          r =
-            begin
-              Fugit::Cron.prev(*args)
-            rescue => err; err; end
-
-          r =
-            case r
-            when Fugit::Cron then r.to_cron_s
-            when StandardError then "#{r.class} #{r.message}"
-            else r.strftime('%F %H:%M:%S %a')
-            end
-
-          if result.is_a?(Regexp)
-            expect(r).to match(result)
-          else
-            expect(r).to eq(result)
-          end
-        end
-      end
+      # TODO
     end
   end
 end
