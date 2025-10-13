@@ -1158,7 +1158,7 @@ describe Fugit::Cron do
           # at 2300 saturday to monday
         [ '23 0-23/2 * * *', '23 0,2,4,6,8,10,12,14,16,18,20,22 * * *' ],
           # 23 minutes after midnight, 0200, 0400, ...
-        #[ '5 4 * * sun', :xxx ],
+        #[ '5 4 * * sun', :TODO ],
           # 0405 every sunday
 
         [ '14,24 8-12,14-19/2 * * *', '14,24 8,9,10,11,12,14,16,18 * * *' ],
@@ -1611,46 +1611,55 @@ describe Fugit::Cron do
   DERIVATIVES = {
 
     [ 'tue', '2025-10-01' ] =>
-      [ '0 12 * * 2', '2025-10-07 12:00:00 Tue', :xxx ],
+      [ '0 12 * * 2', '2025-10-07 12:00:00 Tue', :TODO ],
 
     [ 'tue', { from: '2025-10-01' } ] =>
-      [ '0 12 * * 2', '2025-10-07 12:00:00 Tue', :xxx ],
+      [ '0 12 * * 2', '2025-10-07 12:00:00 Tue', :TODO ],
 
     [ 'tue', '13:00', from: '2025-10-01' ] =>
-      [ '0 13 * * 2', '2025-10-07 13:00:00 Tue', :xxx ],
+      [ '0 13 * * 2', '2025-10-07 13:00:00 Tue', :TODO ],
 
     [ 'tue', '13:10:05', from: '2025-10-01' ] =>
-      [ '5 10 13 * * 2', '2025-10-07 13:10:05 Tue', :xxx ],
+      [ '5 10 13 * * 2', '2025-10-07 13:10:05 Tue', :TODO ],
 
     [ 'tue', '13:00', 12, from: '2025-10-01' ] =>
-      [ '0 13 * 12 2', '2025-12-02 13:00:00 Tue', :xxx ],
+      [ '0 13 * 12 2', '2025-12-02 13:00:00 Tue', :TODO ],
 
     [ 'tue', '13:00', 'dec', from: '2025-10-01' ] =>
-      [ '0 13 * 12 2', '2025-12-02 13:00:00 Tue', :xxx ],
+      [ '0 13 * 12 2', '2025-12-02 13:00:00 Tue', :TODO ],
 
     [ 'tue', '13:00', 'December', from: '2025-10-01' ] =>
-      [ '0 13 * 12 2', '2025-12-02 13:00:00 Tue', :xxx ],
+      [ '0 13 * 12 2', '2025-12-02 13:00:00 Tue', :TODO ],
 
     [ 'December', from: '2025-10-01' ] =>
-      [ '0 12 * 12 *', '2025-12-01 12:00:00 Mon', :xxx ],
+      [ '0 12 * 12 *', '2025-12-01 12:00:00 Mon', :TODO ],
 
     [ 'Dec', from: Time.parse('2026-10-01') ] =>
-      [ '0 12 * 12 *', '2026-12-01 12:00:00 Tue', :xxx ],
+      [ '0 12 * 12 *', '2026-12-01 12:00:00 Tue', :TODO ],
 
     [ 'Dec', Time.parse('2026-10-01') ] =>
-      [ '0 12 * 12 *', '2026-12-01 12:00:00 Tue', :xxx ],
+      [ '0 12 * 12 *', '2026-12-01 12:00:00 Tue', :TODO ],
 
     [ 'Dec', Date.parse('2027-10-01') ] =>
-      [ '0 12 * 12 *', '2027-12-01 12:00:00 Wed', :xxx ],
+      [ '0 12 * 12 *', '2027-12-01 12:00:00 Wed', :TODO ],
 
     [ 'Jan', 'Dec', '2027-10-01' ] =>
-      [ '0 12 * 1,12 *', '2027-12-01 12:00:00 Wed', :xxx ],
+      [ '0 12 * 1,12 *', '2027-12-01 12:00:00 Wed', :TODO ],
     [ 'dec', 'january', '2027-10-01' ] =>
-      [ '0 12 * 1,12 *', '2027-12-01 12:00:00 Wed', :xxx ],
+      [ '0 12 * 1,12 *', '2027-12-01 12:00:00 Wed', :TODO ],
     [ 'dec', 'january', 'Fri', 'Friday', 'Monday', '2027-10-01' ] =>
-      [ '0 12 * 1,12 1,5', '2027-12-03 12:00:00 Fri', :xxx ],
+      [ '0 12 * 1,12 1,5', '2027-12-03 12:00:00 Fri', :TODO ],
 
     # TODO "America/Los_Angeles" time zones...
+
+    # > Note: The day of a command's execution can be specified by
+    # > two fields -- day of month, and day of week. If both fields
+    # > are restricted (ie, are not *), the command will be run when
+    # > either field matches the current time.
+    # > For example, ``30 4 1,15 * 5'' would cause a command to be run
+    # > at 4:30 am on the 1st and 15th of each month, plus every Friday.
+      #
+      # TODO :and argument?
   }
 
   describe '.derive' do
@@ -1663,7 +1672,7 @@ describe Fugit::Cron do
         result.is_a?(Regexp) ? "fails for #{args.inspect}" :
         "returns #{result.inspect} for #{args.inspect}"
 
-      if result === :xxx
+      if result === :TODO
 
         it(title)
 
@@ -1704,7 +1713,7 @@ describe Fugit::Cron do
         result.is_a?(Regexp) ? "fails for #{args.inspect}" :
         "returns #{result.inspect} for #{args.inspect}"
 
-      if result === :xxx
+      if result === :TODO
 
         it(title)
 
@@ -1745,7 +1754,7 @@ describe Fugit::Cron do
         result.is_a?(Regexp) ? "fails for #{args.inspect}" :
         "returns #{result.inspect} for #{args.inspect}"
 
-      if result === :xxx
+      if result === :TODO
 
         it(title)
 
