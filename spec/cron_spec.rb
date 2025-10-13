@@ -1612,18 +1612,25 @@ describe Fugit::Cron do
 
     [ 'tue', '2025-10-01' ] =>
       [ '0 12 * * 2', '2025-10-07 12:00:00 Tue', :xxx ],
+
     [ 'tue', { from: '2025-10-01' } ] =>
       [ '0 12 * * 2', '2025-10-07 12:00:00 Tue', :xxx ],
+
     [ 'tue', '13:00', from: '2025-10-01' ] =>
       [ '0 13 * * 2', '2025-10-07 13:00:00 Tue', :xxx ],
+
     [ 'tue', '13:10:05', from: '2025-10-01' ] =>
       [ '5 10 13 * * 2', '2025-10-07 13:10:05 Tue', :xxx ],
+
     [ 'tue', '13:00', 12, from: '2025-10-01' ] =>
       [ '0 13 * 12 2', '2025-12-02 13:00:00 Tue', :xxx ],
+
     [ 'tue', '13:00', 'dec', from: '2025-10-01' ] =>
       [ '0 13 * 12 2', '2025-12-02 13:00:00 Tue', :xxx ],
+
     [ 'tue', '13:00', 'December', from: '2025-10-01' ] =>
       [ '0 13 * 12 2', '2025-12-02 13:00:00 Tue', :xxx ],
+
     [ 'December', from: '2025-10-01' ] =>
       [ '0 12 * 12 *', '2025-12-01 12:00:00 Mon', :xxx ],
   }
@@ -1634,28 +1641,36 @@ describe Fugit::Cron do
 
       result = cro
 
-      it(
+      title =
         result.is_a?(Regexp) ? "fails for #{args.inspect}" :
         "returns #{result.inspect} for #{args.inspect}"
-      ) do
 
-        args = [ args ] unless args.is_a?(Array)
+      if result === :xxx
 
-        r =
-          begin
-            Fugit::Cron.derive(*args)
-          rescue => err; err; end
-        r =
-          case r
-          when Fugit::Cron then r.to_cron_s
-          when StandardError then "#{r.class} #{r.message}"
-          else r.strftime('%F %H:%M:%S %a')
+        it(title)
+
+      else
+
+        it(title) do
+
+          args = [ args ] unless args.is_a?(Array)
+
+          r =
+            begin
+              Fugit::Cron.derive(*args)
+            rescue => err; err; end
+          r =
+            case r
+            when Fugit::Cron then r.to_cron_s
+            when StandardError then "#{r.class} #{r.message}"
+            else r.strftime('%F %H:%M:%S %a')
+            end
+
+          if result.is_a?(Regexp)
+            expect(r).to match(result)
+          else
+            expect(r).to eq(result)
           end
-
-        if result.is_a?(Regexp)
-          expect(r).to match(result)
-        else
-          expect(r).to eq(result)
         end
       end
     end
@@ -1665,7 +1680,40 @@ describe Fugit::Cron do
 
     DERIVATIVES.each do |args, (cro, nxt, prv)|
 
-      # TODO
+      result = nxt
+
+      title =
+        result.is_a?(Regexp) ? "fails for #{args.inspect}" :
+        "returns #{result.inspect} for #{args.inspect}"
+
+      if result === :xxx
+
+        it(title)
+
+      else
+
+        it(title) do
+
+          args = [ args ] unless args.is_a?(Array)
+
+          r =
+            begin
+              Fugit::Cron.next(*args)
+            rescue => err; err; end
+          r =
+            case r
+            when Fugit::Cron then r.to_cron_s
+            when StandardError then "#{r.class} #{r.message}"
+            else r.strftime('%F %H:%M:%S %a')
+            end
+
+          if result.is_a?(Regexp)
+            expect(r).to match(result)
+          else
+            expect(r).to eq(result)
+          end
+        end
+      end
     end
   end
 
@@ -1673,7 +1721,40 @@ describe Fugit::Cron do
 
     DERIVATIVES.each do |args, (cro, nxt, prv)|
 
-      # TODO
+      result = prv
+
+      title =
+        result.is_a?(Regexp) ? "fails for #{args.inspect}" :
+        "returns #{result.inspect} for #{args.inspect}"
+
+      if result === :xxx
+
+        it(title)
+
+      else
+
+        it(title) do
+
+          args = [ args ] unless args.is_a?(Array)
+
+          r =
+            begin
+              Fugit::Cron.next(*args)
+            rescue => err; err; end
+          r =
+            case r
+            when Fugit::Cron then r.to_cron_s
+            when StandardError then "#{r.class} #{r.message}"
+            else r.strftime('%F %H:%M:%S %a')
+            end
+
+          if result.is_a?(Regexp)
+            expect(r).to match(result)
+          else
+            expect(r).to eq(result)
+          end
+        end
+      end
     end
   end
 end
