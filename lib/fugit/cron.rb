@@ -117,6 +117,8 @@ module Fugit
             @seconds = [ hms.first[2] ] if hms.first[2]
           end
 
+          @day_and = args.include?(:and)
+
 #p self
 #p self.to_cron_s
           self

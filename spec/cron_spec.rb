@@ -1648,27 +1648,20 @@ describe Fugit::Cron do
       [ '0 12 * 1,12 1,5', '2027-12-03 12:00:00 Fri', :TODO ],
 
     [ '13:00', 12, from: '2025-10-01' ] =>
-      [ '0 13 12 * 2', '2025-10-12 13:00:00 Sun', :TODO ],
+      [ '0 13 12 * *', '2025-10-12 13:00:00 Sun', :TODO ],
 
     [ 'tue', '13:00', 12, from: '2025-10-01' ] =>
       [ '0 13 12 * 2', '2025-10-07 13:00:00 Tue', :TODO ],
 
-    [ 'tue', '13:00', 12, :and, from: '2025-10-01' ] =>
-      [ '0 13 12 * 2&', '2025-10-12 13:00:00 Tue', :TODO ],
+    #[ 'tue', '13:00', 12, :and, from: '2025-10-01' ] =>
+    #  [ '0 13 12 * 2&', '2025-10-12 13:00:00 Tue', :TODO ],
+      #
+      # TODO @day_and
 
     [ 'Feb', 1, 28, '14:00', '2028-10-14' ] =>
-      [ '0 12 1 2 *', '2029-02-01 14:00:00 Thu', :TODO ]
+      [ '0 14 1,28 2 *', '2029-02-01 14:00:00 Thu', :TODO ]
 
     # TODO "America/Los_Angeles" time zones...
-
-    # > Note: The day of a command's execution can be specified by
-    # > two fields -- day of month, and day of week. If both fields
-    # > are restricted (ie, are not *), the command will be run when
-    # > either field matches the current time.
-    # > For example, ``30 4 1,15 * 5'' would cause a command to be run
-    # > at 4:30 am on the 1st and 15th of each month, plus every Friday.
-      #
-      # TODO :and argument?
   }
 
   describe '.derive' do
