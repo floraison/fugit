@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.12.1 not yet released
+## fugit 1.12.1 released 2025-10-14
 
 * Fix Fugit::Cron#to_cron_s to include & if @day_and
 
