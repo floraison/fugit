@@ -83,20 +83,27 @@ module Fugit
           .sort
 
         hms = args
-          .select { |s|
-            s.is_a?(String) && s.match?(/^\d{1,2}:\d{2}(:\d{2})?$/) }
+          .select { |a|
+            a.is_a?(String) && a.match?(/^\d{1,2}:\d{2}(:\d{2})?$/) }
           .map { |s|
             s.split(':').map(&:to_i) }
 
-        months = (
-          args.select { |a| a.is_a?(Integer) && a > 0 && a < 13 } +
-          args3.map { |a| MONTHS.index(a) }.compact
-            ).uniq.sort
+        months = args3
+          .map { |a| MONTHS.index(a) }
+          .compact
+          .uniq
+          .sort
+
+        monthdays = args
+          .select { |a| a.is_a?(Integer) && a > 0 && a < 32 }
+          .uniq
+          .sort
 
         allocate.instance_eval do
 
           @seconds = [ 0 ]
           @weekdays = wds if wds.any?
+          @monthdays = monthdays if monthdays.any?
 
           @months = months if months.any?
 
@@ -110,6 +117,8 @@ module Fugit
             @seconds = [ hms.first[2] ] if hms.first[2]
           end
 
+#p self
+#p self.to_cron_s
           self
         end
       end
