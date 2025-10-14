@@ -731,7 +731,8 @@ module Fugit
           else
             a.collect(&:to_s).join('#')
           end }
-        .join(',')
+        .join(',') +
+      (@day_and ? '&' : '')
     end
 
     module Parser include Raabro
