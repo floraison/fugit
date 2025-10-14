@@ -2,6 +2,11 @@
 # CHANGELOG.md
 
 
+## fugit 1.12.1 not yet released
+
+* Fix Fugit::Cron#to_cron_s to include & if @day_and
+
+
 ## fugit 1.12.0 released 2025-09-30
 
 * Upgrade et-orbi to ~> 1.4.0 for EtOrbi.rweek_ref=, gh-114
