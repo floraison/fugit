@@ -6,14 +6,18 @@ module Fugit
 
     class << self
 
-      def parse(s)
+      def parse(s, opts={})
 
-        ::EtOrbi.make_time(s) rescue nil
+        do_parse(s, opts || {}) rescue nil
       end
 
-      def do_parse(s)
+      def do_parse(s, opts={})
 
-        ::EtOrbi.make_time(s)
+        case s
+        when String then ::EtOrbi.parse(s, opts || {})
+        when ::EtOrbi::EoTime then s
+        else ::EtOrbi.make_time(s)
+        end
       end
     end
   end

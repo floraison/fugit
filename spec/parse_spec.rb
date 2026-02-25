@@ -120,6 +120,30 @@ describe Fugit do
        expect(d).to be < 0.1
        expect(o).to be nil
     end
+
+    context '(Chronic)' do
+
+      before :each do; require_chronic; end
+      after :each do; unrequire_chronic; end
+
+      it 'passes options to Chronic, gh-116' do
+
+        expect(
+          Fugit.parse('next weekday', now: Time.parse('2026-02-21')).to_s
+        ).to match(
+          /^2026-02-23 12:00:00/
+        )
+      end
+
+      it 'passes options to Chronic, gh-116' do
+
+        expect(
+          Fugit.parse('next weekday', now: Time.parse('1999-12-03')).to_s
+        ).to match(
+          /^1999-12-06 12:00:00/
+        )
+      end
+    end
   end
 
   describe '.do_parse' do
