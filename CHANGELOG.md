@@ -4,6 +4,8 @@
 
 ## fugit 1.12.2 not yet released
 
+* Let Fugit::At pass options to Chronic, gh-116
+
 
 ## fugit 1.12.1 released 2025-10-14
 
