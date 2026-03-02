@@ -14,6 +14,7 @@ describe Fugit do
 
     CASES = {
       '2017-01-03 11:21:17' => [ EtOrbi::EoTime, '2017-01-03 11:21:17 Z' ],
+      '2017-01-03 11:21:17' => [ EtOrbi::EoTime, /^2017-/ ],
       '00 00 L 5 *' => [ Fugit::Cron, '0 0 -1 5 *' ],
       '1Y3M2d' => [ Fugit::Duration, '1Y3M2D' ],
       '1Y2h' => [ Fugit::Duration, '1Y2h' ],
@@ -41,6 +42,8 @@ describe Fugit do
       '0  0 1 jan  *' => [ Fugit::Cron, '0 0 1 1 *' ],
       'at  12  PM' => [ Fugit::Cron, '0 12 * * *' ],
       'at  noon' => [ Fugit::Cron, '0 12 * * *' ],
+
+      'now' => [ EtOrbi::EoTime, /^#{Time.now.year}-\d\d-/ ], # gh-111
     }
 
     CASES.each do |k, (c, s)|
@@ -56,14 +59,19 @@ describe Fugit do
 
         expect(x.class).to eq(c)
 
-        expect(
+        r =
           case x
           when EtOrbi::EoTime then Fugit.time_to_plain_s(x)
           when Fugit::Duration then x.to_plain_s
           when Fugit::Cron then x.to_cron_s
           else nil
           end
-        ).to eq(s)
+
+        if s.is_a?(Regexp)
+          expect(r).to match(s)
+        else
+          expect(r).to eq(s)
+        end
       end
     end
 
@@ -83,14 +91,19 @@ describe Fugit do
 
         expect(x.class).to eq(c)
 
-        expect(
+        r =
           case x
           when EtOrbi::EoTime then Fugit.time_to_plain_s(x)
           when Fugit::Duration then x.to_plain_s
           when Fugit::Cron then x.to_cron_s
           else nil
           end
-        ).to eq(s)
+
+        if s.is_a?(Regexp)
+          expect(r).to match(s)
+        else
+          expect(r).to eq(s)
+        end
       end
     end
 
