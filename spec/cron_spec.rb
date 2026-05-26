@@ -1396,6 +1396,33 @@ describe Fugit::Cron do
           #
           # gh-103
 
+        '*/0 * * * *',
+        '0/0 * * * *',
+        '* */0 * * *',
+        '* * */0 * *',
+        '* * * */0 *',
+        #'* * * * */0', # keep as is, no crash
+          #
+          # gh-117
+          #
+        '*/0 * * * * *',
+        '0/0 * * * * *',
+        '* */0 * * * *',
+        '* * */0 * * *',
+        '* * * */0 * *',
+        '* * * * */0 *',
+        #'* * * * * */0', # keep as is, no crash
+          #
+        '*/-1 * * * *',
+        '0/-1 * * * *',
+        '* */-1 * * *',
+        '* * */-1 * *',
+        '* * * */-1 *',
+        '* * * * */-1', # those are "unparseable"
+
+        # min hour dom mon dow
+        # sec min hour dom mon dow
+
       ].each do |cron|
 
         it "returns nil for #{cron.inspect}" do
@@ -1467,8 +1494,8 @@ describe Fugit::Cron do
 
   describe '.do_parse' do
 
-    [
-      # min hou dom mon dow
+    [ #     min hou dom mon dow
+      # sec min hou dom mon dow
 
       '* 25 * * *',
       '* * -32 * *',
@@ -1477,6 +1504,30 @@ describe Fugit::Cron do
       '* * 00 * *',  #
       '* * * 0 *',   # and 0 is not a valid month
       '* * * 00 *',  #
+
+      '*/0 * * * *',
+      '0/0 * * * *',
+      '* */0 * * *',
+      '* * */0 * *',
+      '* * * */0 *',
+      #'* * * * */0', # keep as is, no crash
+        #
+        # gh-117
+        #
+      '*/0 * * * * *',
+      '0/0 * * * * *',
+      '* */0 * * * *',
+      '* * */0 * * *',
+      '* * * */0 * *',
+      '* * * * */0 *',
+      #'* * * * * */0', # keep as is, no crash
+        #
+      '*/-1 * * * *',
+      '0/-1 * * * *',
+      '* */-1 * * *',
+      '* * */-1 * *',
+      '* * * */-1 *',
+      '* * * * */-1', # those are "unparseable"
 
     ].each do |cron|
 

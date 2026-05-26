@@ -591,6 +591,8 @@ module Fugit
         # let it go, "* */24 * * *" and "* */27 * * *" are okay
         # gh-86 and gh-103
 
+      return false if sla && sla < 1
+
       edn = max if sla && edn.nil?
 
       return nil if sta.nil? && edn.nil? && sla.nil?
