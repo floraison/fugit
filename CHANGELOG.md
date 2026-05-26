@@ -4,6 +4,7 @@
 
 ## fugit 1.12.2 not yet released
 
+* Let at parse 'now', gh-111
 * Let Fugit::At pass options to Chronic, gh-116
 
 
