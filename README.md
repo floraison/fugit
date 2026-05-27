@@ -1,6 +1,11 @@
 
 # fugit
 
+> Sed fugit interea, fugit irreparabile tempus
+
+Virgil, _Georgics_ Book III
+
+
 [![tests](https://github.com/floraison/fugit/workflows/test/badge.svg)](https://github.com/floraison/fugit/actions)
 [![Gem Version](https://badge.fury.io/rb/fugit.svg)](http://badge.fury.io/rb/fugit)
 
