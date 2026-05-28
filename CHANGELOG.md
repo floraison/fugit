@@ -2,7 +2,7 @@
 # CHANGELOG.md
 
 
-## fugit 1.12.2 not yet released
+## fugit 1.12.2 released 2026-05-28
 
 * Fix "divide by zero" gh-117
 * Let at parse 'now', gh-111
