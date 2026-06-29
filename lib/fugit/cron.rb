@@ -692,8 +692,11 @@ module Fugit
         if ha || mo
           @weekdays << [ a, ha || mo ]
         elsif sl
-          ((a || 0)..(z || (a ? a : 6))).step(sl < 1 ? 1 : sl)
-            .each { |i| @weekdays << [ i ] }
+          z ||= (a ? a : 6)
+          a ||= 0
+          z = z + 7 if a > z
+          (a..z).step(sl < 1 ? 1 : sl)
+            .each { |i| @weekdays << [ (i > 6) ? i - 7 : i ] }
         elsif z
           z = z + 7 if a > z
           (a..z).each { |i| @weekdays << [ (i > 6) ? i - 7 : i ] }
