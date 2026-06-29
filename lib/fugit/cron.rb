@@ -29,7 +29,7 @@ module Fugit
         parse(original)
       end
 
-      def parse(s)
+      def parse(s, opts={})
 
         return s if s.is_a?(self)
         return nil unless s.is_a?(String)
@@ -48,12 +48,12 @@ module Fugit
 #p s; Raabro.pp(Parser.parse(s, debug: 3), colors: true)
         h = Parser.parse(s)
 
-        self.allocate.send(:init, s0, h)
+        self.allocate.send(:init, s0, h, opts)
       end
 
-      def do_parse(s)
+      def do_parse(s, opts={})
 
-        parse(s) ||
+        parse(s, opts) ||
         fail(ArgumentError.new("invalid cron string #{trunc(s)}"))
       end
 
@@ -559,7 +559,7 @@ module Fugit
 
     FREQUENCY_CACHE = {}
 
-    def init(original, h)
+    def init(original, h, opts)
 
       return nil unless h
 
@@ -568,12 +568,12 @@ module Fugit
       @day_and = h[:&]
 
       valid =
-        determine_seconds(h[:sec]) &&
-        determine_minutes(h[:min]) &&
-        determine_hours(h[:hou]) &&
-        determine_monthdays(h[:dom]) &&
-        determine_months(h[:mon]) &&
-        determine_weekdays(h[:dow]) &&
+        determine_seconds(h[:sec], opts) &&
+        determine_minutes(h[:min], opts) &&
+        determine_hours(h[:hou], opts) &&
+        determine_monthdays(h[:dom], opts) &&
+        determine_months(h[:mon], opts) &&
+        determine_weekdays(h[:dow], opts) &&
         determine_timezone(h[:tz])
 
       return nil unless valid
@@ -582,9 +582,9 @@ module Fugit
       self
     end
 
-    def expand(min, max, r)
+    def expand(min, max, opts, r)
 
-      sta, edn, sla = r
+      sta, edn, sep, sla = r
 
       #return false if sla && sla > max
         #
@@ -592,6 +592,11 @@ module Fugit
         # gh-86 and gh-103
 
       return false if sla && sla < 1
+
+      if sep == :tilde
+        sta = random(min, max, sta, edn, sla, opts)
+        edn = nil unless sla
+      end
 
       edn = max if sla && edn.nil?
 
@@ -603,6 +608,24 @@ module Fugit
       edn = max if edn == nil || edn < 0 && sta > 0
 
       range(min, max, sta, edn, sla)
+    end
+
+    def random(min, max, sta, edn, sla, opts)
+
+      sta = min if sta.nil?
+      edn = max if edn.nil?
+
+      random = opts.fetch(:random, true)
+      random = Random if random == true
+      return sta unless random
+
+      n = edn - sta + 1
+      n = max - min + 1 + n if n <= 0
+      n = sla if sla && sla < n
+
+      r = sta + random.rand(n)
+      r = r + min - max - 1 if r > max
+      r
     end
 
     def range(min, max, sta, edn, sla)
@@ -647,13 +670,13 @@ module Fugit
         .uniq
     end
 
-    def do_determine(key, arr, min, max)
+    def do_determine(key, arr, min, max, opts)
 
       null = false
 
       r = arr
         .collect { |v|
-          expand(min, max, v) }
+          expand(min, max, opts, v) }
         .flatten(1)
         .collect { |e|
           return false if e == false
@@ -664,31 +687,36 @@ module Fugit
       r.uniq.sort
     end
 
-    def determine_seconds(arr)
-      (@seconds = do_determine(:seconds, arr || [ 0 ], 0, 59)) != false
+    def determine_seconds(arr, opts)
+      (@seconds = do_determine(:seconds, arr || [ 0 ], 0, 59, opts)) != false
     end
 
-    def determine_minutes(arr)
-      (@minutes = do_determine(:minutes, arr, 0, 59)) != false
+    def determine_minutes(arr, opts)
+      (@minutes = do_determine(:minutes, arr, 0, 59, opts)) != false
     end
 
-    def determine_hours(arr)
-      (@hours = do_determine(:hours, arr, 0, 23)) != false
+    def determine_hours(arr, opts)
+      (@hours = do_determine(:hours, arr, 0, 23, opts)) != false
     end
 
-    def determine_monthdays(arr)
-      (@monthdays = do_determine(:monthdays, arr, 1, 31)) != false
+    def determine_monthdays(arr, opts)
+      (@monthdays = do_determine(:monthdays, arr, 1, 31, opts)) != false
     end
 
-    def determine_months(arr)
-      (@months = do_determine(:months, arr, 1, 12)) != false
+    def determine_months(arr, opts)
+      (@months = do_determine(:months, arr, 1, 12, opts)) != false
     end
 
-    def determine_weekdays(arr)
+    def determine_weekdays(arr, opts)
 
       @weekdays = []
 
-      arr.each do |a, z, sl, ha, mo| # a to z, slash, hash, and mod
+      arr.each do |a, z, sp, sl, ha, mo| # a to z, seperator, slash, hash, and mod
+        if sp == :tilde
+          a = random(0, 6, a, z, sl, opts)
+          z = nil unless sl
+        end
+
         if ha || mo
           @weekdays << [ a, ha || mo ]
         elsif sl
@@ -756,7 +784,8 @@ module Fugit
 
       def s(i); rex(nil, i, /[ \t]+/); end
       def star(i); str(nil, i, '*'); end
-      def hyphen(i); str(nil, i, '-'); end
+      def hyphen(i); str(:hyphen, i, '-'); end
+      def tilde(i); str(:tilde, i, '~'); end
       def comma(i); rex(nil, i, /,([ \t]*,)*/); end
       def comma?(i); rex(nil, i, /([ \t]*,)*/); end
       def and?(i); rex(nil, i, /&?/); end
@@ -784,12 +813,19 @@ module Fugit
       def r_mon(i); seq(nil, i, :mon, :_mon, '?'); end
       def r_dow(i); seq(nil, i, :dow, :_dow, '?'); end
 
+      # t: tilde range
+      def t_mos(i); seq(nil, i, :mos, '?', :tilde, :mos, '?'); end
+      def t_hou(i); seq(nil, i, :hou, '?', :tilde, :hou, '?'); end
+      def t_dom(i); seq(nil, i, :dom, '?', :tilde, :dom, '?'); end
+      def t_mon(i); seq(nil, i, :mon, '?', :tilde, :mon, '?'); end
+      def t_dow(i); seq(nil, i, :dow, '?', :tilde, :dow, '?'); end
+
       # sor: star or range
-      def sor_mos(i); alt(nil, i, :star, :r_mos); end
-      def sor_hou(i); alt(nil, i, :star, :r_hou); end
-      def sor_dom(i); alt(nil, i, :star, :r_dom); end
-      def sor_mon(i); alt(nil, i, :star, :r_mon); end
-      def sor_dow(i); alt(nil, i, :star, :r_dow); end
+      def sor_mos(i); alt(nil, i, :star, :t_mos, :r_mos); end
+      def sor_hou(i); alt(nil, i, :star, :t_hou, :r_hou); end
+      def sor_dom(i); alt(nil, i, :star, :t_dom, :r_dom); end
+      def sor_mon(i); alt(nil, i, :star, :t_mon, :r_mon); end
+      def sor_dow(i); alt(nil, i, :star, :t_dow, :r_dow); end
 
       # sorws: star or range with[out] slash
       def sorws_mos(i); seq(nil, i, :sor_mos, :slash, '?'); end
@@ -869,12 +905,16 @@ module Fugit
 
       def rewrite_elt(k, t)
 
-        at, zt, slt, hat, mot = nil; t.subgather(nil).each do |tt|
+        at, zt, spt, slt, hat, mot = nil
+
+        t.subgather(nil).each do |tt|
           case tt.name
           when :slash then slt = tt
           when :hash then hat = tt
           when :mod then mot = tt
-          else if at; zt ||= tt; else; at = tt; end
+          when :hyphen then spt = tt
+          when :tilde then spt = tt
+          else if spt; zt ||= tt; else; at = tt; end
           end
         end
 
@@ -888,11 +928,12 @@ module Fugit
 
         a = at ? rewrite_bound(k, at) : nil
         z = zt ? rewrite_bound(k, zt) : nil
+        sp = spt ? spt.name : nil
 
         #a, z = z, a if a && z && a > z
           # handled downstream since gh-27
 
-        [ a, z, sl, ha, mo ]
+        [ a, z, sp, sl, ha, mo ]
       end
 
       def rewrite_entry(t)

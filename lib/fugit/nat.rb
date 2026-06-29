@@ -710,7 +710,7 @@ module Fugit
             e.uniq.sort_by(&letters_last).collect(&:to_s).join(',') }
           .join(' ')
 
-        c = Fugit::Cron.parse(s)
+        c = Fugit::Cron.parse(s, opts)
 
         if opts[:strict]
           restrict(a, c)

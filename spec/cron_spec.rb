@@ -1267,11 +1267,23 @@ describe Fugit::Cron do
           #
           # gh-86 and gh-103, it's dumb but still valid...
 
+        [ '~ ~ ~ ~ ~', '30 12 16 7 3' ],
+        [ '~30 * * * ~4', '15 * * * 2' ],
+        [ '~30/10 * * * ~4/2', '5,15,25 * * * 1,3' ],
+        [ '30~ * * * 4~', '45 * * * 5' ],
+        [ '30~/10 * * * 4~/2', '35,45,55 * * * 5' ],
+        [ '* * * 11~4 5~1', '* * * 2 0' ],
+        [ '* * * 11~4/2 *', '* * * 2,4,12 *' ],
+          #
+          # gh-80
+
       ].each { |c, e|
 
         it "parses #{c}" do
 
-          c = Fugit::Cron.parse(c)
+          opts = { random: AverageAsRandom }
+
+          c = Fugit::Cron.parse(c, opts)
           expect(c ? c.to_cron_s : c).to eq(e)
         end
       }
@@ -1988,6 +2000,12 @@ describe Fugit do
         expect(r.to_cron_s).to eq(cron_s)
       end
     end
+  end
+end
+
+module AverageAsRandom
+  def self.rand(max)
+    max / 2
   end
 end
 

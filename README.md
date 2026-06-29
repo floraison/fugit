@@ -486,6 +486,19 @@ Here's the output:
 ```
 
 
+### the random extension
+
+Fugit accepts the `~` character to specify a range from which a random value is picked. Either or both the start and the end of the range may be omitted.
+
+```ruby
+'~ * * * *'    # every hour on a random minute
+'~29 * * * *'  # every hour on a random minute between 0 and 29
+'30~ * * * *'  # every hour on a random minute between 30 and 59
+'~/10 * * * *' # every 10 minutes starting on a random minute between 0 and 9
+'0 12 * * 1~5' # every week at noon on a random workday
+```
+
+
 ### the second extension
 
 Fugit accepts cron strings with five elements, `minute hour day-of-month month day-of-week`, the standard cron format or six elements `second minute hour day-of-month month day-of-week`.
