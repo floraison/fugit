@@ -1267,6 +1267,7 @@ describe Fugit::Cron do
           #
           # gh-86 and gh-103, it's dumb but still valid...
 
+        [ '~ ~ ~ ~ ~', '0 0 1 1 0', { random: false } ],
         [ '~ ~ ~ ~ ~', '30 12 16 7 3' ],
         [ '~30 * * * ~4', '15 * * * 2' ],
         [ '~30/10 * * * ~4/2', '5,15,25 * * * 1,3' ],
@@ -1277,11 +1278,11 @@ describe Fugit::Cron do
           #
           # gh-80
 
-      ].each { |c, e|
+      ].each { |c, e, opts = nil|
 
         it "parses #{c}" do
 
-          opts = { random: AverageAsRandom }
+          opts ||= { random: AverageAsRandom }
 
           c = Fugit::Cron.parse(c, opts)
           expect(c ? c.to_cron_s : c).to eq(e)
