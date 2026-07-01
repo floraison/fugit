@@ -1279,7 +1279,7 @@ describe Fugit::Cron do
           #
           # gh-80
 
-      ].each { |c, e, opts = nil|
+      ].each { |c, e, opts=nil|
 
         it "parses #{c}" do
 
