@@ -2,7 +2,9 @@
 # CHANGELOG.md
 
 
-## fugit 1.12.3 not yet released
+## fugit 1.12.3 released 2026-07-01
+
+* Wrap-around for weekday ranges with step value, gh-119 Nicolas Bachschmidt
 
 
 ## fugit 1.12.2 released 2026-05-28
