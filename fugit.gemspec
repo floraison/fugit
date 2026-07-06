@@ -45,6 +45,7 @@ Time tools for flor and the floraison project. Cron parsing and occurrence compu
 
   s.add_development_dependency 'rspec', '~> 3.8'
   s.add_development_dependency 'chronic', '~> 0.10'
+  s.add_development_dependency 'ostruct'
 
   s.require_path = 'lib'
 end
