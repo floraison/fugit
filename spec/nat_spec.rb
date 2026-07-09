@@ -186,6 +186,13 @@ describe Fugit::Nat do
           #
           # gh-45
 
+        'every second starting at second 10' => '10/1 * * * * *',
+        'every second from second 10' => '10/1 * * * * *',
+        'every 15 minutes starting at minute 1' => '1/15 * * * *',
+        'every hour starting at hour 8' => '0 8/1 * * *',
+        'every 5 days starting at day 3' => '0 0 3/5 * *',
+        'every month starting at month 6' => '0 0 1 6/1 *',
+
         'every weekday 8am to 5pm' => '0 8-17 * * 1-5',
         'every weekday 8am to 5pm on the hour' => '0 8-17 * * 1-5',
         'every weekday 8am to 5pm on the minute' => '* 8-16 * * 1-5',

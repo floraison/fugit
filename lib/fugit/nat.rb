@@ -278,10 +278,27 @@ module Fugit
         rex(:interval, i, INTERVAL_REX)
       end
 
+      def _starting_at(i)
+        rex(nil, i, /[ \t]*(starting[ \t]+at|from)[ \t]+/i)
+      end
+      def _offset_unit(i)
+        rex(nil, i, /(second|minute|hour|day|month)s?[ \t]+/i)
+      end
+      def offset_count(i)
+        rex(:offset_count, i, /\d+/)
+      end
+
+        # starting at minute 1
+        # from minute 1
+      def offset(i)
+        seq(:offset, i, :_starting_at, :_offset_unit, :offset_count)
+      end
+
         # every day
         # every 1 minute
+        # every minute starting at minute 10
       def every_interval(i)
-        seq(:every_interval, i, :count, '?', :interval)
+        seq(:every_interval, i, :count, '?', :interval, :offset, '?')
       end
 
       def every_single_interval(i)
@@ -438,11 +455,19 @@ module Fugit
       def rewrite_every_interval(t)
 
 #Raabro.pp(t, colours: true)
-        ci = t.subgather(nil).collect(&:string)
-        i = ci.pop.strip[0, 3]
-        c = (ci.pop || '1').strip
+        ct = t.sublookup(:count)
+        it = t.sublookup(:interval)
+        ot = t.sublookup(:offset)
+
+        c = (ct ? ct.string : '1').strip
+        i = it.string.strip[0, 3]
         i = (i == 'M' || i.downcase == 'mon') ? 'M' : i[0, 1].downcase
-        cc = c == '1' ? '*' : "*/#{c}"
+        off = ot ? ot.sublookup(:offset_count).string.to_i : nil
+        cc =
+          if off then "#{off}/#{c}"
+          elsif c == '1' then '*'
+          else "*/#{c}"
+          end
 
         case i
         when 'M' then slot(:month, cc)
