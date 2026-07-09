@@ -506,6 +506,8 @@ Fugit.parse('~ * * * *', random: true)         # on a random minute (default)
 Fugit.parse('~ * * * *', random: SecureRandom) # on a cryptographically secure random minute
 ```
 
+Please note that the random values are determined at parse time. So `"~29 * * * *"` at parse time could become `"17 * * * *"` for example and go on triggering every hour at minute 17, until a new parsing occurs and another (or the same) minute is picked. This aligns with the OpenBSD [`man 5 crontab`](https://man.openbsd.org/crontab.5), OpenBSD `crond` rolling the dice at load time.
+
 
 ### the second extension
 
