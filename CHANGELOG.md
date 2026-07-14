@@ -2,6 +2,9 @@
 # CHANGELOG.md
 
 
+## fugit 1.14.0 not yet released
+
+
 ## fugit 1.13.0 released 2026-07-10
 
 * Random values support in cron string `"10 ~ * * *"` gh-121 Nicols Bachschmidt
