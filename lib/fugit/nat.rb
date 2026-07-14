@@ -397,6 +397,7 @@ module Fugit
       end
 
       def rewrite_on_minutes(t)
+
 #Raabro.pp(t, colours: true)
         mins = t.subgather(:dmin).collect(&:strinp)
         #slot(:m, mins.join(','))
@@ -404,6 +405,7 @@ module Fugit
       end
 
       def rewrite_on_thex(t)
+
         case s = t.string
         #when /hour/i then slot(:h, 0)
         #else slot(:m, '*')
@@ -432,10 +434,12 @@ module Fugit
       end
 
       def rewrite_at_p(t)
+
         pt = t.sublookup(:point).strinpd
         pt = pt.start_with?('mon') ? 'M' : pt[0, 1]
         pts = t.subgather(:count).collect { |e| e.string.to_i }
 #p [ pt, pts ]
+
         case pt
         #when 'm' then slot(:m, pts)
         when 'm' then slot(:hm, '*', pts, strong: 1)
@@ -445,6 +449,7 @@ module Fugit
       end
 
       def rewrite_every_single_interval(t)
+
         case t.string
         when /year/i then [ slot(:month, 1, :weak), slot(:monthday, 1, :weak) ]
         #when /week/i then xxx...
@@ -490,17 +495,14 @@ module Fugit
       end
 
       def rewrite_tz(t)
-
         slot(:tz, t.string)
       end
 
       def rewrite_weekday(t)
-
         Fugit::Cron::Parser::WEEKDS.index(t.string[0, 3].downcase)
       end
 
       def rewrite_weekdays(t)
-
 #Raabro.pp(t, colours: true)
         slot(:weekday, _rewrite_subs(t, :weekday))
       end
@@ -567,12 +569,15 @@ module Fugit
       end
 
       def rewrite_to_hour(t)
+
 #Raabro.pp(t, colours: true)
         ht0, ht1 = t.subgather(nil)
         h0, h1 = rewrite(ht0), rewrite(ht1)
+
         fail ArgumentError.new(
           "cannot deal with #{ht0.strinp} to #{ht1.strinp}, minutes diverge"
         ) if h0.data1 != h1.data1
+
         slot(:hm, "#{h0._data0}-#{h1._data0}", 0, strong: 0)
       end
 
