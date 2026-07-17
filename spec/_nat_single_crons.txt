@@ -224,5 +224,6 @@ every 60 minutes ⟶   */60 * * * *
 # minute hour day-of-month month day-of-week
 
 
+# https://github.com/jmettraux/dotvim/blob/master/syntax/arrowy.vim
 # vim: syntax=arrowy
 
