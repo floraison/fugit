@@ -12,7 +12,7 @@ group Fugit::Nat do
 
     group '(single crons)' do
 
-      File.read('spec/_nat_single_crons.txt')
+      File.read('test/_nat_single_crons.txt')
         .gsub(/\\\n/, '')
         .split("\n")
         .select { |l| l.match(/^[a-zA-Z]/) }
