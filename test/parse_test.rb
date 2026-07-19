@@ -12,7 +12,7 @@ group Fugit do
 
     CASES = {
       '2017-01-03 11:21:17' => [ EtOrbi::EoTime, '2017-01-03 11:21:17 Z' ],
-      '2017-01-03 11:21:17' => [ EtOrbi::EoTime, /^2017-/ ],
+      #'2017-01-03 11:21:17' => [ EtOrbi::EoTime, /^2017-/ ],
       '00 00 L 5 *' => [ Fugit::Cron, '0 0 -1 5 *' ],
       '1Y3M2d' => [ Fugit::Duration, '1Y3M2D' ],
       '1Y2h' => [ Fugit::Duration, '1Y2h' ],
