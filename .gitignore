@@ -11,11 +11,8 @@ pkg/
 .ruby-version
 #.rspec
 
-.errors
-.rspec.out
-
-.bxsinfo.yaml
-.bxsenvs.yaml
+.test-point
+.probatio-output.rb
 
 .todo.md
 

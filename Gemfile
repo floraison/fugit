@@ -11,5 +11,7 @@ source 'https://rubygems.org'
 
 #gem 'activesupport' # temporarily for gh-11
 
+#gem 'probatio', path: '../probatio'  # temporarily
+
 gemspec
 
