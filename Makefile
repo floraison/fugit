@@ -37,9 +37,9 @@ console:
 	irb -Ilib -r fugit
 con: console
 
-spec:
-	bundle exec rspec
-test: spec
+test:
+	bundle exec proba
+spec: test
 
 
 ## specific to project ##
@@ -55,5 +55,5 @@ tzones:
 #	bundle exec ruby -r tzinfo -r tzinfo-data -e "::TZInfo::Timezone.all.each { |tz| p tz.name }"
 
 
-.PHONY: count_lines scan gemspec_validate name cw build push console spec info tzones
+.PHONY: count_lines scan gemspec_validate name cw build push console spec test info tzones
 
