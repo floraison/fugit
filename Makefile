@@ -40,6 +40,7 @@ con: console
 test:
 	bundle exec proba
 spec: test
+t: test
 
 
 ## specific to project ##
