@@ -34,7 +34,7 @@ push: build
 	gem push --otp "$(OTP)" pkg/$(NAME)-$(VERSION).gem
 
 console:
-	irb -Ilib -r fugit
+	irb -Ilib -r $(NAME)
 con: console
 
 test:
