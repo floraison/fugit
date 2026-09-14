@@ -227,7 +227,7 @@ module Fugit
     def add_numeric(n)
 
       h = @h.dup
-      h[:sec] = (h[:sec] || 0) + n.to_i
+      h[:sec] = (h[:sec] || 0) + n
 
       self.class.allocate.init(nil,{}, h)
     end
