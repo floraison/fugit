@@ -2,8 +2,8 @@
 
 module Fugit
 
-  DAY_S = (24 * 3600).freeze
-  YEAR_S = (365 * DAY_S).freeze
+  DAY_S = 24 * 3600
+  YEAR_S = 365 * DAY_S
 
   class << self
 
