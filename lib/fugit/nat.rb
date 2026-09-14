@@ -102,7 +102,7 @@ module Fugit
       MONTHDAY_REX = /3[0-1]|[0-2]?[0-9]/.freeze
       WEEKDAY_REX = /(#{WEEKDAYS.join('|')})(?=($|[-, \t]))/i.freeze
         # prevent "mon" from eating "monday"
-      NAMED_M_REX = /#{NMINUTES.keys.join('|')}/i.freeze
+      NAMED_M_REX = /#{NMINUTES.keys.sort_by { |k| -k.length }.join('|')}/i.freeze
       NAMED_H_REX = /#{NHOURS.keys.join('|')}/i.freeze
       POINT_REX = /(#{POINTS.join('|')})[ \t]+/i.freeze
       INTERVAL_REX = /[ \t]*(#{INTERVALS.join('|')})/.freeze
@@ -556,8 +556,8 @@ module Fugit
         mt = t.sublookup(:named_m)
         apt = t.sublookup(:ampm)
 
-        h = ht.strinp
-        m = mt ? mt.strinp : 0
+        h = ht.strinpd
+        m = mt ? mt.strinpd : 0
         h = NHOURS[h]
         m = NMINUTES[m] || m
 
