@@ -71,7 +71,7 @@ module Fugit
 
       s0 = s.lines.first
 
-      (0..[ ::Fugit::Nat::MAX_INPUT_LENGTH, s0.length - 1 ].min).each do |i|
+      (0..[ ::Fugit::MAX_INPUT_LENGTH, s0.length - 1 ].min).each do |i|
 
         s1 =
           s0[0, s0.length - i].rstrip

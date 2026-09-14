@@ -7,8 +7,6 @@ module Fugit
   #
   module Nat
 
-    MAX_INPUT_LENGTH = 256
-
     class << self
 
       def parse(s, opts={})
@@ -19,7 +17,7 @@ module Fugit
 
         s = s.strip
 
-        if s.length > MAX_INPUT_LENGTH
+        if s.length > ::Fugit::MAX_INPUT_LENGTH
 
           fail ArgumentError.new(
             'input too long for a nat string, ' +

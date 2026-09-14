@@ -1,9 +1,9 @@
-# frozen_string_literal: true
-
 
 module Fugit
 
-  VERSION = '1.14.0'
+  VERSION = '1.14.0'.freeze
+
+  MAX_INPUT_LENGTH = 256
 end
 
 require 'time'

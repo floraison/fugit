@@ -189,12 +189,8 @@ group Fugit do
 
        assert d < 0.14
 
-       assert(
-         r.class,
-         ArgumentError)
-       assert(
-         r.message,
-         'invalid cron string "0 0 0 0 0 0 0 0 0 0 0 0 0 0 ... len 20015"')
+       assert r.class, ArgumentError
+       assert r.message, 'input too long for a cron string, 20015 > 256'
     end
   end
 

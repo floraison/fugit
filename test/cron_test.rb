@@ -1940,8 +1940,8 @@ group Fugit do
     test 'chokes on input that is too long' do
 
       assert_error(
-        lambda { Fugit.do_parse_cron("* * * * * " * 100) },
-        ArgumentError, 'input too long for a cron string, 999 > 128')
+        lambda { Fugit.do_parse_cron('* * * * * ' * 100) },
+        ArgumentError, 'input too long for a cron string, 999 > 256')
     end
   end
 

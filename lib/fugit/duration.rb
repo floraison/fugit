@@ -4,8 +4,6 @@ module Fugit
 
   class Duration
 
-    MAX_INPUT_LENGTH = 256
-
     attr_reader :original, :h, :options
 
     class << self
@@ -28,7 +26,7 @@ module Fugit
         s = s.strip
 #p [ original, s ]; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
 
-        if s.length > MAX_INPUT_LENGTH
+        if s.length > ::Fugit::MAX_INPUT_LENGTH
 
           fail ArgumentError.new(
             'input too long for a duration string, ' +

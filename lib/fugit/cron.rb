@@ -4,8 +4,6 @@ module Fugit
 
   class Cron
 
-    MAX_INPUT_LENGTH = 128
-
     SPECIALS = {
       '@reboot' => :reboot,
       '@yearly' => '0 0 1 1 *',
@@ -39,7 +37,7 @@ module Fugit
         s0 = s
         s = s.strip
 
-        if s.length > MAX_INPUT_LENGTH
+        if s.length > ::Fugit::MAX_INPUT_LENGTH
 
           fail ArgumentError.new(
             'input too long for a cron string, ' +
