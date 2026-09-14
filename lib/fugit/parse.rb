@@ -65,6 +65,8 @@ module Fugit
       fail(ArgumentError.new("not cron or 'natural' cron string: #{s.inspect}"))
     end
 
+    # Still an exploration, but what was the goal? 2026-09-14
+    #
     def parse_max(s, opts={})
 
       s0 = s.lines.first
