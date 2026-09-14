@@ -13,9 +13,9 @@ module Fugit
     def parse_in(s); parse_duration(s); end
 
     def do_parse_cron(s, opts={}); ::Fugit::Cron.do_parse(s, opts || {}); end
-    def do_parse_duration(s); ::Fugit::Duration.do_parse(s); end
+    def do_parse_duration(s, opts={}); ::Fugit::Duration.do_parse(s, opts || {}); end
     def do_parse_nat(s, opts={}); ::Fugit::Nat.do_parse(s, opts || {}); end
-    def do_parse_at(s); ::Fugit::At.do_parse(s); end
+    def do_parse_at(s, opts={}); ::Fugit::At.do_parse(s, opts || {}); end
     def do_parse_in(s); do_parse_duration(s); end
 
     def parse(s, opts={})
@@ -39,7 +39,7 @@ module Fugit
       DO_PARSE_ORDER
         .each { |k|
           begin
-            result ||= (opts[k] != false && self.send("do_parse_#{k}", s))
+            result ||= (opts[k] != false && self.send("do_parse_#{k}", s, opts))
           rescue => err
             errors << err
           end }
