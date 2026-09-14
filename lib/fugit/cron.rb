@@ -76,7 +76,7 @@ module Fugit
           r.inspect
         else
           r = s.inspect
-          r.length > 35 ? s[0, 35] + '...' : r
+          r.length > 35 ? r[0, 35] + '...' : r
         end
       end
     end
