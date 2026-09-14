@@ -741,7 +741,7 @@ module Fugit
         c = Fugit::Cron.parse(s, opts)
 
         if opts[:strict]
-          restrict(a, c)
+          restrict(hm, c)
         else
           c
         end
@@ -759,11 +759,11 @@ module Fugit
       #
       def restrict(a, cron)
 
-        if m = ((a[0] && a[0] != [ 0 ] && a[0][0]) || '').match(SLASH_REGEX)
-          return nil unless (1..60).include?(m[1].to_i)
+        if m = a[1].first.to_s.match(SLASH_REGEX)
+          return nil unless (1..60).include?(m[2].to_i)
         end
-        if m = ((a[1] && a[1][0]) || '').match(SLASH_REGEX)
-          return nil unless [ 1, 2, 3, 4, 5, 6, 8, 12 ].include?(m[1].to_i)
+        if m = a[0].first.to_s.match(SLASH_REGEX)
+          return nil unless [ 1, 2, 3, 4, 5, 6, 8, 12 ].include?(m[2].to_i)
         end
 
         cron
