@@ -22,7 +22,7 @@ module Fugit
         if s.length > MAX_INPUT_LENGTH
 
           fail ArgumentError.new(
-            "input too long for a nat string, " +
+            'input too long for a nat string, ' +
             "#{s.length} > #{MAX_INPUT_LENGTH}"
           ) if opts[:do_parse]
 

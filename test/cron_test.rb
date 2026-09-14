@@ -1929,6 +1929,16 @@ end
 
 group Fugit do
 
+  group '#do_parse_cron' do
+
+    test 'chokes on input that is too long' do
+
+      assert_error(
+        lambda { Fugit.do_parse_cron("* * * * * " * 100) },
+        ArgumentError, 'input too long for a cron string, 999 > 128')
+    end
+  end
+
   group '#parse_cron' do
 
     [
@@ -1946,10 +1956,15 @@ group Fugit do
 
         r = Fugit.parse_cron(src)
 
-        assert(r.class, Fugit::Cron)
-        assert(r.original, src)
-        assert(r.to_cron_s, cron_s)
+        assert r.class, Fugit::Cron
+        assert r.original, src
+        assert r.to_cron_s, cron_s
       end
+    end
+
+    test 'returns nil if the input is too long' do
+
+      assert Fugit.parse_cron("* * * * * " * 100), nil
     end
   end
 end

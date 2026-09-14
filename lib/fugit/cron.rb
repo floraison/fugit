@@ -4,6 +4,8 @@ module Fugit
 
   class Cron
 
+    MAX_INPUT_LENGTH = 128
+
     SPECIALS = {
       '@reboot' => :reboot,
       '@yearly' => '0 0 1 1 *',
@@ -37,6 +39,16 @@ module Fugit
         s0 = s
         s = s.strip
 
+        if s.length > MAX_INPUT_LENGTH
+
+          fail ArgumentError.new(
+            'input too long for a cron string, ' +
+            "#{s.length} > #{MAX_INPUT_LENGTH}"
+          ) if opts[:do_parse]
+
+          return nil
+        end
+
         s =
           if s[0, 1] == '@'
             ss = s.split(/\s+/, 2)
@@ -53,7 +65,7 @@ module Fugit
 
       def do_parse(s, opts={})
 
-        parse(s, opts) ||
+        parse(s, opts.merge(do_parse: true)) ||
         fail(ArgumentError.new("invalid cron string #{trunc(s)}"))
       end
 
