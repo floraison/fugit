@@ -257,13 +257,8 @@ module Fugit
 
         at[a[:x]] += v
 
-        if at[1] > 12
-          n, m = at[1] / 12, at[1] % 12
-          at[0], at[1] = at[0] + n, m
-        elsif at[1] < 1
-          n, m = (-at[1]) / 12 + 1, (11+at[1]) % 12 + 1
-          at[0], at[1] = at[0] - n, m
-        end
+        n, m = (at[1] - 1).divmod(12)
+        at[0], at[1] = at[0] + n, m + 1
 
         t = ::EtOrbi.make_time(at, t.zone)
       end
