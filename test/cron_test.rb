@@ -1086,6 +1086,12 @@ group Fugit::Cron do
 
     test 'parses @reboot'
 
+    module AverageAsRandom
+      def self.rand(max)
+        max / 2
+      end
+    end
+
     group 'success' do
 
       [
@@ -1966,12 +1972,6 @@ group Fugit do
 
       assert Fugit.parse_cron("* * * * * " * 100), nil
     end
-  end
-end
-
-module AverageAsRandom
-  def self.rand(max)
-    max / 2
   end
 end
 
