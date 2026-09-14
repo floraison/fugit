@@ -15,6 +15,11 @@ group Fugit::Duration do
       assert_nil Fugit::Duration.parse('NADA')
     end
 
+    test 'returns nil if the input is too long' do
+
+      assert_nil Fugit::Duration.parse('NADA ' * 100)
+    end
+
     [
       [ 0, '0s' ],
       [ 7, '7s' ],
@@ -173,16 +178,20 @@ group Fugit::Duration do
 
       assert_error(
         lambda { Fugit::Duration.do_parse('NADA') },
-        ArgumentError,
-        'not a duration "NADA"')
+        ArgumentError, 'not a duration "NADA"')
+    end
+
+    test 'raises an ArgumentError when the input is too long' do
+
+      assert_error(
+        lambda { Fugit::Duration.do_parse('NADA ' * 100) },
+        ArgumentError, 'input too long for a duration string, 499 > 256')
     end
   end
 
   group '#deflate' do
 
-    [
-
-      %w[ 3600s    3600s     1h     ],
+    [ %w[ 3600s    3600s     1h     ],
       %w[ 1y3600s  1Y3600s   1Y1h   ],
       %w[ 1d60s    86460s    1D1m   ],
 

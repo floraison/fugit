@@ -4,6 +4,8 @@ module Fugit
 
   class Duration
 
+    MAX_INPUT_LENGTH = 256
+
     attr_reader :original, :h, :options
 
     class << self
@@ -26,6 +28,16 @@ module Fugit
         s = s.strip
 #p [ original, s ]; Raabro.pp(Parser.parse(s, debug: 3), colours: true)
 
+        if s.length > MAX_INPUT_LENGTH
+
+          fail ArgumentError.new(
+            'input too long for a duration string, ' +
+            "#{s.length} > #{MAX_INPUT_LENGTH}"
+          ) if opts[:do_parse]
+
+          return nil
+        end
+
         h =
           if opts[:iso]
             IsoParser.parse(opts[:stricter] ? s : s.upcase)
@@ -40,7 +52,7 @@ module Fugit
 
       def do_parse(s, opts={})
 
-        parse(s, opts) ||
+        parse(s, opts.merge(do_parse: true)) ||
         fail(ArgumentError.new("not a duration #{s.inspect}"))
       end
 
