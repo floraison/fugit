@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Yaroslav Kurbatov https://github.com/viralpraxis input max length
 * Nicolas Bachschmidt https://github.com/baarde gh-120 weekday wrap fix
 * JebeenLee https://github.com/JebeenLee gh-117 divide by zero
 * Eric Claerhout https://github.com/swebra gh-114 rweek readme clarity

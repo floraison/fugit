@@ -2,7 +2,9 @@
 # CHANGELOG.md
 
 
-## fugit 1.14.0 not yet released
+## fugit 1.14.0 released 2026-09-14
+
+* Reject input when length > 256
 
 
 ## fugit 1.13.0 released 2026-07-10
