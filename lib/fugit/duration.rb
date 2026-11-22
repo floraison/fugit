@@ -37,7 +37,9 @@ module Fugit
         end
 
         h =
-          if opts[:iso]
+          if s.empty?
+            { sec: 0 }
+          elsif opts[:iso]
             IsoParser.parse(opts[:stricter] ? s : s.upcase)
           elsif opts[:plain]
             Parser.parse(s)
