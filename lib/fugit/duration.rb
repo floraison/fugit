@@ -134,8 +134,8 @@ module Fugit
       while kv = a.shift
         k, v = kv
         aa = KEYS[k]
-        s << v.to_i
-        s << ' '; s << aa[:l]; s << 's' if v > 1
+        s << (v == v.to_i ? v.to_i : v)
+        s << ' '; s << aa[:l]; s << 's' unless v.abs == 1
         s << (a.size == 1 ? adn : ', ') if a.size > 0
       end
 
