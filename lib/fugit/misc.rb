@@ -15,7 +15,7 @@ module Fugit
       s << t.strftime('%Y-%m-%d') if show_date
       s << t.strftime('T%H:%M:%S') if show_time
       s << sprintf('.%06d', t.usec) if show_time && show_usec
-      s << 'Z' if show_time && time.utc?
+      s << 'Z' if show_time && t.utc?
 
       s.string
     end
