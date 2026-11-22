@@ -1,7 +1,7 @@
 
 module Fugit
 
-  VERSION = '1.14.0'.freeze
+  VERSION = '1.14.1'.freeze
 
   MAX_INPUT_LENGTH = 256
 end
