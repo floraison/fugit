@@ -265,7 +265,7 @@ module Fugit
           at[0], at[1] = at[0] - n, m
         end
 
-        t = ::EtOrbi.make_time(at, t.zone)
+        t = ::EtOrbi.make_time(at, t.zone) + (t.to_f % 1)
       end
 
       t
