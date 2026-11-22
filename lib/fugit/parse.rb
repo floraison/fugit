@@ -70,6 +70,7 @@ module Fugit
     def parse_max(s, opts={})
 
       s0 = s.lines.first
+      return nil unless s0
 
       (0..[ ::Fugit::MAX_INPUT_LENGTH, s0.length - 1 ].min).each do |i|
 
