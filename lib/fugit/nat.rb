@@ -640,7 +640,7 @@ module Fugit
         to_a(a).concat(to_a(b))
       end
       def hour_range
-        m = (key == :hm && @_data1 == 0 && @_data0.match(/\A(\d+)-(\d+)\z/))
+        m = (key == :hm && @_data1 == 0 && @_data0.to_s.match(/\A(\d+)-(\d+)\z/))
         m ? [ m[1].to_i, m[2].to_i ] : nil
       end
     end
