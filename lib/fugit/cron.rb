@@ -530,14 +530,15 @@ module Fugit
 
       return true if @months == nil || @monthdays == nil
 
-      ms, ds =
-        @months.inject([ [], [] ]) { |a, m|
-          @monthdays.each { |d|
-            next if d > MAXDAYS[m]
-            a[0] << m; a[1] << d }
-          a }
-      @months = ms.uniq
-      @monthdays = ds.uniq
+      @months, @monthdays =
+        @months
+          .inject([ [], [] ]) { |a, m|
+            @monthdays.each { |d|
+              next if d > MAXDAYS[m]
+              a[0] << m; a[1] << d }
+            a }
+          .map(&:uniq) \
+            unless @weekdays
 
       @months.any? && @monthdays.any?
     end
@@ -584,10 +585,10 @@ module Fugit
         determine_monthdays(h[:dom], opts) &&
         determine_months(h[:mon], opts) &&
         determine_weekdays(h[:dow], opts) &&
-        determine_timezone(h[:tz])
+        determine_timezone(h[:tz]) &&
+        compact_month_days
 
       return nil unless valid
-      return nil unless compact_month_days
 
       self
     end

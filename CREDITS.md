@@ -1,6 +1,7 @@
 
 # fugit credits
 
+* Bardrop https://github.com/bardrop impossible monthdays vs weekdays, gh-139
 * Yaroslav Kurbatov https://github.com/viralpraxis input max length
 * Nicolas Bachschmidt https://github.com/baarde gh-120 weekday wrap fix
 * JebeenLee https://github.com/JebeenLee gh-117 divide by zero
